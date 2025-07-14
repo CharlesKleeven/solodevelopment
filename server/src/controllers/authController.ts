@@ -1,10 +1,49 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { body, validationResult } from 'express-validator';
 import User from '../models/User';
 
+// Validation rules
+export const registerValidation = [
+  body('username')
+    .isLength({ min: 5, max: 20 })
+    .withMessage('Username must be 5-20 characters')
+    .matches(/^[a-zA-Z0-9_]+$/)
+    .withMessage('Username can only contain letters, numbers, and underscores'),
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Please provide a valid email'),
+  body('password')
+    .isLength({ min: 8 })
+    .withMessage('Password must be at least 8 characters')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage('Password must contain at least one lowercase letter, one uppercase letter, and one number')
+];
+
+export const loginValidation = [
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Please provide a valid email'),
+  body('password')
+    .notEmpty()
+    .withMessage('Password is required')
+];
+
+// Register new user
 export const register = async (req: Request, res: Response) => {
   try {
+    // Check validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        error: 'Validation failed',
+        details: errors.array()
+      })
+    }
+
     const { username, email, password } = req.body;
 
     // Check if user already exists
@@ -18,7 +57,7 @@ export const register = async (req: Request, res: Response) => {
       });
     }
 
-    // Hash password - saltRounds 12 is strong security
+    // Hash password with higher saltRounds for production
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
@@ -31,17 +70,24 @@ export const register = async (req: Request, res: Response) => {
 
     await user.save();
 
-    // Generate JWT token for automatic login
+    // Generate JWT
     const token = jwt.sign(
       { userId: user._id },
       process.env.JWT_SECRET!,
       { expiresIn: '7d' }
     );
 
-    // Send success response with token and user info
+    // Set httpOnly cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
+    });
+
+    // Send success response without token
     res.status(201).json({
       message: 'User created successfully',
-      token,
       user: {
         id: user._id,
         username: user.username,
@@ -58,6 +104,15 @@ export const register = async (req: Request, res: Response) => {
 // Login existing user
 export const login = async (req: Request, res: Response) => {
   try {
+    // Check validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        error: 'Validation failed',
+        details: errors.array()
+      });
+    }
+
     const { email, password } = req.body;
 
     // Find user by email
@@ -72,17 +127,24 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Invalid email or password' });
     }
 
-    // Generate JWT for session
+    // Generate JWT
     const token = jwt.sign(
       { userId: user._id },
       process.env.JWT_SECRET!,
       { expiresIn: '7d' }
     );
 
-    // Send success reponse with token and user info
+    // Set httpOnly cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    // Send success reponse without token
     res.json({
       message: 'Login successful',
-      token,
       user: {
         id: user._id,
         username: user.username,
@@ -95,3 +157,9 @@ export const login = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Server error during login' });
   }
 };
+
+// Logout user
+export const logout = async (req: Request, res: Response) => {
+  res.clearCookie('token');
+  res.json({ message: 'Logged out successfully' });
+}

@@ -14,7 +14,13 @@ const Register: React.FC = () => {
       const response = await authAPI.register({ username, email, password });
       setMessage('Registration successful!');
     } catch (error: any) {
-      setMessage('Error: ' + (error.response?.data?.error || 'Registration failed'));
+      if (error.response?.data?.details) {
+        // Show specific validation errors
+        const errorMessages = error.response.data.details.map((err: any) => err.msg).join(', ');
+        setMessage('Error: ' + errorMessages);
+      } else {
+        setMessage('Error: ' + (error.response?.data?.error || 'Registration failed'));
+      }
     }
   }
 
