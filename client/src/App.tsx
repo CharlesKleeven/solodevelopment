@@ -6,6 +6,10 @@ import './App.css';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Jams from './pages/Jams';
+import Showcase from './pages/Showcase';
+import Resources from './pages/Resources';
+import Community from './pages/Community';
 
 // Components
 import Navbar from './components/Navbar';
@@ -22,6 +26,10 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/jams" element={<Jams />} />
+              <Route path="/showcase" element={<Showcase />} />
+              <Route path="/resources" element={<Resources />} />
+              <Route path="/community" element={<Community />} />
             </Routes>
           </main>
         </div>
