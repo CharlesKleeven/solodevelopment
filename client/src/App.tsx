@@ -13,6 +13,7 @@ import Community from './pages/Community';
 
 // Components
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import { AuthProvider } from './context/AuthContext';
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
               <Route path="/community" element={<Community />} />
             </Routes>
           </main>
+          <Footer />
         </div>
       </Router>
     </AuthProvider>
