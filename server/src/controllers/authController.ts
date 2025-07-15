@@ -4,6 +4,10 @@ import jwt from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
 import User from '../models/User';
 
+interface AuthRequest extends Request {
+  user?: any;
+}
+
 // Validation rules
 export const registerValidation = [
   body('username')
@@ -163,3 +167,23 @@ export const logout = async (req: Request, res: Response) => {
   res.clearCookie('token');
   res.json({ message: 'Logged out successfully' });
 }
+
+export const me = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = await User.findById(req.user.userId).select('-password');
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email
+      }
+    });
+  } catch (error) {
+    console.error('Me endpoint error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};

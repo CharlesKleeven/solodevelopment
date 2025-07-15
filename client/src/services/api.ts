@@ -12,6 +12,13 @@ export const authAPI = {
 
     login: (credentials: { email: string; password: string }) =>
         api.post('/auth/login', credentials),
+
+    logout: () =>
+        api.post('auth/logout'),
+
+    // Checks current auth status
+    me: () =>
+        api.get('auth/me'),
 };
 
 export default api;
