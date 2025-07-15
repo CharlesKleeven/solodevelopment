@@ -39,10 +39,10 @@ const Footer: React.FC = () => {
         <div>
           <h3>Support</h3>
           <ul>
-            <li><a href="#">FAQ</a></li>
-            <li><a href="#">Help</a></li>
-            <li><a href="#">Feedback</a></li>
-            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="/support#faq">FAQ</a></li>
+            <li><a href="/support#help">Help</a></li>
+            <li><a href="/support#privacy">Privacy Policy</a></li>
+            <li><a href="/support#contact">Contact</a></li>
           </ul>
         </div>
       </div>
