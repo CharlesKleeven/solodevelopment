@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { authAPI } from '../services/api';
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState('');
+  const [emailOrUsername, setEmailOrUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
 
@@ -10,8 +10,8 @@ const Login: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await authAPI.login({ email, password });
-      setMessage('Welcome back!');
+      const response = await authAPI.login({ emailOrUsername, password });
+      setMessage('Login successful!');
     } catch (error: any) {
       if (error.response?.data?.details) {
         // Show specific validation errors
@@ -28,11 +28,11 @@ const Login: React.FC = () => {
       <h1>Login</h1>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Email:</label><br />
+          <label>Email or username:</label><br />
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            value={emailOrUsername}
+            onChange={(e) => setEmailOrUsername(e.target.value)}
             required
           />
         </div>

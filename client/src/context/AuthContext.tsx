@@ -42,10 +42,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const login = async (email: string, password: string) => {
+  const login = async (emailOrUsername: string, password: string) => {
     try {
       setError(null);
-      const response = await authAPI.login({ email, password });
+      const response = await authAPI.login({ emailOrUsername, password });
       setUser(response.data.user);
     } catch (error: any) {
       if (error.response?.data?.details) {
