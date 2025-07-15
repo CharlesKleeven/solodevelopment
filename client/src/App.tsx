@@ -10,6 +10,7 @@ import Jams from './pages/Jams';
 import Showcase from './pages/Showcase';
 import Resources from './pages/Resources';
 import Community from './pages/Community';
+import Support from './pages/Support';
 
 // Components
 import Navbar from './components/Navbar';
@@ -31,6 +32,7 @@ function App() {
               <Route path="/showcase" element={<Showcase />} />
               <Route path="/resources" element={<Resources />} />
               <Route path="/community" element={<Community />} />
+              <Route path="/support" element={<Support />} />
             </Routes>
           </main>
           <Footer />

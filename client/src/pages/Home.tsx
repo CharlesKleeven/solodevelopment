@@ -6,7 +6,7 @@ const Home: React.FC = () => {
             <h1>Welcome, Solo Devs!</h1>
             <p>Join our vibrant community of independent game developers. Share, learn, and grow as we tackle the challenges of making games alone—together!</p>
 
-            <p><em>Winter Jam happening now • 43 games submitted this week • 1,247 developers</em></p>
+            <p><em>Winter Jam happening now • X games submitted this week • XXX developers</em></p>
 
             <h2>What's happening now</h2>
             <ul>
