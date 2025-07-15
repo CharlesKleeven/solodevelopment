@@ -1,6 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
+import './styles/globals.css';
+import './styles/layout.css';
+import './styles/components.css';
 
 // Pages
 import Home from './pages/Home';
@@ -21,9 +24,9 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="App">
+        <div className="app">
           <Navbar />
-          <main>
+          <main className="main-content">  {/* Added main-content class */}
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
