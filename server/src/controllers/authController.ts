@@ -25,10 +25,9 @@ export const registerValidation = [
 ];
 
 export const loginValidation = [
-  body('email')
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('Please provide a valid email'),
+  body('emailOrUsername')
+    .notEmpty()
+    .withMessage('Email or username is required'),
   body('password')
     .notEmpty()
     .withMessage('Password is required')
@@ -115,18 +114,24 @@ export const login = async (req: Request, res: Response) => {
       });
     }
 
-    const { email, password } = req.body;
+    const { emailOrUsername, password } = req.body;
 
-    // Find user by email
-    const user = await User.findOne({ email });
+    // Find user by email OR username
+    const user = await User.findOne({
+      $or: [
+        { email: emailOrUsername },
+        { username: emailOrUsername }
+      ]
+    });
+
     if (!user) {
-      return res.status(400).json({ error: 'Invalid email or password ' });
+      return res.status(400).json({ error: 'Invalid credentials' });
     }
 
     // Check if password matches the hashed password in database
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
-      return res.status(400).json({ error: 'Invalid email or password' });
+      return res.status(400).json({ error: 'Invalid credentials' });
     }
 
     // Generate JWT
