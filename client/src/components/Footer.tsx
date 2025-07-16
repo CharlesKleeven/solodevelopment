@@ -1,54 +1,54 @@
+// --- Clean 3-Column Footer Layout ---
 import React from 'react';
+import './footer.css';
 
 const Footer: React.FC = () => {
   return (
     <footer className="footer">
       <div className="footer-container">
-        <div className="footer-content">
-          <div className="footer-section">
+        <div className="footer-top-columns">
+          {/* Column 1: Brand */}
+          <div className="footer-column">
+            <h4>SoloDevelopment</h4>
+            <p className="footer-description">
+              A community for independent game developers working solo.
+            </p>
+          </div>
+
+          {/* Column 2: Community */}
+          <div className="footer-column">
             <h4>Community</h4>
-            <ul className="footer-links">
-              <li><a href="https://discord.gg/your-discord-link" target="_blank" rel="noopener noreferrer">Discord Server</a></li>
-              <li><a href="https://reddit.com/r/solodevelopment" target="_blank" rel="noopener noreferrer">Reddit</a></li>
-              <li><a href="https://solodevelopment.itch.io" target="_blank" rel="noopener noreferrer">Itch.io</a></li>
-              <li><a href="/community">Community Guidelines</a></li>
+            <ul>
+              <li>
+                <a className="footer-link" href="https://discord.gg/your-discord-link" target="_blank" rel="noreferrer">
+                  Discord
+                </a>
+              </li>
+              <li>
+                <a className="footer-link" href="https://reddit.com/r/solodevelopment" target="_blank" rel="noreferrer">
+                  Reddit
+                </a>
+              </li>
+              <li>
+                <a className="footer-link" href="https://solodevelopment.itch.io/" target="_blank" rel="noreferrer">
+                  Itch.io
+                </a>
+              </li>
             </ul>
           </div>
 
-          <div className="footer-section">
-            <h4>Resources</h4>
-            <ul className="footer-links">
-              <li><a href="/jams">Game Jams</a></li>
-              <li><a href="/showcase">Hall of Fame</a></li>
-              <li><a href="/resources">Getting Started</a></li>
-              <li><a href="/resources">Tools & Software</a></li>
-              <li><a href="#">Wiki</a></li>
-            </ul>
-          </div>
-
-          <div className="footer-section">
-            <h4>About</h4>
-            <ul className="footer-links">
-              <li><a href="#">About SoloDevelopment</a></li>
-              <li><a href="#">Contact</a></li>
-              <li><a href="#">Contribute</a></li>
-              <li><a href="https://github.com/your-repo" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-            </ul>
-          </div>
-
-          <div className="footer-section">
+          {/* Column 3: Support */}
+          <div className="footer-column">
             <h4>Support</h4>
-            <ul className="footer-links">
-              <li><a href="/support#faq">FAQ</a></li>
-              <li><a href="/support#help">Help</a></li>
-              <li><a href="/support#privacy">Privacy Policy</a></li>
-              <li><a href="/support#contact">Contact</a></li>
+            <ul>
+              <li><a className="footer-link" href="/support">Contact</a></li>
+              <li><a className="footer-link" href="/privacy">Privacy</a></li>
             </ul>
           </div>
         </div>
 
         <div className="footer-bottom">
-          <p>&copy; 2025 SoloDevelopment.org — Built by solo devs, for solo devs</p>
+          <p>&copy; 2025 SoloDevelopment.org — Built by the community.</p>
         </div>
       </div>
     </footer>
