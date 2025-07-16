@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import './App.css';
 import './styles/globals.css';
 import './styles/layout.css';
@@ -8,38 +8,50 @@ import './styles/components.css';
 // Pages
 import Home from './pages/Home';
 import Login from './pages/Login';
-import Register from './pages/Register';
 import Jams from './pages/Jams';
 import Showcase from './pages/Showcase';
 import Resources from './pages/Resources';
-import Community from './pages/Community';
 import Support from './pages/Support';
+import Privacy from './pages/Privacy';
 
 // Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { AuthProvider } from './context/AuthContext';
 
+function AppContent() {
+  const location = useLocation();
+  const isAuthPage = location.pathname === '/login';
+
+  return (
+    <div className="app">
+      <Navbar />
+      {isAuthPage ? (
+        <Routes>
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      ) : (
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/jams" element={<Jams />} />
+            <Route path="/showcase" element={<Showcase />} />
+            <Route path="/resources" element={<Resources />} />
+            <Route path="/support" element={<Support />} />
+            <Route path="/privacy" element={<Privacy />} />
+          </Routes>
+        </main>
+      )}
+      <Footer />
+    </div>
+  );
+}
+
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="app">
-          <Navbar />
-          <main className="main-content">  {/* Added main-content class */}
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/jams" element={<Jams />} />
-              <Route path="/showcase" element={<Showcase />} />
-              <Route path="/resources" element={<Resources />} />
-              <Route path="/community" element={<Community />} />
-              <Route path="/support" element={<Support />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
+        <AppContent />
       </Router>
     </AuthProvider>
   );

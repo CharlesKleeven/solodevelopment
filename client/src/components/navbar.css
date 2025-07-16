@@ -1,0 +1,210 @@
+/* ===== MINIMAL NAVBAR - CLEAN & SOPHISTICATED ===== */
+
+.navbar {
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-subtle);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-container {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+}
+
+/* ===== MINIMAL BRAND ===== */
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    text-decoration: none;
+    color: var(--text-primary);
+}
+
+.navbar-logo {
+    width: 24px;
+    height: 24px;
+    background: var(--color-accent);
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bg-primary);
+    font-weight: 600;
+    font-size: var(--text-xs);
+}
+
+.navbar-title {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    margin: 0;
+}
+
+/* ===== CLEAN NAVIGATION ===== */
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+}
+
+.navbar-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+}
+
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: var(--text-sm);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--border-radius);
+    transition: color var(--transition);
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--text-primary);
+}
+
+/* ===== MINIMAL LOGIN BUTTON ===== */
+.navbar-actions .btn {
+    font-size: var(--text-sm);
+    padding: var(--space-2) var(--space-4);
+}
+
+/* ===== MOBILE MENU - SIMPLE ===== */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-2);
+    flex-direction: column;
+    gap: 3px;
+    width: 24px;
+    height: 24px;
+    align-items: center;
+    justify-content: center;
+}
+
+.hamburger-line {
+    width: 16px;
+    height: 2px;
+    background: var(--text-secondary);
+    transition: all var(--transition);
+    border-radius: 1px;
+}
+
+.hamburger-line.open:nth-child(1) {
+    transform: rotate(45deg) translate(4px, 4px);
+}
+
+.hamburger-line.open:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-line.open:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+.mobile-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-subtle);
+    transform: translateY(-10px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition);
+}
+
+.mobile-menu.open {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+.mobile-nav-links {
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.mobile-nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: var(--text-sm);
+    padding: var(--space-3);
+    border-radius: var(--border-radius);
+    transition: all var(--transition);
+    display: block;
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link.active {
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+}
+
+.mobile-nav-link.login-link {
+    margin-top: var(--space-3);
+    background: var(--color-accent);
+    color: var(--bg-primary);
+    text-align: center;
+    font-weight: 600;
+}
+
+.mobile-nav-link.login-link:hover {
+    opacity: 0.9;
+    color: var(--bg-primary);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .navbar-container {
+        padding: 0 var(--space-4);
+        height: 56px;
+    }
+
+    .navbar-right {
+        display: none;
+    }
+
+    .mobile-menu-toggle {
+        display: flex;
+    }
+
+    .mobile-menu {
+        display: block;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-container {
+        height: 52px;
+        padding: 0 var(--space-3);
+    }
+
+    .navbar-title {
+        font-size: var(--text-base);
+    }
+
+    .navbar-logo {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+    }
+}

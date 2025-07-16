@@ -1,0 +1,103 @@
+.support-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+    color: var(--text-secondary);
+}
+
+.support-page h1 {
+    font-size: var(--text-4xl);
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.support-page>p:first-of-type {
+    text-align: center;
+    font-size: var(--text-lg);
+    margin-bottom: 3rem;
+}
+
+/* === SECTION === */
+.support-section {
+    margin-bottom: 4rem;
+}
+
+.support-section h2 {
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--border-subtle);
+    padding-bottom: 0.5rem;
+}
+
+/* === CONTACT CARD === */
+.contact-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.contact-note {
+    font-size: var(--text-base);
+    line-height: 1.7;
+    color: var(--text-secondary);
+    max-width: none;
+}
+
+/* === FORM === */
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius);
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: var(--text-base);
+    resize: vertical;
+}
+
+.contact-form button {
+    width: fit-content;
+    padding: 0.5rem 1.25rem;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 480px) {
+    .support-page {
+        padding: 2rem 1rem;
+    }
+
+    .support-page h1 {
+        font-size: var(--text-2xl);
+    }
+
+    .support-section h2 {
+        font-size: var(--text-xl);
+    }
+}

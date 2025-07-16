@@ -1,0 +1,101 @@
+.footer {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: var(--space-12);
+    padding: var(--space-6) 0 var(--space-4);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.footer-container {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+}
+
+.footer-top-columns {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 16rem));
+    /* each column max ~256px */
+    justify-content: space-between;
+    /* evenly space them horizontally */
+    gap: var(--space-12);
+    /* adjust spacing between columns */
+    padding-top: var(--space-6);
+    margin-bottom: var(--space-6);
+    align-items: flex-start;
+}
+
+
+.footer-column {
+    min-width: 0;
+    font-size: var(--text-sm);
+}
+
+.footer-column h4 {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    margin-bottom: var(--space-2);
+    color: var(--text-primary);
+}
+
+.footer-description {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: var(--space-2);
+}
+
+.footer-link {
+    display: inline;
+    /* ensures only text is clickable */
+    padding: 0;
+    margin: 0;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: var(--text-sm);
+    transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+    color: var(--text-primary);
+    text-decoration: underline;
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-column li {
+    margin: 0.15rem 0;
+}
+
+.footer-bottom {
+    border-top: 1px solid var(--border-subtle);
+    padding-top: var(--space-3);
+    padding-bottom: var(--space-3);
+    text-align: center;
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+}
+
+/* ===== Responsive (still 3 columns, tighter spacing) ===== */
+@media (max-width: 768px) {
+    .footer-container {
+        padding: 0 var(--space-4);
+    }
+
+    .footer-top-columns {
+        gap: var(--space-6);
+    }
+
+    .footer-description {
+        margin-bottom: var(--space-2);
+    }
+
+    .footer-link {
+        margin: 0.15rem 0;
+    }
+}
