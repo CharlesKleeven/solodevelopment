@@ -1,25 +1,84 @@
-import axios from 'axios';
+// services/api.ts
+import axios, { AxiosResponse, AxiosError } from 'axios';
 
-const API_BASE_URL = 'http://localhost:3001/api'
+// Simple environment detection
+const isDevelopment = window.location.hostname === 'localhost';
+const API_BASE_URL = isDevelopment
+    ? 'http://localhost:3001'
+    : 'https://api.solodevelopment.org';
 
+// Create axios instance
 const api = axios.create({
     baseURL: API_BASE_URL,
+    withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    timeout: 10000, // 10 second timeout
 });
 
+// Request interceptor
+api.interceptors.request.use(
+    (config) => {
+        return config;
+    },
+    (error: AxiosError) => {
+        return Promise.reject(error);
+    }
+);
+
+// Response interceptor
+api.interceptors.response.use(
+    (response: AxiosResponse) => {
+        return response; // Return full response, let components access .data
+    },
+    (error: AxiosError) => {
+        // Log errors in development only
+        if (isDevelopment) {
+            console.error('API Error:', error.response?.data || error.message);
+        }
+
+        return Promise.reject(error);
+    }
+);
+
+// Auth API endpoints with proper typing
 export const authAPI = {
-    register: (userData: { username: string; email: string; password: string }) =>
-        api.post('/auth/register', userData),
+    register: async (data: { username: string; email: string; password: string }) => {
+        const response = await api.post('/api/auth/register', data);
+        return response.data;
+    },
 
-    login: (credentials: { emailOrUsername: string; password: string }) =>
-        api.post('/auth/login', credentials),
+    login: async (data: { emailOrUsername: string; password: string }) => {
+        const response = await api.post('/api/auth/login', data);
+        return response.data;
+    },
 
-    logout: () =>
-        api.post('auth/logout'),
+    logout: async () => {
+        const response = await api.post('/api/auth/logout');
+        return response.data;
+    },
 
-    // Checks current auth status
-    me: () =>
-        api.get('auth/me'),
+    me: async () => {
+        const response = await api.get('/api/auth/me');
+        return response.data;
+    },
+};
+
+// Profile API endpoints - using auth routes
+export const profileAPI = {
+    getProfile: async () => {
+        const response = await api.get('/api/auth/profile');
+        return response.data;
+    },
+
+    updateProfile: async (data: {
+        bio?: string;
+        links?: string[];
+    }) => {
+        const response = await api.put('/api/auth/profile', data);
+        return response.data;
+    },
 };
 
 export default api;
-

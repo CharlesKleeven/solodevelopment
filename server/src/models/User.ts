@@ -5,7 +5,9 @@ interface IUser {
   email: string;
   password: string;
   bio?: string;
+  links?: string[];
   createdAt: Date;
+  updatedAt: Date;
 }
 
 const userSchema = new mongoose.Schema<IUser>(
@@ -32,7 +34,18 @@ const userSchema = new mongoose.Schema<IUser>(
     },
     bio: {
       type: String,
-      maxlength: 500,
+      maxlength: 280,
+      default: '',
+    },
+    links: {
+      type: [String],
+      default: [],
+      validate: {
+        validator: function (links: string[]) {
+          return links.length <= 4; // Max 4 links
+        },
+        message: 'Maximum 4 links allowed'
+      }
     },
   },
   // Schema options

@@ -33,6 +33,32 @@ export const loginValidation = [
     .withMessage('Password is required')
 ];
 
+// Profile update validation
+export const updateProfileValidation = [
+  body('bio')
+    .optional()
+    .isLength({ max: 280 })
+    .withMessage('Bio must be 280 characters or less'),
+  body('links')
+    .optional()
+    .isArray({ max: 4 })
+    .withMessage('Maximum 4 links allowed')
+    .custom((links) => {
+      if (links && Array.isArray(links)) {
+        for (const link of links) {
+          if (link && link.trim() !== '') {
+            try {
+              new URL(link);
+            } catch {
+              throw new Error('All links must be valid URLs');
+            }
+          }
+        }
+      }
+      return true;
+    }),
+];
+
 // Register new user
 export const register = async (req: Request, res: Response) => {
   try {
@@ -171,6 +197,7 @@ export const logout = async (req: Request, res: Response) => {
   res.json({ message: 'Logged out successfully' });
 }
 
+// Get current user
 export const me = async (req: AuthRequest, res: Response) => {
   try {
     const user = await User.findById(req.user.userId).select('-password');
@@ -188,5 +215,83 @@ export const me = async (req: AuthRequest, res: Response) => {
   } catch (error) {
     console.error('Me endpoint error:', error);
     res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// Get user profile (with bio and links)
+export const getProfile = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = await User.findById(req.user.userId).select('-password');
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        bio: user.bio || '',
+        links: user.links || [],
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      }
+    });
+  } catch (error) {
+    console.error('Get profile error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// Update user profile
+export const updateProfile = async (req: AuthRequest, res: Response) => {
+  try {
+    // Check validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        error: 'Validation failed',
+        details: errors.array()
+      });
+    }
+
+    const { bio, links } = req.body;
+
+    // Find and update user
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Update fields
+    if (bio !== undefined) {
+      user.bio = bio;
+    }
+
+    if (links !== undefined) {
+      // Filter out empty links and trim
+      user.links = links
+        .filter((link: string) => link && link.trim() !== '')
+        .map((link: string) => link.trim());
+    }
+
+    await user.save();
+
+    // Return updated user data
+    res.json({
+      message: 'Profile updated successfully',
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        bio: user.bio || '',
+        links: user.links || [],
+        updatedAt: user.updatedAt,
+      }
+    });
+
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ error: 'Server error during profile update' });
   }
 };

@@ -1,15 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import './navbar.css';
 
 const Navbar: React.FC = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const location = useLocation();
+    const { user, logout, loading } = useAuth();
+    const userMenuRef = useRef<HTMLDivElement>(null);
 
     const isActive = (path: string) => location.pathname === path;
 
+    // Close user menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+                setIsUserMenuOpen(false);
+            }
+        };
+
+        if (isUserMenuOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isUserMenuOpen]);
+
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    const handleLogout = async () => {
+        await logout();
+        setIsUserMenuOpen(false);
+        setIsMobileMenuOpen(false);
     };
 
     return (
@@ -21,7 +48,7 @@ const Navbar: React.FC = () => {
                     <span className="navbar-title">SoloDevelopment</span>
                 </Link>
 
-                {/* Right Side - Navigation + Login */}
+                {/* Right Side - Navigation + Auth */}
                 <div className="navbar-right">
                     <div className="navbar-nav">
                         <Link
@@ -51,9 +78,40 @@ const Navbar: React.FC = () => {
                     </div>
 
                     <div className="navbar-actions">
-                        <Link to="/login" className="btn btn-primary">
-                            Login
-                        </Link>
+                        {loading ? (
+                            <div className="auth-loading">...</div>
+                        ) : user ? (
+                            <div className="user-menu" ref={userMenuRef}>
+                                <button
+                                    className="user-button"
+                                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                                >
+                                    <span className="user-name">{user.username}</span>
+                                </button>
+
+                                {isUserMenuOpen && (
+                                    <div className="user-dropdown">
+                                        <Link
+                                            to="/profile"
+                                            className="dropdown-item"
+                                            onClick={() => setIsUserMenuOpen(false)}
+                                        >
+                                            Profile
+                                        </Link>
+                                        <button
+                                            onClick={handleLogout}
+                                            className="dropdown-item logout-btn"
+                                        >
+                                            Sign Out
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <Link to="/login" className="btn btn-primary">
+                                Login
+                            </Link>
+                        )}
                     </div>
                 </div>
 
@@ -100,20 +158,32 @@ const Navbar: React.FC = () => {
                     >
                         Resources
                     </Link>
-                    <Link
-                        to="/community"
-                        className={`mobile-nav-link ${isActive('/community') ? 'active' : ''}`}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                        Community
-                    </Link>
-                    <Link
-                        to="/login"
-                        className="mobile-nav-link login-link"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                        Login
-                    </Link>
+
+                    {user ? (
+                        <>
+                            <Link
+                                to="/profile"
+                                className="mobile-nav-link"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                                {user.username}
+                            </Link>
+                            <button
+                                onClick={handleLogout}
+                                className="mobile-nav-link logout-mobile"
+                            >
+                                Sign Out
+                            </button>
+                        </>
+                    ) : (
+                        <Link
+                            to="/login"
+                            className="mobile-nav-link login-link"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                            Login
+                        </Link>
+                    )}
                 </div>
             </div>
         </nav>

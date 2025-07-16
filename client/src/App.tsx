@@ -13,6 +13,7 @@ import Showcase from './pages/Showcase';
 import Resources from './pages/Resources';
 import Support from './pages/Support';
 import Privacy from './pages/Privacy';
+import Profile from './pages/Profile';
 
 // Components
 import Navbar from './components/Navbar';
@@ -39,6 +40,7 @@ function AppContent() {
             <Route path="/resources" element={<Resources />} />
             <Route path="/support" element={<Support />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </main>
       )}

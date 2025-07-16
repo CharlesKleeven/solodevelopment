@@ -4,7 +4,7 @@ import './privacy.css';
 const Privacy: React.FC = () => {
     return (
         <div className="privacy-page">
-            <section className="page-header-compact">
+            <section className="page-header">
                 <h1>Privacy Policy</h1>
                 <p>How we handle your data</p>
             </section>
