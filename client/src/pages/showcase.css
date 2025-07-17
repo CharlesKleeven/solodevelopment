@@ -222,6 +222,7 @@
     transition: all var(--transition);
     cursor: pointer;
     position: relative;
+
 }
 
 .winner-item:hover {
