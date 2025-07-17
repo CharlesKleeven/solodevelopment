@@ -52,8 +52,11 @@ const Showcase: React.FC = () => {
     const containerClass = isFeatured ? 'winner-featured' : 'winner-item';
 
     return (
-      <div
+      <a
         key={game.id}
+        href={game.url}
+        target="_blank"
+        rel="noopener noreferrer"
         className={containerClass}
       >
         <div className="showcase-thumb">
@@ -77,14 +80,12 @@ const Showcase: React.FC = () => {
         </div>
         <div className="winner-info">
           <div className="winner-title">
-            <a href={game.url} target="_blank" rel="noopener noreferrer">
-              {game.title}
-            </a>
+            {game.title}
           </div>
           <div className="winner-author">{game.author}</div>
         </div>
         {placement && <div className="placement-corner">{placement}</div>}
-      </div>
+      </a>
     );
   };
 
