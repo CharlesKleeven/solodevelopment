@@ -30,18 +30,18 @@ export const useJam = () => {
                 console.error('Failed to fetch jam data:', err);
                 setError('Failed to load jam data');
 
-                // Fallback data
+                // Fallback data - matches current jam config
                 setJamData({
                     title: "Summer Jam",
-                    theme: "Under Pressure",
-                    description: "3-day jam exploring the theme \"Under Pressure\"",
+                    theme: "TBD",
+                    description: "3-day jam with theme to be announced",
                     url: "https://itch.io/jam/solodevelopment-summer-jam",
-                    startDate: new Date('2025-08-08T19:00:00Z').toISOString(),
-                    endDate: new Date('2025-08-11T19:00:00Z').toISOString(),
-                    participants: 94,
+                    startDate: "2025-08-08T19:00:00.000Z",
+                    endDate: "2025-08-11T19:00:00.000Z",
+                    participants: 0,
                     submissions: 0,
                     timeLeft: "Check itch.io",
-                    status: 'active'
+                    status: 'upcoming'
                 });
             } finally {
                 setLoading(false);
@@ -50,8 +50,8 @@ export const useJam = () => {
 
         fetchJamData();
 
-        // Refresh every hour
-        const interval = setInterval(fetchJamData, 60 * 60 * 1000);
+        // Refresh every 10 minutes (backend caches for 5 minutes)
+        const interval = setInterval(fetchJamData, 10 * 60 * 1000);
 
         return () => clearInterval(interval);
     }, []);

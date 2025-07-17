@@ -2,7 +2,9 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
+import crypto from 'crypto';
 import User from '../models/User';
+import { sendPasswordResetEmail } from '../services/emailService';
 
 interface AuthRequest extends Request {
   user?: any;
@@ -68,6 +70,23 @@ export const updateProfileValidation = [
       }
       return true;
     }),
+];
+
+// Password reset validation rules
+export const forgotPasswordValidation = [
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Please provide a valid email address'),
+];
+
+export const resetPasswordValidation = [
+  body('token')
+    .notEmpty()
+    .withMessage('Reset token is required'),
+  body('password')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters long'),
 ];
 
 // Register new user
@@ -334,5 +353,117 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
   } catch (error) {
     console.error('Update profile error:', error);
     res.status(500).json({ error: 'Server error during profile update' });
+  }
+};
+
+// Forgot password - send reset email
+export const forgotPassword = async (req: Request, res: Response) => {
+  try {
+    // Check validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        error: 'Validation failed',
+        details: errors.array()
+      });
+    }
+
+    const { email } = req.body;
+
+    // Find user by email
+    const user = await User.findOne({ email });
+    
+    // Always return success to prevent email enumeration attacks
+    // But only send email if user exists
+    if (user) {
+      // Generate reset token
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      
+      // Set token and expiration (15 minutes)
+      user.resetPasswordToken = resetToken;
+      user.resetPasswordExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+      
+      await user.save();
+
+      // Create reset URL
+      const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+
+      // Send email
+      try {
+        await sendPasswordResetEmail({
+          to: user.email,
+          username: user.displayName || user.username,
+          resetUrl
+        });
+        
+        console.log(`Password reset email sent to ${user.email}`);
+      } catch (emailError) {
+        // Clear the reset token if email fails
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        await user.save();
+        
+        console.error('Failed to send password reset email:', emailError);
+        return res.status(500).json({ error: 'Failed to send reset email. Please try again.' });
+      }
+    }
+
+    // Always return success message (security best practice)
+    res.json({ 
+      message: 'If an account with that email exists, a password reset link has been sent.' 
+    });
+
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({ error: 'Server error during password reset request' });
+  }
+};
+
+// Reset password with token
+export const resetPassword = async (req: Request, res: Response) => {
+  try {
+    // Check validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        error: 'Validation failed',
+        details: errors.array()
+      });
+    }
+
+    const { token, password } = req.body;
+
+    // Find user with valid reset token
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: new Date() } // Token not expired
+    });
+
+    if (!user) {
+      return res.status(400).json({ 
+        error: 'Invalid or expired reset token. Please request a new password reset.' 
+      });
+    }
+
+    // Hash new password
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Update user password and clear reset fields
+    user.password = hashedPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+
+    console.log(`Password reset successful for user: ${user.email}`);
+
+    res.json({ 
+      message: 'Password has been reset successfully. You can now log in with your new password.' 
+    });
+
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({ error: 'Server error during password reset' });
   }
 };
