@@ -133,6 +133,8 @@
     cursor: pointer;
     position: relative;
     align-items: center;
+    text-decoration: none;
+    color: inherit;
 }
 
 .winner-featured:hover {
@@ -156,6 +158,8 @@
     cursor: pointer;
     position: relative;
     align-items: center;
+    text-decoration: none;
+    color: inherit;
 }
 
 .winner-item:hover {
@@ -178,6 +182,7 @@
     width: 140px;
     height: 140px;
     font-size: var(--text-2xl);
+    border-radius: var(--border-radius);
 }
 
 .winner-item .showcase-thumb {
@@ -191,6 +196,10 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.winner-featured .showcase-thumb img {
+    border-radius: var(--border-radius);
 }
 
 .winner-item .showcase-thumb img {
@@ -232,14 +241,7 @@
     font-size: var(--text-sm);
 }
 
-.winner-title a {
-    color: var(--text-primary);
-    text-decoration: none;
-}
-
-.winner-title a:hover {
-    color: var(--color-accent);
-}
+/* Remove nested link styles since whole card is now clickable */
 
 .winner-author {
     color: var(--text-tertiary);
