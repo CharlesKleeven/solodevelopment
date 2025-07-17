@@ -51,7 +51,7 @@
 }
 
 .jam-info {
-    flex: 1;
+    text-align: left;
 }
 
 .jam-badge {
@@ -65,6 +65,23 @@
     margin-bottom: var(--space-2);
 }
 
+.jam-badge.upcoming {
+    background: var(--color-warm-yellow);
+    color: var(--bg-primary);
+    /* dark text on yellow badge */
+}
+
+.jam-badge.active {
+    background: var(--color-success);
+    color: var(--bg-primary);
+}
+
+.jam-badge.ended {
+    background: var(--text-tertiary);
+    color: var(--bg-primary);
+}
+
+
 .jam-title {
     font-size: var(--text-xl);
     font-weight: 600;
@@ -72,11 +89,12 @@
     margin-bottom: var(--space-2);
 }
 
-.jam-description {
+.current-jam-banner .jam-description {
     font-size: var(--text-base);
     color: var(--text-secondary);
     line-height: 1.5;
     margin: 0;
+    text-align: left;
 }
 
 .jam-cta {
@@ -164,6 +182,7 @@
 .view-more:hover {
     color: var(--color-accent);
 }
+
 
 /* ===== STATS GRID ===== */
 .stats-grid {

@@ -73,6 +73,7 @@ export const profileAPI = {
     },
 
     updateProfile: async (data: {
+        displayName?: string;
         bio?: string;
         links?: string[];
     }) => {

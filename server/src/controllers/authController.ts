@@ -35,6 +35,10 @@ export const loginValidation = [
 
 // Profile update validation
 export const updateProfileValidation = [
+  body('displayName')
+    .optional()
+    .isLength({ max: 20 })
+    .withMessage('Display name must be 20 characters or less'),
   body('bio')
     .optional()
     .isLength({ max: 280 })
@@ -47,10 +51,17 @@ export const updateProfileValidation = [
       if (links && Array.isArray(links)) {
         for (const link of links) {
           if (link && link.trim() !== '') {
+            let urlToTest = link.trim();
+
+            // Auto-add https:// if no protocol specified for validation
+            if (!urlToTest.startsWith('http://') && !urlToTest.startsWith('https://')) {
+              urlToTest = 'https://' + urlToTest;
+            }
+
             try {
-              new URL(link);
+              new URL(urlToTest);
             } catch {
-              throw new Error('All links must be valid URLs');
+              throw new Error(`"${link}" is not a valid URL`);
             }
           }
         }
@@ -118,7 +129,11 @@ export const register = async (req: Request, res: Response) => {
       user: {
         id: user._id,
         username: user.username,
-        email: user.email
+        email: user.email,
+        displayName: user.displayName,
+        bio: user.bio,
+        links: user.links,
+        createdAt: user.createdAt
       }
     });
 
@@ -182,6 +197,10 @@ export const login = async (req: Request, res: Response) => {
         id: user._id,
         username: user.username,
         email: user.email,
+        displayName: user.displayName,
+        bio: user.bio,
+        links: user.links,
+        createdAt: user.createdAt
       }
     });
 
@@ -209,7 +228,11 @@ export const me = async (req: AuthRequest, res: Response) => {
       user: {
         id: user._id,
         username: user.username,
-        email: user.email
+        email: user.email,
+        displayName: user.displayName,
+        bio: user.bio,
+        links: user.links,
+        createdAt: user.createdAt
       }
     });
   } catch (error) {
@@ -231,6 +254,7 @@ export const getProfile = async (req: AuthRequest, res: Response) => {
         id: user._id,
         username: user.username,
         email: user.email,
+        displayName: user.displayName,
         bio: user.bio || '',
         links: user.links || [],
         createdAt: user.createdAt,
@@ -255,7 +279,7 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const { bio, links } = req.body;
+    const { displayName, bio, links } = req.body;
 
     // Find and update user
     const user = await User.findById(req.user.userId);
@@ -264,15 +288,30 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
     }
 
     // Update fields
+    if (displayName !== undefined) {
+      user.displayName = displayName.trim();
+    }
+
     if (bio !== undefined) {
-      user.bio = bio;
+      user.bio = bio.trim();
     }
 
     if (links !== undefined) {
-      // Filter out empty links and trim
+      // Process links to store both display text and full URL
       user.links = links
         .filter((link: string) => link && link.trim() !== '')
-        .map((link: string) => link.trim());
+        .map((link: string) => {
+          const displayText = link.trim();
+          let fullUrl = displayText;
+
+          // Auto-add https:// for linking but keep original for display
+          if (!fullUrl.startsWith('http://') && !fullUrl.startsWith('https://')) {
+            fullUrl = 'https://' + fullUrl;
+          }
+
+          // Store as JSON string with both values
+          return JSON.stringify({ display: displayText, url: fullUrl });
+        });
     }
 
     await user.save();
@@ -284,8 +323,10 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
         id: user._id,
         username: user.username,
         email: user.email,
+        displayName: user.displayName,
         bio: user.bio || '',
         links: user.links || [],
+        createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       }
     });

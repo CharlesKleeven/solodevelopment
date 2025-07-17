@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { gameData } from '../data/gameData';
+import { useJam } from '../hooks/useJam'; // Add this import
 import useFadeInOnScroll from '../hooks/useFadeInOnScroll';
 import './home.css';
 
 const Home: React.FC = () => {
     const { user } = useAuth();
+    const { jamData, loading: jamLoading } = useJam(); // Add this
     useFadeInOnScroll();
 
     // Shuffle function
@@ -38,7 +40,7 @@ const Home: React.FC = () => {
             <section className="home-hero" data-fade data-delay="1">
                 <div className="container-narrow">
                     <h1 className="hero-title">
-                        {user ? `Welcome, ${user.username}` : 'Welcome, Solo Developer'}
+                        {user ? `Welcome, ${user.displayName}` : 'Welcome, Solo Developer'}
                     </h1>
                     <p className="hero-subtitle">
                         A quiet space for devs building projects at their own pace.
@@ -50,19 +52,42 @@ const Home: React.FC = () => {
                 </div>
             </section>
 
-            {/* Current Jam - Simple Highlight */}
+            {/* Current Jam - Dynamic Data */}
             <section className="current-jam-section" data-fade data-delay="2">
                 <div className="container">
                     <div className="current-jam-banner">
-                        <div className="jam-info">
-                            <div className="jam-badge">Active Jam</div>
-                            <h2 className="jam-title">Winter Jam: "Connections"</h2>
-                            <p className="jam-description">72-hour sprint exploring how things relate • 4 days left</p>
-                        </div>
-                        <div className="jam-cta">
-                            <a href="/jams" className="btn btn-secondary">Join Now</a>
-                            <span className="jam-stats">127 joined</span>
-                        </div>
+                        {jamLoading ? (
+                            <div className="jam-info">
+                                <div className="jam-badge">Loading...</div>
+                                <h2 className="jam-title">Loading jam data...</h2>
+                            </div>
+                        ) : jamData ? (
+                            <>
+                                <div className="jam-info">
+                                    <div className={`jam-badge ${jamData.status}`}>
+                                        {jamData.status === 'upcoming' ? 'Upcoming' :
+                                            jamData.status === 'active' ? 'Active' : 'Ended'}
+                                    </div>
+                                    <h2 className="jam-title">
+                                        {jamData.title}{jamData.theme !== 'TBD' ? `: "${jamData.theme}"` : `: ${jamData.theme}`}
+                                    </h2>
+                                    <p className="jam-description">{jamData.description} • {jamData.timeLeft}</p>
+                                </div>
+                                <div className="jam-cta">
+                                    <a href={jamData.url} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
+                                        {jamData.status === 'upcoming' ? 'Learn More' :
+                                            jamData.status === 'active' ? 'Join Now' : 'View Results'}
+                                    </a>
+                                    <span className="jam-stats">{jamData.participants} joined</span>
+                                </div>
+                            </>
+                        ) : (
+                            <div className="jam-info">
+                                <div className="jam-badge upcoming">Upcoming</div>
+                                <h2 className="jam-title">Summer Jam: TBD</h2>
+                                <p className="jam-description">3-day jam with theme to be announced</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>
@@ -83,7 +108,7 @@ const Home: React.FC = () => {
                         {displayedGames.map((game, index) => (
                             <a
                                 href={game.url}
-                                key={`${game.id}-${index}`} // Include index to help with re-renders
+                                key={`${game.id}-${index}`}
                                 className="featured-game"
                             >
                                 <div className="game-thumb-large">
@@ -92,7 +117,6 @@ const Home: React.FC = () => {
                                             src={game.image}
                                             alt={game.title}
                                             onError={(e) => {
-                                                // Fallback to letter if image fails to load
                                                 const target = e.currentTarget;
                                                 const parent = target.parentElement;
                                                 if (parent) {

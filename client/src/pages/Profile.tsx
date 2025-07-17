@@ -1,57 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { profileAPI } from '../services/api';
-import { getLinkInfo } from '../utils/linkUtils';
 import './profile.css';
 
 const Profile: React.FC = () => {
-    const { user } = useAuth();
+    const { user, refreshUser } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     // Current values
+    const [displayName, setDisplayName] = useState('');
     const [bio, setBio] = useState('');
     const [links, setLinks] = useState<string[]>(['', '', '', '']);
 
     // Original values for canceling
+    const [originalDisplayName, setOriginalDisplayName] = useState('');
     const [originalBio, setOriginalBio] = useState('');
     const [originalLinks, setOriginalLinks] = useState<string[]>(['', '', '', '']);
 
-    // Load profile data
+    // Initialize profile data from user context
     useEffect(() => {
         if (user) {
-            loadProfile();
-        }
-    }, [user]);
+            const userDisplayName = user.displayName; // No fallback needed since it's required
+            const userBio = user.bio || '';
 
-    const loadProfile = async () => {
-        try {
-            setIsLoading(true);
-            const response = await profileAPI.getProfile();
-            const userData = response.user;
-
-            setBio(userData.bio || '');
+            // Parse links from stored JSON format and extract display text
+            let userLinks: string[] = [];
+            if (user.links) {
+                userLinks = user.links.map((link: string) => {
+                    try {
+                        const linkData = JSON.parse(link);
+                        return linkData.display || link;
+                    } catch {
+                        // Fallback for old format
+                        return link;
+                    }
+                });
+            }
 
             // Pad links array to always have 4 slots
-            const userLinks = userData.links || [];
             const paddedLinks = [...userLinks];
             while (paddedLinks.length < 4) {
                 paddedLinks.push('');
             }
+
+            setDisplayName(userDisplayName);
+            setBio(userBio);
             setLinks(paddedLinks);
 
             // Set originals
-            setOriginalBio(userData.bio || '');
+            setOriginalDisplayName(userDisplayName);
+            setOriginalBio(userBio);
             setOriginalLinks(paddedLinks);
-        } catch (error: any) {
-            console.error('Failed to load profile:', error);
-            setError('Failed to load profile data');
-        } finally {
-            setIsLoading(false);
         }
-    };
+    }, [user]);
 
     const handleSave = async () => {
         setIsSaving(true);
@@ -62,11 +65,16 @@ const Profile: React.FC = () => {
             const filteredLinks = links.filter(link => link.trim() !== '');
 
             await profileAPI.updateProfile({
-                bio,
+                displayName: displayName.trim(),
+                bio: bio.trim(),
                 links: filteredLinks,
             });
 
+            // Refresh user data in context - this updates navbar immediately!
+            await refreshUser();
+
             // Update original values to current values
+            setOriginalDisplayName(displayName);
             setOriginalBio(bio);
             setOriginalLinks([...links]);
 
@@ -88,6 +96,7 @@ const Profile: React.FC = () => {
 
     const handleCancel = () => {
         // Reset to original values
+        setDisplayName(originalDisplayName);
         setBio(originalBio);
         setLinks([...originalLinks]);
         setIsEditing(false);
@@ -96,6 +105,7 @@ const Profile: React.FC = () => {
 
     const startEditing = () => {
         // Store current values as originals when starting to edit
+        setOriginalDisplayName(displayName);
         setOriginalBio(bio);
         setOriginalLinks([...links]);
         setIsEditing(true);
@@ -106,6 +116,27 @@ const Profile: React.FC = () => {
         const newLinks = [...links];
         newLinks[index] = value;
         setLinks(newLinks);
+    };
+
+    // Helper function to get link info (you'll need to implement this)
+    const getLinkInfo = (link: string) => {
+        // Ensure URL has protocol
+        const url = link.startsWith('http') ? link : `https://${link}`;
+
+        // Simple display text extraction
+        let displayText = link;
+        try {
+            const urlObj = new URL(url);
+            displayText = urlObj.hostname.replace('www.', '');
+        } catch {
+            displayText = link;
+        }
+
+        return {
+            url,
+            displayText,
+            icon: '🔗' // You can replace this with proper icons later
+        };
     };
 
     if (!user) {
@@ -120,20 +151,14 @@ const Profile: React.FC = () => {
         );
     }
 
-    if (isLoading) {
-        return (
-            <div className="profile-page">
-                <div className="profile-container">
-                    <div className="profile-card">
-                        <h1>Loading profile...</h1>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // Get member since year - fallback to current year
-    const memberSince = new Date().getFullYear();
+    // Format join date
+    const joinDate = user.createdAt
+        ? new Date(user.createdAt).toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        })
+        : 'Recently';
 
     return (
         <div className="profile-page">
@@ -142,16 +167,35 @@ const Profile: React.FC = () => {
                     {/* Header */}
                     <div className="profile-header">
                         <div className="profile-info">
-                            <h1 className="profile-name">{user.username}</h1>
-                            <p className="profile-email">{user.email}</p>
+                            {isEditing ? (
+                                <div className="name-edit">
+                                    <input
+                                        type="text"
+                                        value={displayName}
+                                        onChange={(e) => setDisplayName(e.target.value)}
+                                        placeholder="Display name"
+                                        className="display-name-input"
+                                        maxLength={20}
+                                        disabled={isSaving}
+                                    />
+                                    <p className="profile-username">@{user.username}</p>
+                                </div>
+                            ) : (
+                                <>
+                                    <h1 className="profile-name">{displayName}</h1>
+                                    <p className="profile-username">@{user.username}</p>
+                                </>
+                            )}
                         </div>
-                        <button
-                            onClick={isEditing ? handleCancel : startEditing}
-                            className="btn btn-secondary btn-sm"
-                            disabled={isSaving}
-                        >
-                            {isEditing ? 'Cancel' : 'Edit Profile'}
-                        </button>
+                        {!isEditing && (
+                            <button
+                                onClick={startEditing}
+                                className="btn btn-secondary btn-sm"
+                                disabled={isSaving}
+                            >
+                                Edit Profile
+                            </button>
+                        )}
                     </div>
 
                     {/* Error Display */}
@@ -161,7 +205,7 @@ const Profile: React.FC = () => {
                         </div>
                     )}
 
-                    {/* Bio Section */}
+                    {/* Bio Section - Always show */}
                     <div className="profile-section">
                         <h3>About</h3>
                         {isEditing ? (
@@ -178,11 +222,13 @@ const Profile: React.FC = () => {
                                 <div className="char-count">{bio.length}/280</div>
                             </div>
                         ) : (
-                            <p className="profile-bio">{bio || 'No bio yet.'}</p>
+                            <p className={`profile-bio ${!bio ? 'empty-bio' : ''}`}>
+                                {bio || 'No bio added yet.'}
+                            </p>
                         )}
                     </div>
 
-                    {/* Links Section */}
+                    {/* Links Section - Always show */}
                     <div className="profile-section">
                         <h3>Links</h3>
                         {isEditing ? (
@@ -202,22 +248,23 @@ const Profile: React.FC = () => {
                             </div>
                         ) : (
                             <div className="links-display">
-                                {links.filter(link => link.trim() !== '').map((link, index) => {
-                                    const linkInfo = getLinkInfo(link);
-                                    return (
-                                        <a
-                                            key={index}
-                                            href={linkInfo.url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="link-item"
-                                        >
-                                            {linkInfo.icon} {linkInfo.displayText}
-                                        </a>
-                                    );
-                                })}
-                                {links.filter(link => link.trim() !== '').length === 0 && (
-                                    <p className="no-links">No links added yet.</p>
+                                {links.filter(link => link.trim() !== '').length > 0 ? (
+                                    links.filter(link => link.trim() !== '').map((link, index) => {
+                                        const linkInfo = getLinkInfo(link);
+                                        return (
+                                            <a
+                                                key={index}
+                                                href={linkInfo.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="link-item"
+                                            >
+                                                {linkInfo.displayText}
+                                            </a>
+                                        );
+                                    })
+                                ) : (
+                                    <p className="empty-links">No links added yet.</p>
                                 )}
                             </div>
                         )}
@@ -243,11 +290,9 @@ const Profile: React.FC = () => {
                         </div>
                     )}
 
-                    {/* Member Since */}
-                    <div className="profile-section">
-                        <div className="member-since">
-                            Member since {memberSince}
-                        </div>
+                    {/* Joined date - subtle at bottom */}
+                    <div className="profile-footer">
+                        <span className="joined-date">Joined {joinDate}</span>
                     </div>
                 </div>
             </div>

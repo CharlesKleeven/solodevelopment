@@ -4,6 +4,7 @@ interface IUser {
   username: string;
   email: string;
   password: string;
+  displayName: string; // Required now, not optional
   bio?: string;
   links?: string[];
   createdAt: Date;
@@ -11,7 +12,6 @@ interface IUser {
 }
 
 const userSchema = new mongoose.Schema<IUser>(
-  // Field definitions
   {
     username: {
       type: String,
@@ -32,26 +32,39 @@ const userSchema = new mongoose.Schema<IUser>(
       required: true,
       minlength: 6,
     },
+    displayName: {
+      type: String,
+      required: true, // Make it required
+      trim: true,
+      minlength: 1,
+      maxlength: 20,
+      // Default to username if not provided
+      default: function (this: IUser) {
+        return this.username;
+      }
+    },
     bio: {
       type: String,
       maxlength: 280,
-      default: '',
+      default: ''
     },
-    links: {
-      type: [String],
-      default: [],
-      validate: {
-        validator: function (links: string[]) {
-          return links.length <= 4; // Max 4 links
-        },
-        message: 'Maximum 4 links allowed'
-      }
-    },
+    links: [{
+      type: String,
+      maxlength: 500, // Increased to accommodate JSON storage
+    }],
   },
-  // Schema options
   {
     timestamps: true,
   }
 );
+
+// Pre-save middleware to ensure displayName is always set
+userSchema.pre('save', function (next) {
+  // If displayName is empty or just whitespace, set it to username
+  if (!this.displayName || this.displayName.trim() === '') {
+    this.displayName = this.username;
+  }
+  next();
+});
 
 export default mongoose.model<IUser>('User', userSchema);

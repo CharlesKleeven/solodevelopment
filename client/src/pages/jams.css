@@ -51,7 +51,6 @@
 }
 
 .status-text {
-    color: var(--color-success);
     font-weight: 600;
 }
 
@@ -235,6 +234,51 @@
     font-size: var(--text-sm);
     color: var(--text-tertiary);
     font-style: italic;
+}
+
+
+/* Better spacing and hierarchy for jam featured card */
+.jam-featured-card {
+    text-align: center;
+}
+
+.jam-featured-card .jam-title {
+    font-size: var(--text-3xl);
+    font-weight: 600;
+    margin-bottom: var(--space-2);
+    line-height: 1.1;
+}
+
+.jam-featured-card .jam-theme {
+    font-size: var(--text-xl);
+    color: var(--color-accent);
+    font-style: italic;
+    margin-bottom: var(--space-3);
+    font-weight: 500;
+}
+
+.jam-featured-card .jam-description {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-8);
+    max-width: 42rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Cleaner timer styling */
+.jam-timer {
+    margin-bottom: var(--space-8);
+}
+
+/* Better status line */
+.jam-status {
+    margin-bottom: var(--space-6);
+}
+
+.jam-participants {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
 }
 
 /* ===== RESPONSIVE ===== */

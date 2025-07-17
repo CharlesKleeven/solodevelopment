@@ -22,8 +22,10 @@
 }
 
 .btn-primary:hover {
-    opacity: 0.9;
+    opacity: 0.8;
     transform: translateY(-1px);
+    color: var(--bg-primary);
+    /* Keep text color solid */
 }
 
 .btn-secondary {
@@ -51,6 +53,36 @@
     padding: var(--space-2) var(--space-4);
     font-size: var(--text-xs);
 }
+
+/* ===== JAM STATUS COLORS ===== */
+
+/* Dot background only */
+.jam-status.upcoming .status-dot {
+    background: var(--color-warm-yellow);
+}
+
+.jam-status.active .status-dot {
+    background: var(--color-success);
+}
+
+.jam-status.ended .status-dot {
+    background: var(--text-tertiary);
+}
+
+/* Text color (not background!) */
+.jam-status.upcoming .status-text {
+    color: var(--color-warm-yellow);
+}
+
+.jam-status.active .status-text {
+    color: var(--color-success);
+}
+
+.jam-status.ended .status-text {
+    color: var(--text-tertiary);
+}
+
+
 
 /* ===== CARDS - MINIMAL & CLEAN ===== */
 .card {

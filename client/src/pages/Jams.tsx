@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './jams.css';
 import { gameData } from '../data/gameData';
+import { useJam } from '../hooks/useJam'; // Add this import
 import useFadeInOnScroll from '../hooks/useFadeInOnScroll';
 
 interface JamEntry {
@@ -9,8 +10,8 @@ interface JamEntry {
   jamTheme?: string;
 }
 
-function getTimeLeft(endTime: Date) {
-  const diff = endTime.getTime() - new Date().getTime();
+function getTimeLeft(targetTime: Date) {
+  const diff = targetTime.getTime() - new Date().getTime();
   if (diff <= 0) return { days: '00', hours: '00', minutes: '00' };
 
   const totalMinutes = Math.floor(diff / 60000);
@@ -50,11 +51,27 @@ function extractJamGroups() {
 
 const Jams = () => {
   useFadeInOnScroll();
+  const { jamData, loading: jamLoading } = useJam(); // Add this
   const [showMarathon, setShowMarathon] = useState(false);
   const [showThemed, setShowThemed] = useState(false);
   const { marathon, themed } = extractJamGroups();
-  const fakeEndTime = new Date(Date.now() + 1000 * 60 * 60 * 62); // 2d 14h
-  const timeLeft = getTimeLeft(fakeEndTime);
+
+  // Use dynamic target time based on status
+  let targetTime, timerLabel;
+  if (jamData) {
+    if (jamData.status === 'upcoming') {
+      targetTime = new Date(jamData.startDate);
+      timerLabel = 'starts in:';
+    } else {
+      targetTime = new Date(jamData.endDate);
+      timerLabel = 'ends in:';
+    }
+  } else {
+    targetTime = new Date(Date.now() + 1000 * 60 * 60 * 62);
+    timerLabel = 'ends in:';
+  }
+
+  const timeLeft = getTimeLeft(targetTime);
 
   return (
     <div className="jams-page">
@@ -67,36 +84,88 @@ const Jams = () => {
 
       <section className="jam-featured" data-fade data-delay="2">
         <div className="container">
-          <div className="jam-featured-card">
-            <div className="jam-status">
-              <div className="status-dot"></div>
-              <span className="status-text">Active Jam</span>
-              <span className="jam-participants">127 participants</span>
+          {jamLoading ? (
+            <div className="jam-featured-card">
+              <div className="jam-status">
+                <div className="status-dot"></div>
+                <span className="status-text">Loading...</span>
+              </div>
+              <h2 className="jam-title">Loading jam data...</h2>
             </div>
-            <h2 className="jam-title">Winter Jam 2025</h2>
-            <p className="jam-theme">Theme: "Connections"</p>
-            <p className="jam-description">Explore how systems, characters, or moments relate in this moody winter 72-hour jam.</p>
+          ) : jamData ? (
+            <div className="jam-featured-card">
+              <div className={`jam-status ${jamData.status}`}>
+                <div className="status-dot"></div>
+                <span className="status-text">
+                  {jamData.status === 'upcoming' ? 'Upcoming' :
+                    jamData.status === 'active' ? 'Active' : 'Ended'}
+                </span>
+                <span className="jam-participants">{jamData.participants} participants</span>
+              </div>
+              <h2 className="jam-title">{jamData.title}</h2>
+              <p className="jam-theme">
+                Theme: {jamData.theme !== 'TBD' ? `"${jamData.theme}"` : jamData.theme}
+              </p>
+              <p className="jam-description">{jamData.description}</p>
 
-            <div className="jam-timer">
-              <div className="timer-unit">
-                <div className="timer-number">{timeLeft.days}</div>
-                <div className="timer-label">Days</div>
+              <div className="jam-timer">
+                <div className="timer-unit">
+                  <div className="timer-number">{timeLeft.days}</div>
+                  <div className="timer-label">Days</div>
+                </div>
+                <div className="timer-unit">
+                  <div className="timer-number">{timeLeft.hours}</div>
+                  <div className="timer-label">Hours</div>
+                </div>
+                <div className="timer-unit">
+                  <div className="timer-number">{timeLeft.minutes}</div>
+                  <div className="timer-label">Minutes</div>
+                </div>
               </div>
-              <div className="timer-unit">
-                <div className="timer-number">{timeLeft.hours}</div>
-                <div className="timer-label">Hours</div>
-              </div>
-              <div className="timer-unit">
-                <div className="timer-number">{timeLeft.minutes}</div>
-                <div className="timer-label">Minutes</div>
-              </div>
-            </div>
 
-            <div className="jam-actions">
-              <button className="btn btn-primary">Join Now</button>
-              <button className="btn btn-secondary">View Submissions</button>
+              <div className="jam-actions">
+                <a href={jamData.url} className="btn btn-primary">
+                  {jamData.status === 'upcoming' ? 'Learn More' :
+                    jamData.status === 'active' ? 'Join Jam' : 'View Results'}
+                </a>
+                {(jamData.status === 'active' || jamData.status === 'ended') && (
+                  <a href={jamData.url} className="btn btn-secondary">View Submissions</a>
+                )}
+              </div>
             </div>
-          </div>
+          ) : (
+            // Fallback if API fails
+            <div className="jam-featured-card">
+              <div className="jam-status">
+                <div className="status-dot"></div>
+                <span className="status-text">Active Jam</span>
+                <span className="jam-participants">94 participants</span>
+              </div>
+              <h2 className="jam-title">Summer Jam</h2>
+              <p className="jam-theme">Theme: "Under Pressure"</p>
+              <p className="jam-description">3-day jam exploring systems pushed to their limits.</p>
+
+              <div className="jam-timer">
+                <div className="timer-unit">
+                  <div className="timer-number">{timeLeft.days}</div>
+                  <div className="timer-label">Days</div>
+                </div>
+                <div className="timer-unit">
+                  <div className="timer-number">{timeLeft.hours}</div>
+                  <div className="timer-label">Hours</div>
+                </div>
+                <div className="timer-unit">
+                  <div className="timer-number">{timeLeft.minutes}</div>
+                  <div className="timer-label">Minutes</div>
+                </div>
+              </div>
+
+              <div className="jam-actions">
+                <a href="https://itch.io/jam/solodevelopment-summer-jam" className="btn btn-primary">Join Now</a>
+                <a href="https://itch.io/jam/solodevelopment-summer-jam" className="btn btn-secondary">View Submissions</a>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
