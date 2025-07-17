@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { gameData } from '../data/gameData';
 import './showcase.css';
+import useFadeInOnScroll from '../hooks/useFadeInOnScroll';
 
 const Showcase: React.FC = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  useFadeInOnScroll([searchTerm, activeTab]);
 
   const filterGames = (games: typeof gameData, term: string, tab: string) => {
     let filtered = games;
-
     if (tab !== 'all') {
       filtered = filtered.filter(game => game.jamType === tab);
     }
-
     if (term) {
       filtered = filtered.filter(game =>
         game.title.toLowerCase().includes(term.toLowerCase()) ||
@@ -20,7 +20,6 @@ const Showcase: React.FC = () => {
         game.jamName.toLowerCase().includes(term.toLowerCase())
       );
     }
-
     return filtered;
   };
 
@@ -53,7 +52,12 @@ const Showcase: React.FC = () => {
     const containerClass = isFeatured ? 'winner-featured' : 'winner-item';
 
     return (
-      <div key={game.id} className={containerClass}>
+      <div
+        key={game.id}
+        className={containerClass}
+        data-fade
+        data-delay={index + 1}
+      >
         <div className="showcase-thumb">
           {game.image ? (
             <img
@@ -92,7 +96,7 @@ const Showcase: React.FC = () => {
     const theme = games[0].jamTheme;
 
     return (
-      <div key={jamName} className={jamClass}>
+      <div key={jamName} className={jamClass} data-fade>
         <h3>{jamName}</h3>
         <p className="jam-description">
           {theme && theme !== 'Work on your own project' && (
@@ -119,14 +123,14 @@ const Showcase: React.FC = () => {
 
   return (
     <div className="showcase-page">
-      <section className="page-header">
+      <section className="page-header" data-fade data-delay="1">
         <div className="container">
           <h1>Showcase</h1>
           <p>Winning and standout entries from community jams</p>
         </div>
       </section>
 
-      <section className="section-compact">
+      <section className="section-compact" data-fade data-delay="2">
         <div className="container showcase-controls">
           <div className="showcase-tabs">
             {[
@@ -159,11 +163,9 @@ const Showcase: React.FC = () => {
         <div className="container">
           <div className="winners-chronological">
             {Object.keys(groupedGames).length === 0 ? (
-              <div className="jam-winner-section">
+              <div className="jam-winner-section" data-fade>
                 <h3>No games found</h3>
-                <p className="jam-description">
-                  Try adjusting your search or browse a different category.
-                </p>
+                <p className="jam-description">Try adjusting your search or browse a different category.</p>
               </div>
             ) : (
               Object.entries(groupedGames).map(([jamName, games]) =>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './jams.css';
 import { gameData } from '../data/gameData';
+import useFadeInOnScroll from '../hooks/useFadeInOnScroll';
 
 interface JamEntry {
   jamName: string;
@@ -8,7 +9,7 @@ interface JamEntry {
   jamTheme?: string;
 }
 
-function getTimeLeft(endTime: Date): { days: string; hours: string; minutes: string } {
+function getTimeLeft(endTime: Date) {
   const diff = endTime.getTime() - new Date().getTime();
   if (diff <= 0) return { days: '00', hours: '00', minutes: '00' };
 
@@ -20,14 +21,11 @@ function getTimeLeft(endTime: Date): { days: string; hours: string; minutes: str
   return {
     days: days.toString().padStart(2, '0'),
     hours: hours.toString().padStart(2, '0'),
-    minutes: minutes.toString().padStart(2, '0')
+    minutes: minutes.toString().padStart(2, '0'),
   };
 }
 
-function extractJamGroups(): {
-  marathon: JamEntry[];
-  themed: JamEntry[];
-} {
+function extractJamGroups() {
   const seen = new Set<string>();
   const marathon: JamEntry[] = [];
   const themed: JamEntry[] = [];
@@ -35,24 +33,23 @@ function extractJamGroups(): {
   for (const game of gameData) {
     if (seen.has(game.jamName)) continue;
     seen.add(game.jamName);
-
     const entry = {
       jamName: game.jamName,
       jamUrl: game.jamUrl,
       jamTheme: game.jamTheme,
     };
-
     if (game.jamType === 'marathon') marathon.push(entry);
     else themed.push(entry);
   }
 
-  marathon.reverse();
-  themed.reverse();
-
-  return { marathon, themed };
+  return {
+    marathon: marathon.reverse(),
+    themed: themed.reverse(),
+  };
 }
 
 const Jams = () => {
+  useFadeInOnScroll();
   const [showMarathon, setShowMarathon] = useState(false);
   const [showThemed, setShowThemed] = useState(false);
   const { marathon, themed } = extractJamGroups();
@@ -61,16 +58,14 @@ const Jams = () => {
 
   return (
     <div className="jams-page">
-      {/* Header */}
-      <section className="page-header">
+      <section className="page-header" data-fade data-delay="1">
         <div className="container">
           <h1>Game Jams</h1>
           <p>SoloDevelopment hosts monthly and seasonal jams to help you build, learn, and finish projects — on your own terms.</p>
         </div>
       </section>
 
-      {/* Featured Jam - Centerpiece */}
-      <section className="jam-featured">
+      <section className="jam-featured" data-fade data-delay="2">
         <div className="container">
           <div className="jam-featured-card">
             <div className="jam-status">
@@ -78,14 +73,10 @@ const Jams = () => {
               <span className="status-text">Active Jam</span>
               <span className="jam-participants">127 participants</span>
             </div>
-
             <h2 className="jam-title">Winter Jam 2025</h2>
             <p className="jam-theme">Theme: "Connections"</p>
-            <p className="jam-description">
-              Explore how systems, characters, or moments relate in this moody winter 72-hour jam.
-            </p>
+            <p className="jam-description">Explore how systems, characters, or moments relate in this moody winter 72-hour jam.</p>
 
-            {/* Prominent Timer */}
             <div className="jam-timer">
               <div className="timer-unit">
                 <div className="timer-number">{timeLeft.days}</div>
@@ -109,8 +100,7 @@ const Jams = () => {
         </div>
       </section>
 
-      {/* Info Section */}
-      <section className="section-info">
+      <section className="section-info" data-fade data-delay="3">
         <div className="container">
           <h2>What Are SoloDev Jams?</h2>
           <p>We run two kinds of jams:</p>
@@ -122,8 +112,7 @@ const Jams = () => {
         </div>
       </section>
 
-      {/* Past Jams */}
-      <section className="section-past-jams">
+      <section className="section-past-jams" data-fade data-delay="4">
         <div className="container">
           <div className="section-header">
             <h2 className="section-title">Past Jams</h2>
@@ -136,7 +125,7 @@ const Jams = () => {
             </button>
             {showMarathon && (
               <ul className="jam-list">
-                {marathon.map(jam => (
+                {marathon.map((jam, i) => (
                   <li key={jam.jamName}>
                     <a href={jam.jamUrl} className="jam-title-link" target="_blank" rel="noopener noreferrer">
                       {jam.jamName}
@@ -153,7 +142,7 @@ const Jams = () => {
             </button>
             {showThemed && (
               <ul className="jam-list">
-                {themed.map(jam => (
+                {themed.map((jam, i) => (
                   <li key={jam.jamName}>
                     <a href={jam.jamUrl} className="jam-title-link" target="_blank" rel="noopener noreferrer">
                       {jam.jamName}

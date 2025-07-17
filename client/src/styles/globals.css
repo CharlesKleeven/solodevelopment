@@ -608,6 +608,62 @@ svg {
     padding: var(--space-12) 0;
 }
 
+/* ===== ANIMATIONS ===== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+[data-fade] {
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+        opacity 0.25s ease-out,
+        transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-fade].visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Optional delay system for staggered lists */
+[data-fade][data-delay='1'] {
+    transition-delay: 20ms;
+}
+
+[data-fade][data-delay='2'] {
+    transition-delay: 40ms;
+}
+
+[data-fade][data-delay='3'] {
+    transition-delay: 60ms;
+}
+
+[data-fade][data-delay='4'] {
+    transition-delay: 80ms;
+}
+
+[data-fade][data-delay='5'] {
+    transition-delay: 100ms;
+}
+
+[data-fade][data-delay='6'] {
+    transition-delay: 120ms;
+}
+
+[data-fade][data-delay='7'] {
+    transition-delay: 140ms;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
 

@@ -1,91 +1,92 @@
-// Home.tsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { featuredGames } from '../data/gameData';
+import { gameData } from '../data/gameData';
+import useFadeInOnScroll from '../hooks/useFadeInOnScroll';
 import './home.css';
 
 const Home: React.FC = () => {
     const { user } = useAuth();
+    useFadeInOnScroll();
+
+    // Shuffle function
+    const shuffleArray = (array: any[]) => {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    };
+
+    // State for displayed games
+    const [displayedGames, setDisplayedGames] = useState(() =>
+        shuffleArray(gameData).slice(0, 4)
+    );
+    const [isShuffling, setIsShuffling] = useState(false);
+
+    const handleShuffle = () => {
+        setIsShuffling(true);
+        setTimeout(() => {
+            setDisplayedGames(shuffleArray(gameData).slice(0, 4));
+            setIsShuffling(false);
+        }, 150); // Small delay for fade out
+    };
 
     return (
         <div className="home-page">
-            {/* Hero Section */}
-            <section className="hero">
-                <div className="hero-content">
+            {/* Hero */}
+            <section className="home-hero" data-fade data-delay="1">
+                <div className="container-narrow">
                     <h1 className="hero-title">
-                        {user ? `Welcome back, ${user.username}` : 'Welcome, Solo Dev'}
+                        {user ? `Welcome, ${user.username}` : 'Welcome, Solo Developer'}
                     </h1>
                     <p className="hero-subtitle">
-                        {user
-                            ? 'Ready to continue your solo dev journey? Check out what\'s happening in the community.'
-                            : 'Join a community of solo developers building at their own pace.'
-                        }
+                        A quiet space for devs building projects at their own pace.
                     </p>
-
-                    {!user && (
-                        <div className="hero-buttons">
-                            <a href="https://discord.gg/your-discord-link" className="btn btn-primary">Join Discord</a>
-                            <a href="https://reddit.com/r/solodevelopment" className="btn btn-secondary">Browse Reddit</a>
-                        </div>
-                    )}
+                    <div className="home-buttons">
+                        <a href="https://discord.gg/uXeapAkAra" className="btn btn-primary">Join Discord</a>
+                        <a href="https://reddit.com/r/solodevelopment" className="btn btn-secondary">Browse Reddit</a>
+                    </div>
                 </div>
             </section>
 
-            {/* What's Happening Now */}
-            <section className="section">
+            {/* Current Jam - Simple Highlight */}
+            <section className="current-jam-section" data-fade data-delay="2">
                 <div className="container">
-                    <h2 className="section-title">What's happening now</h2>
-                    <div className="happenings-grid">
-                        <div className="card jam-card-highlight">
-                            <p className="card-label"><span className="dot green"></span> Active Jam • 127 participants</p>
-                            <h3>Winter Game Jam</h3>
-                            <p>Theme: "Connections" — Create a game exploring different types of connections.</p>
-                            <p className="highlight">4 days left!</p>
-                            <div className="card-actions">
-                                {user ? (
-                                    <button className="btn btn-jam">Join Jam</button>
-                                ) : (
-                                    <a href="/login" className="btn btn-jam">Login to Join</a>
-                                )}
-                                <a href="/showcase" className="btn btn-ghost">View Submissions →</a>
-                            </div>
+                    <div className="current-jam-banner">
+                        <div className="jam-info">
+                            <div className="jam-badge">Active Jam</div>
+                            <h2 className="jam-title">Winter Jam: "Connections"</h2>
+                            <p className="jam-description">72-hour sprint exploring how things relate • 4 days left</p>
                         </div>
-
-                        <div className="card activity-card">
-                            <div className="card-label right"><span className="dot purple"></span> Live updates</div>
-                            <h3>Recent activity</h3>
-                            <ul className="activity-feed">
-                                <li><strong>ProYd</strong> released <a href="https://proyd.itch.io/hack-the-loop">Hack the Loop</a> <span className="time">2 hours ago</span></li>
-                                <li><strong>drahmen</strong> submitted to Marathon Jam <span className="time">1 day ago</span></li>
-                                <li><strong>NeatGames</strong> shared <a href="https://neatgames.itch.io/yestersol">YesterSol</a> <span className="time">3 days ago</span></li>
-                                {user && (
-                                    <li><strong>{user.username}</strong> joined the community! <span className="time">Welcome!</span></li>
-                                )}
-                            </ul>
-                            <a href="/showcase" className="view-all">View all games →</a>
+                        <div className="jam-cta">
+                            <a href="/jams" className="btn btn-secondary">Join Now</a>
+                            <span className="jam-stats">127 joined</span>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Featured Games */}
-            <section className="section featured-games-section">
+            {/* Featured Games - Simple Grid */}
+            <section className="featured-section" data-fade data-delay="3">
                 <div className="container">
-                    <div className="section-header">
-                        <h2 className="section-title">Featured Games</h2>
-                        <a href="/showcase" className="btn btn-ghost btn-sm">See All</a>
+                    <div className="section-header-inline">
+                        <div className="section-label">// from the community</div>
+                        <div className="section-actions">
+                            <button onClick={handleShuffle} className="btn btn-ghost btn-sm shuffle-btn">
+                                Shuffle
+                            </button>
+                            <a href="/showcase" className="btn btn-ghost btn-sm">See More</a>
+                        </div>
                     </div>
-
-                    <div className="games-grid">
-                        {featuredGames.map((game) => (
+                    <div className={`featured-grid ${isShuffling ? 'shuffling' : ''}`}>
+                        {displayedGames.map((game, index) => (
                             <a
                                 href={game.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="game-card-compact"
-                                key={game.id}
+                                key={`${game.id}-${index}`} // Include index to help with re-renders
+                                className="featured-game"
                             >
-                                <div className="featured-thumb">
+                                <div className="game-thumb-large">
                                     {game.image ? (
                                         <img
                                             src={game.image}
@@ -105,12 +106,10 @@ const Home: React.FC = () => {
                                         game.thumb
                                     )}
                                 </div>
-                                <div className="game-info">
-                                    <h4>{game.title}</h4>
-                                    <p>by {game.author}</p>
-                                    <div className="game-stats">
-                                        ★ 4.8 • View on itch.io
-                                    </div>
+                                <div className="game-info-clean">
+                                    <div className="game-title-clean">{game.title}</div>
+                                    <div className="game-author-clean">{game.author}</div>
+                                    <div className="game-jam-clean">{game.jamName}</div>
                                 </div>
                             </a>
                         ))}
@@ -118,49 +117,32 @@ const Home: React.FC = () => {
                 </div>
             </section>
 
-            {/* Explore */}
-            <section className="section explore-section">
+            {/* Mini Explore Section */}
+            <section className="mini-explore-section" data-fade data-delay="8">
                 <div className="container">
-                    <h2 className="section-title">Explore</h2>
-                    <div className="quick-links">
-                        <a href="/jams" className="quick-link">
-                            <div>
-                                <strong>Game Jams</strong>
-                                <p>Join timed challenges and build games with the community</p>
-                            </div>
+                    <div className="section-label">// explore</div>
+                </div>
+            </section>
+
+            {/* Navigation Links */}
+            <section className="navigation-section" data-fade data-delay="9">
+                <div className="container">
+                    <div className="nav-grid">
+                        <a href="/jams" className="nav-link-card" data-fade data-delay="10">
+                            <h3>Game Jams</h3>
+                            <p>Join timed challenges and build with the community</p>
                         </a>
-                        <a href="/showcase" className="quick-link">
-                            <div>
-                                <strong>Showcase</strong>
-                                <p>Browse winning games from past jams and get inspired</p>
-                            </div>
+                        <a href="/showcase" className="nav-link-card" data-fade data-delay="11">
+                            <h3>Showcase</h3>
+                            <p>Browse games and winners from past jams</p>
                         </a>
-                        <a href="/resources" className="quick-link">
-                            <div>
-                                <strong>Resources</strong>
-                                <p>Community-curated guides, tools, and tips for solo devs</p>
-                            </div>
+                        <a href="/resources" className="nav-link-card" data-fade data-delay="12">
+                            <h3>Resources</h3>
+                            <p>Tools, guides, and workflows for solo developers</p>
                         </a>
                     </div>
                 </div>
             </section>
-
-            {/* Welcome Message for New Users */}
-            {user && (
-                <section className="section">
-                    <div className="container">
-                        <div className="card">
-                            <h3>Welcome to the community, {user.username}!</h3>
-                            <p>You're now part of a growing community of solo developers. Here are some ways to get started:</p>
-                            <div className="card-actions">
-                                <a href="/jams" className="btn btn-primary">Join a Game Jam</a>
-                                <a href="/showcase" className="btn btn-secondary">Browse Games</a>
-                                <a href="https://discord.gg/your-discord-link" className="btn btn-ghost">Join Discord</a>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            )}
         </div>
     );
 };

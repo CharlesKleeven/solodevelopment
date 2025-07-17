@@ -59,7 +59,11 @@ mongoose
     .catch((err) => console.error('MongoDB connection error:', err));
 
 // API Routes
-app.use('/api/auth', authLimiter, authRoutes);
+if (process.env.NODE_ENV === 'production') {
+    app.use('/api/auth', authLimiter, authRoutes);
+} else {
+    app.use('/api/auth', authRoutes);
+}
 
 // Basic routes
 app.get('/', (req, res) => {
