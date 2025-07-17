@@ -12,6 +12,11 @@ const Navbar: React.FC = () => {
 
     const isActive = (path: string) => location.pathname === path;
 
+    // Since displayName is required, no fallback needed
+    const getDisplayName = () => {
+        return user?.displayName || '';
+    };
+
     // Close user menu when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -85,7 +90,7 @@ const Navbar: React.FC = () => {
                                     className="user-button"
                                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                                 >
-                                    <span className="user-name">{user.username}</span>
+                                    <span className="user-name">{getDisplayName()}</span>
                                 </button>
 
                                 {isUserMenuOpen && (
@@ -165,7 +170,7 @@ const Navbar: React.FC = () => {
                                 className="mobile-nav-link"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
-                                {user.username}
+                                {getDisplayName()}
                             </Link>
                             <button
                                 onClick={handleLogout}

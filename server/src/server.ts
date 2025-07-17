@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth';  // Import auth routes
+import jamRoutes from './routes/jam';
 
 // Load environment variables
 dotenv.config();
@@ -39,6 +40,9 @@ const authLimiter = rateLimit({
     standardHeaders: true, // Return rate limit info in headers
     legacyHeaders: false,
 });
+
+// For jam fresh updates
+app.use('/api/jam', jamRoutes);
 
 // CORS configuration
 app.use(cors({

@@ -6,6 +6,9 @@ interface User {
   id: string;
   username: string;
   email: string;
+  displayName: string; // Required now, not optional
+  bio?: string;
+  links?: string[];
   createdAt?: string;
 }
 
@@ -15,6 +18,7 @@ interface AuthContextType {
   login: (emailOrUsername: string, password: string) => Promise<void>;
   register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>; // Add this for real-time updates
   loading: boolean;
   error: string | null;
   clearError: () => void;
@@ -45,6 +49,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setUser(null);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Function to refresh current user data (for real-time updates)
+  const refreshUser = async (): Promise<void> => {
+    try {
+      const response = await authAPI.me();
+      if (response.user) {
+        setUser(response.user);
+      }
+    } catch (error) {
+      console.error('Failed to refresh user data:', error);
+      // Don't clear user on refresh failure - might be temporary network issue
     }
   };
 
@@ -145,6 +162,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     login,
     register,
     logout,
+    refreshUser, // Add this to the context value
     loading,
     error,
     clearError,
