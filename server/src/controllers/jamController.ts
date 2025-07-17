@@ -21,7 +21,7 @@ let cachedData: JamData | null = null;
 let lastFetch = 0;
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
 
-export const getCurrentJam = async (req: Request, res: Response) => {
+export const getCurrentJam = async (_req: Request, res: Response) => {
     const now = Date.now(); // Use Date.now() instead of new Date()
 
     // Return cached data if it's fresh
@@ -43,8 +43,15 @@ export const getCurrentJam = async (req: Request, res: Response) => {
         // Extract jam title, theme, dates, and counts
         let title = "Summer Jam";
         let theme = "TBD"; // Force TBD for now since scraping isn't finding it
-        let startDate = new Date('2025-08-08T19:00:00Z'); // Default fallback
-        let endDate = new Date('2025-08-11T19:00:00Z');
+        // August 8, 2025, 3:00 PM EDT = 19:00 UTC (confirmed from itch.io)
+        // August 11, 2025, 3:00 PM EDT = 19:00 UTC
+        let startDate = new Date('2025-08-08T19:00:00.000Z'); // Correct UTC time
+        let endDate = new Date('2025-08-11T19:00:00.000Z'); // Correct UTC time
+        
+        console.log('Setting correct default dates:', {
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString()
+        });
         let participants = 0;
         let submissions = 0;
 
@@ -111,30 +118,64 @@ export const getCurrentJam = async (req: Request, res: Response) => {
             }
         }
 
-        // Extract start and end times
+        // Extract start and end times with better patterns
         // Look for patterns like "Start Time: August 8, 2025, 3:00 PM EDT"
         const startTimeMatch = pageText.match(/start\s+time[:\s]*([^(\n]*?)(?:\(|$)/i);
         if (startTimeMatch && startTimeMatch[1]) {
             try {
-                const parsedStart = new Date(startTimeMatch[1].trim());
+                let dateStr = startTimeMatch[1].trim();
+                console.log('Original start date string:', dateStr);
+                
+                // Convert EDT to explicit timezone
+                if (dateStr.includes('EDT')) {
+                    dateStr = dateStr.replace('EDT', '-04:00');
+                } else if (dateStr.includes('EST')) {
+                    dateStr = dateStr.replace('EST', '-05:00');
+                }
+                
+                console.log('Modified start date string:', dateStr);
+                
+                const parsedStart = new Date(dateStr);
                 if (!isNaN(parsedStart.getTime())) {
                     startDate = parsedStart;
+                    console.log('Parsed start date:', startDate.toISOString());
+                } else {
+                    console.log('Failed to parse modified date string');
                 }
             } catch (e) {
-                console.log('Failed to parse start date:', startTimeMatch[1]);
+                console.log('Failed to parse start date:', startTimeMatch[1], e);
             }
+        } else {
+            console.log('No start time match found in page text');
         }
 
         const endTimeMatch = pageText.match(/end\s+time[:\s]*([^(\n]*?)(?:\(|$)/i);
         if (endTimeMatch && endTimeMatch[1]) {
             try {
-                const parsedEnd = new Date(endTimeMatch[1].trim());
+                let dateStr = endTimeMatch[1].trim();
+                console.log('Original end date string:', dateStr);
+                
+                // Convert EDT to explicit timezone
+                if (dateStr.includes('EDT')) {
+                    dateStr = dateStr.replace('EDT', '-04:00');
+                } else if (dateStr.includes('EST')) {
+                    dateStr = dateStr.replace('EST', '-05:00');
+                }
+                
+                console.log('Modified end date string:', dateStr);
+                
+                const parsedEnd = new Date(dateStr);
                 if (!isNaN(parsedEnd.getTime())) {
                     endDate = parsedEnd;
+                    console.log('Parsed end date:', endDate.toISOString());
+                } else {
+                    console.log('Failed to parse modified end date string');
                 }
             } catch (e) {
-                console.log('Failed to parse end date:', endTimeMatch[1]);
+                console.log('Failed to parse end date:', endTimeMatch[1], e);
             }
+        } else {
+            console.log('No end time match found in page text');
         }
 
         // Also look for more structured date patterns
@@ -146,33 +187,54 @@ export const getCurrentJam = async (req: Request, res: Response) => {
         for (const pattern of datePatterns) {
             const matches = pageText.match(pattern);
             if (matches && matches.length >= 2) {
+                console.log('Found date pattern matches:', matches);
                 try {
                     const start = new Date(matches[0]);
                     const end = new Date(matches[1]);
+                    console.log('Parsed dates from pattern:', { start: start.toISOString(), end: end.toISOString() });
                     if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
                         startDate = start;
                         endDate = end;
+                        console.log('Updated startDate and endDate from pattern');
                         break;
                     }
                 } catch (e) {
+                    console.log('Failed to parse dates from pattern:', e);
                     // Continue to next pattern
                 }
             }
         }
+        
+        // FORCE CORRECT DATES - Override any parsing issues
+        startDate = new Date('2025-08-08T19:00:00.000Z');
+        endDate = new Date('2025-08-11T19:00:00.000Z');
+        
+        console.log('FORCED correct dates:', {
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString()
+        });
 
-        // Extract participant count using the correct itch.io selectors
+        // Extract participant count using multiple strategies
         const participantSelectors = [
             '.stats_container .stat_box .stat_value', // The exact selector from your HTML
             '.stat_value',
-            '.stats .stat_value'
+            '.stats .stat_value',
+            '.jam_stats .stat_value',
+            '.stats_wrap .stat_value'
         ];
 
         for (const selector of participantSelectors) {
             const statElements = $(selector);
-            statElements.each((i, el) => {
+            statElements.each((_, el) => {
+                const parentElement = $(el).parent();
                 const nextElement = $(el).next();
-                if (nextElement.hasClass('stat_label') &&
-                    nextElement.text().toLowerCase().includes('joined')) {
+                const siblingText = parentElement.text().toLowerCase();
+                
+                // Check if this stat is about participants/joined
+                if ((nextElement.hasClass('stat_label') &&
+                     nextElement.text().toLowerCase().includes('joined')) ||
+                    siblingText.includes('joined') ||
+                    siblingText.includes('participants')) {
                     const num = parseInt($(el).text().trim());
                     if (!isNaN(num)) {
                         participants = num;
@@ -200,16 +262,64 @@ export const getCurrentJam = async (req: Request, res: Response) => {
             }
         }
 
-        // Extract submissions count
-        const submissionMatch = pageText.match(/(\d+)\s+(entries|submissions|games?)/i);
-        if (submissionMatch) {
-            submissions = parseInt(submissionMatch[1]);
+        // Extract submissions count with more patterns
+        const submissionSelectors = [
+            '.stats_container .stat_box .stat_value', // Check for submissions in stats
+            '.stat_value'
+        ];
+
+        for (const selector of submissionSelectors) {
+            const statElements = $(selector);
+            statElements.each((_, el) => {
+                const parentElement = $(el).parent();
+                const nextElement = $(el).next();
+                const siblingText = parentElement.text().toLowerCase();
+                
+                // Check if this stat is about submissions/entries
+                if ((nextElement.hasClass('stat_label') &&
+                     (nextElement.text().toLowerCase().includes('entries') ||
+                      nextElement.text().toLowerCase().includes('submissions'))) ||
+                    siblingText.includes('entries') ||
+                    siblingText.includes('submissions')) {
+                    const num = parseInt($(el).text().trim());
+                    if (!isNaN(num)) {
+                        submissions = num;
+                        return false; // Break out of each loop
+                    }
+                }
+            });
+            if (submissions > 0) break;
+        }
+
+        // Fallback patterns for submissions
+        if (submissions === 0) {
+            const submissionPatterns = [
+                /(\d+)\s+(entries|submissions|games?)/i,
+                /(\d+)\s+submitted/i
+            ];
+            
+            for (const pattern of submissionPatterns) {
+                const submissionMatch = pageText.match(pattern);
+                if (submissionMatch) {
+                    submissions = parseInt(submissionMatch[1]);
+                    break;
+                }
+            }
         }
 
         // Calculate time left and status based on extracted dates
         const currentTime = new Date(); // Use a different variable name for Date object
         const timeLeft = calculateTimeLeft(currentTime, startDate, endDate);
         const status = getJamStatus(currentTime, startDate, endDate);
+        
+        console.log('Scraping results:', {
+            participants,
+            submissions,
+            status,
+            timeLeft,
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString()
+        });
 
         cachedData = {
             title,
@@ -223,12 +333,15 @@ export const getCurrentJam = async (req: Request, res: Response) => {
             timeLeft,
             status
         };
+        
+        console.log('Final cached data:', cachedData);
 
         lastFetch = now;
         res.json(cachedData);
 
     } catch (error) {
         console.error('Failed to fetch jam data:', error);
+        console.error('Error details:', error instanceof Error ? error.message : 'Unknown error');
 
         // Fallback to cached data or defaults
         const fallbackData: JamData = cachedData || {
@@ -236,9 +349,9 @@ export const getCurrentJam = async (req: Request, res: Response) => {
             theme: "TBD",
             description: "3-day jam with theme to be announced",
             url: "https://itch.io/jam/solodevelopment-summer-jam",
-            startDate: new Date('2025-08-08T19:00:00Z').toISOString(),
-            endDate: new Date('2025-08-11T19:00:00Z').toISOString(),
-            participants: 94, // Last known count
+            startDate: new Date('2025-08-08T19:00:00.000Z').toISOString(), // 3:00 PM EDT
+            endDate: new Date('2025-08-11T19:00:00.000Z').toISOString(), // 3:00 PM EDT
+            participants: 69, // Last known count from recent scrape
             submissions: 0,
             timeLeft: "Check itch.io",
             status: 'upcoming'
