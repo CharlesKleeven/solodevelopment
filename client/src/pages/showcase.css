@@ -85,21 +85,17 @@
     color: var(--text-tertiary);
 }
 
-/* ===== WINNERS GALLERY - BALANCED 2-COLUMN WATERFALL ===== */
+/* ===== WINNERS GALLERY - STABLE WATERFALL LAYOUT ===== */
 .winners-gallery {
     columns: 2;
     column-gap: var(--space-6);
     column-fill: balance;
-    orphans: 1;
-    widows: 1;
 }
 
 .winners-chronological {
     columns: 2;
     column-gap: var(--space-6);
     column-fill: balance;
-    orphans: 1;
-    widows: 1;
 }
 
 .jam-winner-section {
@@ -108,11 +104,13 @@
     padding: var(--space-6);
     margin-bottom: var(--space-6);
     break-inside: avoid;
-    display: inline-block;
+    display: block;
     width: 100%;
-    page-break-inside: avoid;
     box-shadow: 0 0 0 1px var(--border-subtle);
     position: relative;
+    /* Prevent height issues */
+    min-height: auto;
+    height: auto;
 }
 
 .jam-winner-section h3 {
@@ -206,14 +204,15 @@
 }
 
 .winner-secondary {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: var(--space-3);
+    /* Prevent column breaking inside secondary winners */
+    break-inside: avoid;
 }
 
 .winner-item {
-    display: grid;
-    grid-template-columns: 60px 1fr;
+    display: flex;
     gap: var(--space-3);
     background: var(--bg-tertiary);
     border: 1px solid var(--border-subtle);
@@ -222,7 +221,7 @@
     transition: all var(--transition);
     cursor: pointer;
     position: relative;
-
+    align-items: center;
 }
 
 .winner-item:hover {
@@ -309,13 +308,13 @@
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1200px) {
-    .winners-gallery {
+    .winners-gallery,
+    .winners-chronological {
         columns: 2;
     }
 }
 
 @media (max-width: 768px) {
-
     .winners-gallery,
     .winners-chronological {
         columns: 1;
@@ -341,7 +340,6 @@
     }
 
     .winner-item {
-        grid-template-columns: 50px 1fr;
         gap: var(--space-2);
         padding: var(--space-2);
     }
@@ -359,5 +357,19 @@
 
     .search-bar {
         max-width: 100%;
+    }
+}
+
+/* Additional Safari optimizations */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+    .winners-gallery,
+    .winners-chronological {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+    }
+    
+    .jam-winner-section {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
     }
 }

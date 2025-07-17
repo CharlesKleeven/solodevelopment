@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './jams.css';
 import { gameData } from '../data/gameData';
 import { useJam } from '../hooks/useJam'; // Add this import
@@ -10,8 +10,8 @@ interface JamEntry {
   jamTheme?: string;
 }
 
-function getTimeLeft(targetTime: Date) {
-  const diff = targetTime.getTime() - new Date().getTime();
+function getTimeLeft(targetTime: Date, currentTime: Date) {
+  const diff = targetTime.getTime() - currentTime.getTime();
   if (diff <= 0) return { days: '00', hours: '00', minutes: '00' };
 
   const totalMinutes = Math.floor(diff / 60000);
@@ -54,7 +54,17 @@ const Jams = () => {
   const { jamData, loading: jamLoading } = useJam(); // Add this
   const [showMarathon, setShowMarathon] = useState(false);
   const [showThemed, setShowThemed] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
   const { marathon, themed } = extractJamGroups();
+  
+  // Update current time every minute for accurate countdown
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000); // Update every minute
+    
+    return () => clearInterval(interval);
+  }, []);
 
   // Use dynamic target time based on status
   let targetTime, timerLabel;
@@ -71,7 +81,7 @@ const Jams = () => {
     timerLabel = 'ends in:';
   }
 
-  const timeLeft = getTimeLeft(targetTime);
+  const timeLeft = getTimeLeft(targetTime, currentTime);
 
   return (
     <div className="jams-page">
@@ -194,7 +204,7 @@ const Jams = () => {
             </button>
             {showMarathon && (
               <ul className="jam-list">
-                {marathon.map((jam, i) => (
+                {marathon.map((jam) => (
                   <li key={jam.jamName}>
                     <a href={jam.jamUrl} className="jam-title-link" target="_blank" rel="noopener noreferrer">
                       {jam.jamName}
@@ -211,7 +221,7 @@ const Jams = () => {
             </button>
             {showThemed && (
               <ul className="jam-list">
-                {themed.map((jam, i) => (
+                {themed.map((jam) => (
                   <li key={jam.jamName}>
                     <a href={jam.jamUrl} className="jam-title-link" target="_blank" rel="noopener noreferrer">
                       {jam.jamName}
