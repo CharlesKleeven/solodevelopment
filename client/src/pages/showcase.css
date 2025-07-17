@@ -1,15 +1,9 @@
-.showcase-tabs {
-    width: 100%;
-    justify-content: center;
-}
-
-/* ===== COMPACT SHOWCASE ===== */
-
+/* ===== SHOWCASE PAGE ===== */
 .showcase-page {
     background: var(--bg-primary);
 }
 
-/* ===== COMPACT CONTROLS AREA (TABS + SEARCH) ===== */
+/* ===== CONTROLS (TABS + SEARCH) ===== */
 .section-compact {
     padding: var(--space-4) 0;
 }
@@ -23,14 +17,12 @@
     margin-bottom: var(--space-6);
 }
 
-/* ===== TABS ===== */
 .showcase-tabs {
     display: flex;
     gap: var(--space-1);
     background: var(--bg-secondary);
     border-radius: var(--border-radius);
     padding: var(--space-1);
-    max-width: fit-content;
 }
 
 .tab {
@@ -55,11 +47,6 @@
     color: var(--bg-primary);
 }
 
-.tab:focus {
-    outline: none;
-}
-
-/* ===== SEARCH ===== */
 .search-bar {
     flex: 1;
     max-width: 200px;
@@ -85,32 +72,24 @@
     color: var(--text-tertiary);
 }
 
-/* ===== WINNERS GALLERY - STABLE WATERFALL LAYOUT ===== */
-.winners-gallery {
-    columns: 2;
-    column-gap: var(--space-6);
-    column-fill: balance;
-}
-
+/* ===== WATERFALL LAYOUT ===== */
 .winners-chronological {
     columns: 2;
     column-gap: var(--space-6);
     column-fill: balance;
 }
 
+/* ===== JAM CARDS ===== */
 .jam-winner-section {
     background: var(--bg-secondary);
     border-radius: var(--border-radius);
     padding: var(--space-6);
     margin-bottom: var(--space-6);
-    break-inside: avoid;
-    display: block;
+    display: inline-block;
     width: 100%;
     box-shadow: 0 0 0 1px var(--border-subtle);
-    position: relative;
-    /* Prevent height issues */
-    min-height: auto;
-    height: auto;
+    break-inside: avoid;
+    vertical-align: top;
 }
 
 .jam-winner-section h3 {
@@ -118,8 +97,6 @@
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: var(--space-2);
-    display: block;
-    position: relative;
 }
 
 .jam-description {
@@ -138,6 +115,7 @@
     text-decoration: underline;
 }
 
+/* ===== WINNER ITEMS ===== */
 .winner-list {
     display: flex;
     flex-direction: column;
@@ -145,70 +123,26 @@
 }
 
 .winner-featured {
-    display: grid;
-    grid-template-columns: 140px 1fr;
+    display: flex;
     gap: var(--space-4);
     background: var(--bg-tertiary);
     border: 1px solid var(--border-subtle);
     border-radius: var(--border-radius);
-    overflow: hidden;
+    padding: var(--space-4);
     transition: all var(--transition);
     cursor: pointer;
     position: relative;
+    align-items: center;
 }
 
 .winner-featured:hover {
     border-color: var(--text-tertiary);
-    transform: translateY(-1px);
-}
-
-.winner-featured .showcase-thumb {
-    width: 140px;
-    height: 140px;
-    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--text-2xl);
-    font-weight: 600;
-    color: var(--text-tertiary);
-    overflow: hidden;
-    flex-shrink: 0;
-}
-
-.winner-featured .showcase-thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.winner-featured .winner-info {
-    padding: var(--space-4);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: var(--space-2);
-    position: relative;
-}
-
-.winner-featured .winner-title {
-    font-size: var(--text-lg);
-    font-weight: 600;
-    color: var(--text-primary);
-    line-height: 1.3;
-}
-
-.winner-featured .winner-author {
-    font-size: var(--text-base);
-    color: var(--text-tertiary);
 }
 
 .winner-secondary {
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-    /* Prevent column breaking inside secondary winners */
-    break-inside: avoid;
 }
 
 .winner-item {
@@ -226,57 +160,76 @@
 
 .winner-item:hover {
     border-color: var(--text-tertiary);
-    transform: translateY(-1px);
+}
+
+/* ===== THUMBNAILS ===== */
+.showcase-thumb {
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.winner-featured .showcase-thumb {
+    width: 140px;
+    height: 140px;
+    font-size: var(--text-2xl);
 }
 
 .winner-item .showcase-thumb {
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--text-lg);
-    font-weight: 600;
-    color: var(--text-tertiary);
-    overflow: hidden;
     border-radius: var(--border-radius);
-    flex-shrink: 0;
+    font-size: var(--text-lg);
 }
 
-.winner-item .showcase-thumb img {
+.showcase-thumb img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.winner-item .showcase-thumb img {
     border-radius: var(--border-radius);
 }
 
-.winner-item .winner-info {
+.showcase-thumb.no-image {
+    background: linear-gradient(135deg,
+        rgba(245, 94, 59, 0.05) 0%,
+        rgba(98, 213, 248, 0.05) 100%);
+    color: var(--text-secondary);
+}
+
+/* ===== WINNER INFO ===== */
+.winner-info {
+    padding: var(--space-4);
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: var(--space-1);
-    position: relative;
+    gap: var(--space-2);
 }
 
-.winner-item .winner-title {
-    font-size: var(--text-sm);
+.winner-item .winner-info {
+    padding: 0;
+    gap: var(--space-1);
+}
+
+.winner-title {
     font-weight: 600;
     color: var(--text-primary);
     line-height: 1.3;
 }
 
-.winner-item .winner-author {
-    font-size: var(--text-xs);
-    color: var(--text-tertiary);
+.winner-featured .winner-title {
+    font-size: var(--text-lg);
 }
 
-.showcase-thumb.no-image {
-    background: linear-gradient(135deg,
-            rgba(245, 94, 59, 0.05) 0%,
-            rgba(98, 213, 248, 0.05) 100%);
-    color: var(--text-secondary);
-    font-weight: 600;
+.winner-item .winner-title {
+    font-size: var(--text-sm);
 }
 
 .winner-title a {
@@ -288,7 +241,19 @@
     color: var(--color-accent);
 }
 
-/* More subtle but visible placement badge - positioned inside card bounds */
+.winner-author {
+    color: var(--text-tertiary);
+}
+
+.winner-featured .winner-author {
+    font-size: var(--text-base);
+}
+
+.winner-item .winner-author {
+    font-size: var(--text-xs);
+}
+
+/* ===== PLACEMENT BADGES ===== */
 .placement-corner {
     position: absolute;
     bottom: var(--space-2);
@@ -308,68 +273,47 @@
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1200px) {
-    .winners-gallery,
     .winners-chronological {
-        columns: 2;
+        column-gap: var(--space-4);
     }
 }
 
 @media (max-width: 768px) {
-    .winners-gallery,
     .winners-chronological {
         columns: 1;
     }
-
-    .winner-featured {
-        grid-template-columns: 100px 1fr;
-        gap: var(--space-3);
-    }
-
-    .winner-featured .showcase-thumb {
-        width: 100px;
-        height: 100px;
-    }
-
-    .winner-featured .winner-info {
-        padding: var(--space-3);
-    }
-
-    .winner-secondary {
-        grid-template-columns: 1fr;
-        gap: var(--space-2);
-    }
-
-    .winner-item {
-        gap: var(--space-2);
-        padding: var(--space-2);
-    }
-
-    .winner-item .showcase-thumb {
-        width: 50px;
-        height: 50px;
-        font-size: var(--text-base);
-    }
-
+    
     .showcase-controls {
         flex-direction: column;
         align-items: stretch;
     }
-
+    
     .search-bar {
         max-width: 100%;
     }
-}
-
-/* Additional Safari optimizations */
-@media screen and (-webkit-min-device-pixel-ratio: 0) {
-    .winners-gallery,
-    .winners-chronological {
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
+    
+    .winner-featured {
+        gap: var(--space-3);
+        padding: var(--space-3);
     }
     
-    .jam-winner-section {
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
+    .winner-featured .showcase-thumb {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .winner-featured .winner-info {
+        padding: var(--space-3);
+    }
+    
+    .winner-item {
+        gap: var(--space-2);
+        padding: var(--space-2);
+    }
+    
+    .winner-item .showcase-thumb {
+        width: 50px;
+        height: 50px;
+        font-size: var(--text-base);
     }
 }

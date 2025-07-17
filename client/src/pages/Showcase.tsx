@@ -55,8 +55,6 @@ const Showcase: React.FC = () => {
       <div
         key={game.id}
         className={containerClass}
-        data-fade
-        data-delay={index + 1}
       >
         <div className="showcase-thumb">
           {game.image ? (
@@ -96,7 +94,7 @@ const Showcase: React.FC = () => {
     const theme = games[0].jamTheme;
 
     return (
-      <div key={jamName} className={jamClass} data-fade>
+      <div key={jamName} className={jamClass}>
         <h3>{jamName}</h3>
         <p className="jam-description">
           {theme && theme !== 'Work on your own project' && (
@@ -161,9 +159,9 @@ const Showcase: React.FC = () => {
 
       <section className="section-sm">
         <div className="container">
-          <div className="winners-chronological">
+          <div className="winners-chronological" data-fade data-delay="3">
             {Object.keys(groupedGames).length === 0 ? (
-              <div className="jam-winner-section" data-fade>
+              <div className="jam-winner-section">
                 <h3>No games found</h3>
                 <p className="jam-description">Try adjusting your search or browse a different category.</p>
               </div>
