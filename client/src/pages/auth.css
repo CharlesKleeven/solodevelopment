@@ -133,6 +133,48 @@
     opacity: 0.8;
 }
 
+/* Forgot password link */
+.forgot-password-link {
+    margin-top: var(--space-2);
+    text-align: right;
+}
+
+.forgot-password-link a {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    transition: opacity var(--transition);
+}
+
+.forgot-password-link a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+/* Success message styling */
+.success-message {
+    background: rgba(104, 211, 145, 0.1);
+    border: 1px solid rgba(104, 211, 145, 0.2);
+    border-radius: var(--border-radius);
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+    color: var(--color-success);
+    font-size: var(--text-sm);
+    text-align: center;
+}
+
+.error-message {
+    background: rgba(245, 94, 59, 0.1);
+    border: 1px solid rgba(245, 94, 59, 0.2);
+    border-radius: var(--border-radius);
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+    color: var(--color-accent);
+    font-size: var(--text-sm);
+    text-align: center;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 480px) {
     .auth-container {

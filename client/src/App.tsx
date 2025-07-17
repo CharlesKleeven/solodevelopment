@@ -8,6 +8,8 @@ import './styles/components.css';
 // Pages
 import Home from './pages/Home';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Jams from './pages/Jams';
 import Showcase from './pages/Showcase';
 import Resources from './pages/Resources';
@@ -22,7 +24,7 @@ import { AuthProvider } from './context/AuthContext';
 
 function AppContent() {
   const location = useLocation();
-  const isAuthPage = location.pathname === '/login';
+  const isAuthPage = ['/login', '/forgot-password', '/reset-password'].includes(location.pathname);
 
   return (
     <div className="app">
@@ -30,6 +32,8 @@ function AppContent() {
       {isAuthPage ? (
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       ) : (
         <main className="main-content">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './auth.css';
 
@@ -155,6 +155,9 @@ const Login: React.FC = () => {
                     required
                     disabled={isLoading}
                   />
+                  <div className="forgot-password-link">
+                    <Link to="/forgot-password">Forgot your password?</Link>
+                  </div>
                 </div>
               </>
             )}

@@ -7,6 +7,8 @@ interface IUser {
   displayName: string; // Required now, not optional
   bio?: string;
   links?: string[];
+  resetPasswordToken?: string;
+  resetPasswordExpires?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -52,6 +54,12 @@ const userSchema = new mongoose.Schema<IUser>(
       type: String,
       maxlength: 500, // Increased to accommodate JSON storage
     }],
+    resetPasswordToken: {
+      type: String,
+    },
+    resetPasswordExpires: {
+      type: Date,
+    },
   },
   {
     timestamps: true,

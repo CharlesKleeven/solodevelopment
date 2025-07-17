@@ -144,16 +144,16 @@ const Jams = () => {
               </div>
             </div>
           ) : (
-            // Fallback if API fails
+            // Fallback if API fails - matches current jam config
             <div className="jam-featured-card">
-              <div className="jam-status">
+              <div className="jam-status upcoming">
                 <div className="status-dot"></div>
-                <span className="status-text">Active Jam</span>
-                <span className="jam-participants">94 participants</span>
+                <span className="status-text">Upcoming</span>
+                <span className="jam-participants">0 participants</span>
               </div>
               <h2 className="jam-title">Summer Jam</h2>
-              <p className="jam-theme">Theme: "Under Pressure"</p>
-              <p className="jam-description">3-day jam exploring systems pushed to their limits.</p>
+              <p className="jam-theme">Theme: TBD</p>
+              <p className="jam-description">3-day jam with theme to be announced</p>
 
               <div className="jam-timer">
                 <div className="timer-unit">
@@ -171,8 +171,7 @@ const Jams = () => {
               </div>
 
               <div className="jam-actions">
-                <a href="https://itch.io/jam/solodevelopment-summer-jam" className="btn btn-primary">Join Now</a>
-                <a href="https://itch.io/jam/solodevelopment-summer-jam" className="btn btn-secondary">View Submissions</a>
+                <a href="https://itch.io/jam/solodevelopment-summer-jam" className="btn btn-primary">Learn More</a>
               </div>
             </div>
           )}
