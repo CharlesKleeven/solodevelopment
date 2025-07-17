@@ -77,10 +77,22 @@ const Resources: React.FC = () => {
                 <h3>Learn Game Dev</h3>
                 <p>Build and learn at the same time — you don't need to know everything to start.</p>
                 <ul className="resource-links">
-                  <li className="resource-link"><a href="#">Game Programming Patterns</a><p className="resource-desc">Free book by Robert Nystrom</p></li>
-                  <li className="resource-link"><a href="#">The Art of Game Design</a><p className="resource-desc">Great for theory + creativity</p></li>
-                  <li className="resource-link"><a href="#">Godot Shaders</a><p className="resource-desc">Interactive shader editor + examples</p></li>
-                  <li className="resource-link"><a href="#">Drawing Database</a><p className="resource-desc">Anatomy and figure drawing</p></li>
+                  <li className="resource-link">
+                    <a href="https://gameprogrammingpatterns.com/" target="_blank" rel="noopener noreferrer">Game Programming Patterns</a>
+                    <p className="resource-desc">Free book by Robert Nystrom</p>
+                  </li>
+                  <li className="resource-link">
+                    <a href="https://www.amazon.com/Art-Game-Design-Book-Lenses/dp/0123694965" target="_blank" rel="noopener noreferrer">The Art of Game Design</a>
+                    <p className="resource-desc">Great for theory + creativity</p>
+                  </li>
+                  <li className="resource-link">
+                    <a href="https://godotshaders.com/" target="_blank" rel="noopener noreferrer">Godot Shaders</a>
+                    <p className="resource-desc">Interactive shader editor + examples</p>
+                  </li>
+                  <li className="resource-link">
+                    <a href="https://drawingdatabase.com/" target="_blank" rel="noopener noreferrer">Drawing Database</a>
+                    <p className="resource-desc">Anatomy and figure drawing</p>
+                  </li>
                 </ul>
               </div>
 
@@ -103,9 +115,18 @@ const Resources: React.FC = () => {
                 <h3>Publish Your Game</h3>
                 <p>When you're ready to launch, these resources can help you release confidently.</p>
                 <ul className="resource-links">
-                  <li className="resource-link"><a href="#">GDPR Guide</a><p className="resource-desc">What to know about handling user data</p></li>
-                  <li className="resource-link"><a href="#">Publisher List</a><p className="resource-desc">Shared spreadsheet of publishers</p></li>
-                  <li className="resource-link"><a href="#">Contract Templates</a><p className="resource-desc">Sample agreements and service templates</p></li>
+                  <li className="resource-link">
+                    <a href="https://www.gamesindustry.biz/a-guide-to-gdpr-requirements-for-mobile-game-developers" target="_blank" rel="noopener noreferrer">GDPR Guide</a>
+                    <p className="resource-desc">What to know about handling user data</p>
+                  </li>
+                  <li className="resource-link">
+                    <a href="https://docs.google.com/spreadsheets/d/11g8MCMFNrBM0CXIWrT8bej5vqR1fCJGMhoFfbS5ph3Q/edit#gid=0" target="_blank" rel="noopener noreferrer">Publisher List</a>
+                    <p className="resource-desc">Shared spreadsheet of publishers</p>
+                  </li>
+                  <li className="resource-link">
+                    <a href="https://templatelab.com/service-agreement/" target="_blank" rel="noopener noreferrer">Contract Templates</a>
+                    <p className="resource-desc">Sample agreements and service templates</p>
+                  </li>
                 </ul>
               </div>
 
@@ -113,8 +134,14 @@ const Resources: React.FC = () => {
                 <h3>Stay Connected</h3>
                 <p>You don't have to go it alone. Share your work, ask questions, and find your pace.</p>
                 <ul className="resource-links">
-                  <li className="resource-link"><a href="#">r/solodevelopment Discord</a><p className="resource-desc">Main community hangout</p></li>
-                  <li className="resource-link"><a href="#">Other subs</a><p className="resource-desc">r/gamedev, r/IndieDev, r/IncrementalGames</p></li>
+                  <li className="resource-link">
+                    <a href="https://discord.gg/uXeapAkAra" target="_blank" rel="noopener noreferrer">r/solodevelopment Discord</a>
+                    <p className="resource-desc">Main community hangout</p>
+                  </li>
+                  <li className="resource-link">
+                    <a href="https://reddit.com/r/gamedev" target="_blank" rel="noopener noreferrer">Other subs</a>
+                    <p className="resource-desc">r/gamedev, r/IndieDev, r/IncrementalGames</p>
+                  </li>
                 </ul>
               </div>
             </div>
