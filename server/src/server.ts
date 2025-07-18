@@ -45,13 +45,13 @@ app.use(cors({
     credentials: true // Allow cookies
 }));
 
-// Routes
-app.use('/api/jam', jamRoutes);
-app.use('/api/contact', contactRoutes);
-
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
+
+// Routes
+app.use('/api/jam', jamRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Connect to MongoDB with longer timeout for Render
 mongoose
