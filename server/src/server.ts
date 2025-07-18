@@ -15,6 +15,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Trust proxy for Render deployment
+if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1);
+}
+
 // Security middleware
 app.use(helmet()); // Security headers
 
@@ -61,9 +66,15 @@ mongoose
     .connect(process.env.MONGO_URI!, {
         serverSelectionTimeoutMS: 30000, // 30 seconds to connect
         socketTimeoutMS: 45000, // 45 seconds for socket operations
+        connectTimeoutMS: 30000, // 30 seconds to establish connection
+        maxPoolSize: 10, // Connection pool size
+        minPoolSize: 1,
     })
     .then(() => console.log('Connected to MongoDB'))
     .catch((err) => console.error('MongoDB connection error:', err));
+
+// Disable Mongoose buffering globally
+mongoose.set('bufferCommands', false);
 
 // API Routes
 if (process.env.NODE_ENV === 'production') {
