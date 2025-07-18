@@ -171,7 +171,7 @@ const Jams = () => {
               </div>
 
               <div className="jam-actions">
-                <a href="https://itch.io/jam/solodevelopment-summer-jam" className="btn btn-primary">Learn More</a>
+                <a href="https://itch.io/jam/solodevelopment-summer-jam" className="btn btn-primary" target="_blank" rel="noreferrer">Learn More</a>
               </div>
             </div>
           )}

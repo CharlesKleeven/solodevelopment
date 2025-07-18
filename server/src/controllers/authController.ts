@@ -39,8 +39,8 @@ export const loginValidation = [
 export const updateProfileValidation = [
   body('displayName')
     .optional()
-    .isLength({ max: 20 })
-    .withMessage('Display name must be 20 characters or less'),
+    .isLength({ min: 1, max: 20 })
+    .withMessage('Display name must be between 1 and 20 characters'),
   body('bio')
     .optional()
     .isLength({ max: 280 })
@@ -122,7 +122,8 @@ export const register = async (req: Request, res: Response) => {
     const user = new User({
       username,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      displayName: username // Explicitly set displayName to username
     });
 
     await user.save();
