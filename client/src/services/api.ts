@@ -5,7 +5,7 @@ import axios, { AxiosResponse, AxiosError } from 'axios';
 const isDevelopment = window.location.hostname === 'localhost';
 const API_BASE_URL = isDevelopment
     ? 'http://localhost:3001'
-    : 'https://api.solodevelopment.org';
+    : 'https://solodevelopment.onrender.com';
 
 // Create axios instance
 const api = axios.create({
