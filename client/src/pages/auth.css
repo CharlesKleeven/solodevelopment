@@ -133,6 +133,31 @@
     opacity: 0.8;
 }
 
+.auth-footer {
+    text-align: center;
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: var(--space-6);
+}
+
+.auth-footer p {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.auth-footer a {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity var(--transition);
+}
+
+.auth-footer a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
 /* Forgot password link */
 .forgot-password-link {
     margin-top: var(--space-2);

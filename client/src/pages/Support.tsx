@@ -54,13 +54,13 @@ const Support: React.FC = () => {
 
           {success && (
             <div className="success-message">
-              ✅ Message sent successfully! We'll get back to you soon.
+              Message sent successfully! We'll get back to you soon.
             </div>
           )}
 
           {error && (
             <div className="error-message">
-              ❌ {error}
+              {error}
             </div>
           )}
 
