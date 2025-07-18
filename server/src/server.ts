@@ -52,6 +52,7 @@ app.use(cookieParser());
 // Routes
 app.use('/api/jam', jamRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/auth', authRoutes);
 
 // Connect to MongoDB with longer timeout for Render
 mongoose
@@ -68,8 +69,7 @@ mongoose
 // Disable Mongoose buffering globally
 mongoose.set('bufferCommands', false);
 
-// API Routes - temporarily remove rate limiter to test
-app.use('/api/auth', authRoutes);
+// Auth routes now mounted above with other routes
 
 // Basic routes
 app.get('/', (req, res) => {
