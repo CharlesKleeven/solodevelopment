@@ -22,6 +22,7 @@ const api = axios.create({
 // Request interceptor
 api.interceptors.request.use(
     (config) => {
+        console.log('API Request:', config.method?.toUpperCase(), config.url);
         return config;
     },
     (error: AxiosError) => {
