@@ -120,7 +120,7 @@ interface SendContactEmailParams {
 export const sendContactEmail = async ({ userEmail, message, timestamp }: SendContactEmailParams) => {
     try {
         const { data, error } = await getResend().emails.send({
-            from: 'SoloDevelopment <noreply@solodevelopment.org>',
+            from: 'SoloDevelopment <onboarding@resend.dev>',
             to: process.env.ADMIN_EMAIL!,
             subject: 'New Contact Form Submission - SoloDevelopment',
             html: `
