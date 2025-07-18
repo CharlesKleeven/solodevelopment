@@ -42,7 +42,9 @@ app.use(cors({
     origin: process.env.NODE_ENV === 'production'
         ? ['https://solodevelopment-frontend.onrender.com', 'https://solodevelopment.org']
         : ['http://localhost:3000'],
-    credentials: true // Allow cookies
+    credentials: true, // Allow cookies
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Body parsing middleware
