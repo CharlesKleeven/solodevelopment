@@ -35,7 +35,7 @@
 
 .btn-secondary:hover {
     background: var(--bg-secondary);
-    border-color: var(--color-accent-alt);
+    border-color: var(--color-accent);
 }
 
 .btn-ghost {
