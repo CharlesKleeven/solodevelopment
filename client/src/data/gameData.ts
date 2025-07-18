@@ -91,7 +91,7 @@ export const gameData: Game[] = [
         id: 7,
         title: "Mutual Assured Destruction Simulator",
         author: "@blackvoidtytan",
-        url: "https://blackvoidmedia.itch.io/mutual-assured-destrtruction-simulator",
+        url: "https://blackvoidmedia.itch.io/mutual-assured-destruction-simulatorr",
         jamName: "SoloDevelopment Game Jam 4",
         jamUrl: "https://itch.io/jam/solo-dev-game-jam-4",
         jamType: "themed",
