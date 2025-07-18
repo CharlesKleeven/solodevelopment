@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { sendContactEmail } from '../services/emailService';
 
@@ -18,7 +18,7 @@ const contactValidation = [
 ];
 
 // POST /api/contact - Submit contact form
-router.post('/', contactValidation, async (req, res) => {
+router.post('/', contactValidation, async (req: Request, res: Response) => {
     try {
         // Check for validation errors
         const errors = validationResult(req);
