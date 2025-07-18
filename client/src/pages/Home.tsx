@@ -72,8 +72,8 @@ const Home: React.FC = () => {
                         A quiet space for devs building projects at their own pace.
                     </p>
                     <div className="home-buttons">
-                        <a href="https://discord.gg/uXeapAkAra" className="btn btn-primary">Join Discord</a>
-                        <a href="https://reddit.com/r/solodevelopment" className="btn btn-secondary">Browse Reddit</a>
+                        <a href="https://discord.gg/uXeapAkAra" className="btn btn-primary" target="_blank" rel="noreferrer">Join Discord</a>
+                        <a href="https://reddit.com/r/solodevelopment" className="btn btn-secondary" target="_blank" rel="noreferrer">Browse Reddit</a>
                     </div>
                 </div>
             </section>
@@ -136,6 +136,8 @@ const Home: React.FC = () => {
                                 href={game.url}
                                 key={`${game.id}-${index}`}
                                 className="featured-game"
+                                target="_blank"
+                                rel="noreferrer"
                             >
                                 <div className="game-thumb-large">
                                     {game.image ? (
