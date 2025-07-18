@@ -109,3 +109,57 @@ export const sendPasswordResetEmail = async ({ to, username, resetUrl }: SendPas
     throw error;
   }
 };
+
+interface SendContactEmailParams {
+    userEmail: string;
+    message: string;
+    timestamp: string;
+}
+
+export const sendContactEmail = async ({ userEmail, message, timestamp }: SendContactEmailParams) => {
+    try {
+        const { data, error } = await getResend().emails.send({
+            from: 'SoloDevelopment <onboarding@resend.dev>',
+            to: process.env.ADMIN_EMAIL!,
+            subject: 'New Contact Form Submission - SoloDevelopment',
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <h2 style="color: #333; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">
+                        New Contact Form Submission
+                    </h2>
+                    
+                    <div style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 5px;">
+                        <p style="margin: 0; color: #666; font-size: 14px;">
+                            <strong>From:</strong> ${userEmail}
+                        </p>
+                        <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">
+                            <strong>Submitted:</strong> ${new Date(timestamp).toLocaleString()}
+                        </p>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h3 style="color: #333; margin-bottom: 10px;">Message:</h3>
+                        <div style="background: white; padding: 15px; border-left: 4px solid #667eea; border-radius: 3px;">
+                            ${message.replace(/\n/g, '<br>')}
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 12px; color: #999; margin-top: 30px; text-align: center;">
+                        Sent from SoloDevelopment Contact Form
+                    </p>
+                </div>
+            `
+        });
+
+        if (error) {
+            console.error('Resend error:', error);
+            throw new Error('Failed to send contact email');
+        }
+
+        console.log('Contact email sent successfully:', data);
+        return data;
+    } catch (error) {
+        console.error('Error sending contact email:', error);
+        throw error;
+    }
+};

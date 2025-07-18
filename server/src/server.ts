@@ -7,6 +7,7 @@ import rateLimit from 'express-rate-limit';
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth';  // Import auth routes
 import jamRoutes from './routes/jam';
+import contactRoutes from './routes/contact';
 
 // Load environment variables
 dotenv.config();
@@ -54,8 +55,9 @@ app.use(cors({
     credentials: true // Allow cookies
 }));
 
-// For jam fresh updates
+// Routes
 app.use('/api/jam', jamRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
@@ -76,12 +78,8 @@ mongoose
 // Disable Mongoose buffering globally
 mongoose.set('bufferCommands', false);
 
-// API Routes
-if (process.env.NODE_ENV === 'production') {
-    app.use('/api/auth', authLimiter, authRoutes);
-} else {
-    app.use('/api/auth', authRoutes);
-}
+// API Routes - temporarily remove rate limiter to test
+app.use('/api/auth', authRoutes);
 
 // Basic routes
 app.get('/', (req, res) => {
