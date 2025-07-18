@@ -153,9 +153,10 @@ export const register = async (req: Request, res: Response) => {
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
-    // Send success response without token
+    // Send success response with token (temporary localStorage approach)
     res.status(201).json({
       message: 'User created successfully',
+      token: token, // Add token to response for localStorage
       user: {
         id: user._id,
         username: user.username,
@@ -230,9 +231,10 @@ export const login = async (req: Request, res: Response) => {
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
-    // Send success reponse without token
+    // Send success response with token (temporary localStorage approach)
     res.json({
       message: 'Login successful',
+      token: token, // Add token to response for localStorage
       user: {
         id: user._id,
         username: user.username,
