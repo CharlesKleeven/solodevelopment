@@ -35,17 +35,7 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Rate limiting for auth endpoints - 15 attempts per 10 minutes
-const authLimiter = rateLimit({
-    windowMs: 10 * 60 * 1000,
-    max: 15,
-    message: {
-        error: 'Too many login attempts. Please wait 10 minutes before trying again.',
-        retryAfter: '10 minutes'
-    },
-    standardHeaders: true, // Return rate limit info in headers
-    legacyHeaders: false,
-});
+// Rate limiter temporarily removed for debugging
 
 // CORS configuration - MUST be before routes
 app.use(cors({
