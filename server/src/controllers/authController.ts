@@ -144,6 +144,15 @@ export const register = async (req: Request, res: Response) => {
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
     });
 
+    // Debug cookie - should be visible in browser
+    res.cookie('debug-auth', 'logged-in', {
+      httpOnly: false, // Visible in browser
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
     // Send success response without token
     res.status(201).json({
       message: 'User created successfully',
@@ -206,6 +215,15 @@ export const login = async (req: Request, res: Response) => {
     // Set httpOnly cookie
     res.cookie('token', token, {
       httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    // Debug cookie - should be visible in browser
+    res.cookie('debug-auth', 'logged-in', {
+      httpOnly: false, // Visible in browser
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       path: '/',
