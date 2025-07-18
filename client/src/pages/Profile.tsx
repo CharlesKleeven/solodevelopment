@@ -4,7 +4,7 @@ import { profileAPI } from '../services/api';
 import './profile.css';
 
 const Profile: React.FC = () => {
-    const { user, refreshUser } = useAuth();
+    const { user, refreshUser, loading } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -138,6 +138,18 @@ const Profile: React.FC = () => {
             icon: '🔗' // You can replace this with proper icons later
         };
     };
+
+    if (loading) {
+        return (
+            <div className="profile-page">
+                <div className="profile-container">
+                    <div className="profile-card">
+                        <h1>Loading...</h1>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     if (!user) {
         return (
