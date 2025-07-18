@@ -7,6 +7,8 @@ const API_BASE_URL = isDevelopment
     ? 'http://localhost:3001'
     : 'https://solodevelopment.onrender.com';
 
+console.log('Environment:', { isDevelopment, hostname: window.location.hostname, API_BASE_URL });
+
 // Create axios instance
 const api = axios.create({
     baseURL: API_BASE_URL,

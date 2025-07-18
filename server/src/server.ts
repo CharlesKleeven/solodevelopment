@@ -41,16 +41,16 @@ const authLimiter = rateLimit({
     legacyHeaders: false,
 });
 
-// For jam fresh updates
-app.use('/api/jam', jamRoutes);
-
-// CORS configuration
+// CORS configuration - MUST be before routes
 app.use(cors({
     origin: process.env.NODE_ENV === 'production'
-        ? ['https://solodevelopment.org']
+        ? ['https://solodevelopment-frontend.onrender.com', 'https://solodevelopment.org']
         : ['http://localhost:3000'],
     credentials: true // Allow cookies
 }));
+
+// For jam fresh updates
+app.use('/api/jam', jamRoutes);
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
