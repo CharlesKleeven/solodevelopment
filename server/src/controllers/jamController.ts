@@ -19,6 +19,7 @@ interface JamData {
 
 // Cache to avoid hammering itch.io
 let cachedParticipants: number | null = null;
+let lastKnownGoodValue = 0; // Keep last successful scrape
 let lastFetch = 0;
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes (shorter cache for live updates)
 
@@ -65,16 +66,18 @@ export const getCurrentJam = async (_req: Request, res: Response) => {
                 }
             });
 
-            // Cache the result
+            // Cache the result and update last known good value
             cachedParticipants = participants;
+            lastKnownGoodValue = participants || lastKnownGoodValue; // Only update if we got a valid number
             lastFetch = now;
             
             console.log(`✅ Scraped participant count: ${participants}`);
             
         } catch (error) {
             console.error('❌ Failed to scrape participant count:', error);
-            // Use cached value or fallback
-            participants = cachedParticipants || 0;
+            // Use cached value or last known good value (avoid showing 0)
+            participants = cachedParticipants || lastKnownGoodValue;
+            console.log(`🔄 Using fallback participant count: ${participants}`);
         }
     }
 
