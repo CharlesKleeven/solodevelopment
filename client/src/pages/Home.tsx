@@ -10,26 +10,52 @@ const Home: React.FC = () => {
     const { jamData, loading: jamLoading } = useJam(); // Add this
     useFadeInOnScroll();
 
-    // Shuffle function
-    const shuffleArray = (array: any[]) => {
-        const shuffled = [...array];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    // Weighted random selection - newer games have higher probability
+    const getRandomWeightedGames = (games: any[], count: number) => {
+        const selected = [];
+        const availableGames = [...games];
+        
+        for (let i = 0; i < count && availableGames.length > 0; i++) {
+            // Create weights: games at the end (newer) have higher weights
+            const weights = availableGames.map((_, index) => {
+                const originalIndex = games.findIndex(g => g.id === availableGames[index].id);
+                // Newer games (higher index/ID) get higher weight
+                const weight = Math.max(1, originalIndex + 1);
+                return weight * 1.5; // Boost factor for newer games
+            });
+            
+            // Calculate total weight
+            const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+            
+            // Random selection based on weights
+            let random = Math.random() * totalWeight;
+            let selectedIndex = 0;
+            
+            for (let j = 0; j < weights.length; j++) {
+                random -= weights[j];
+                if (random <= 0) {
+                    selectedIndex = j;
+                    break;
+                }
+            }
+            
+            selected.push(availableGames[selectedIndex]);
+            availableGames.splice(selectedIndex, 1);
         }
-        return shuffled;
+        
+        return selected;
     };
 
     // State for displayed games
     const [displayedGames, setDisplayedGames] = useState(() =>
-        shuffleArray(gameData).slice(0, 4)
+        getRandomWeightedGames(gameData, 4)
     );
     const [isShuffling, setIsShuffling] = useState(false);
 
     const handleShuffle = () => {
         setIsShuffling(true);
         setTimeout(() => {
-            setDisplayedGames(shuffleArray(gameData).slice(0, 4));
+            setDisplayedGames(getRandomWeightedGames(gameData, 4));
             setIsShuffling(false);
         }, 150); // Small delay for fade out
     };
