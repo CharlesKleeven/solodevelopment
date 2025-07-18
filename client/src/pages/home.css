@@ -456,3 +456,31 @@
         align-items: flex-start;
     }
 }
+
+/* ===== LIGHT MODE TEXT IMPROVEMENTS ===== */
+@media (prefers-color-scheme: light) {
+    .game-jam-clean {
+        color: var(--text-tertiary);
+        opacity: 1;
+    }
+
+    .game-author-clean {
+        color: var(--text-secondary);
+    }
+
+    .jam-description {
+        color: var(--text-secondary);
+    }
+
+    .activity-item {
+        color: var(--text-secondary);
+    }
+
+    .activity-item .user {
+        color: var(--text-primary);
+    }
+
+    .stat-label {
+        color: var(--text-secondary);
+    }
+}

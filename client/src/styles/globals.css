@@ -2,44 +2,49 @@
 
 :root {
     /* === ACCENT COLORS === */
-    --color-accent: #ff7043;
-    /* Warm orange, primary */
-    --color-accent-alt: #62d5f8;
-    /* Soft cyan, secondary pop */
-    --color-success: #34d399;
-    /* Green used for status dots etc */
-    --color-purple: #8B7CC8;
-    /* Soft purple for variety */
-    --color-warm-yellow: #F2CC7A;
-    /* Warm yellow for highlights */
-    --color-forest: #6B8E6B;
-    /* Muted green for nature feel */
-    --color-coral: #FF9A8B;
+    --color-accent: #ff6b35;
+    /* Warm orange, primary - slightly more vibrant */
+    --color-accent-alt: #4fd1c7;
+    /* Soft cyan, secondary pop - warmer tone */
+    --color-success: #2dd4bf;
+    /* Teal-green, more personality */
+    --color-purple: #a78bfa;
+    /* Softer purple for variety */
+    --color-warm-yellow: #fbbf24;
+    /* Warmer yellow for highlights */
+    --color-forest: #059669;
+    /* Deeper green for nature feel */
+    --color-coral: #fb7185;
     /* Soft coral for warmth */
 
-    /* === DARK BACKGROUND LAYERS === */
-    --bg-primary: #121418;
-    /* Ink-dark base */
-    --bg-secondary: #1a1d21;
-    /* Cards / panels */
-    --bg-tertiary: #2a2e34;
-    /* Inside elements */
-    --bg-fade: #16181d;
+    /* === WARM DARK BACKGROUNDS === */
+    --bg-primary: #0f1419;
+    /* Warm ink-dark base */
+    --bg-secondary: #1a1f25;
+    /* Cards / panels with warmth */
+    --bg-tertiary: #252b33;
+    /* Inside elements - softer */
+    --bg-fade: #13181e;
     /* Subtle section contrast */
 
-    /* === TEXT COLORS === */
-    --text-primary: #f4f4f7;
-    /* Almost-white */
-    --text-secondary: #b9bdc4;
-    --text-tertiary: #7a7f87;
+    /* === WARM TEXT COLORS === */
+    --text-primary: #f8fafc;
+    /* Warm almost-white */
+    --text-secondary: #cbd5e1;
+    /* Warmer gray */
+    --text-tertiary: #94a3b8;
+    /* Softer tertiary */
+    --text-quaternary: #64748b;
+    /* Even softer for subtle text */
 
     /* === BORDERS & BADGES === */
-    --border-subtle: #2c2f35;
-    --border-radius: 8px;
-    --border-radius-lg: 12px;
+    --border-subtle: #334155;
+    /* Warmer border */
+    --border-radius: 6px;
+    --border-radius-lg: 10px;
 
-    --badge-upcoming: #b3a4ff;
-    --badge-complete: #55e2c2;
+    --badge-upcoming: #a78bfa;
+    --badge-complete: #2dd4bf;
 
     /* === SPACING === */
     --space-1: 0.25rem;
@@ -67,6 +72,46 @@
     --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
 }
 
+/* ===== LIGHT MODE THEME ===== */
+@media (prefers-color-scheme: light) {
+    :root {
+        /* === SOFT LIGHT BACKGROUNDS === */
+        --bg-primary: #faf8f5;
+        /* Warm cream base, easier on eyes */
+        --bg-secondary: #f4f1ec;
+        /* Soft warm beige for cards */
+        --bg-tertiary: #ede9e3;
+        /* Subtle warm contrast */
+        --bg-fade: #f7f5f2;
+        /* Very light warm cream for sections */
+
+        /* === READABLE TEXT COLORS === */
+        --text-primary: #1a202c;
+        /* Darker for better readability */
+        --text-secondary: #2d3748;
+        /* Medium dark for secondary text */
+        --text-tertiary: #4a5568;
+        /* Medium gray for tertiary */
+        --text-quaternary: #718096;
+        /* Light gray for subtle text */
+
+        /* === SOFT BORDERS === */
+        --border-subtle: #e2d9d1;
+        /* Warm light border */
+
+        /* === GENTLE SHADOWS === */
+        --shadow-subtle: 0 1px 2px rgba(45, 55, 72, 0.06);
+        --shadow-soft: 0 4px 6px -1px rgba(45, 55, 72, 0.1);
+
+        /* === ACCENT COLORS (consistent warmth) === */
+        --color-accent: #ff6b35;
+        /* Keep warm orange accent */
+        --color-accent-alt: #4fd1c7;
+        /* Keep warm cyan */
+        --color-success: #2dd4bf;
+        /* Keep teal-green */
+    }
+}
 
 /* ===== RESET & BASE ===== */
 *,
