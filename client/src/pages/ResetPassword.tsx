@@ -36,14 +36,14 @@ const ResetPassword: React.FC = () => {
       return;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long.');
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long.');
       setLoading(false);
       return;
     }
 
     try {
-      const response = await api.post('/auth/reset-password', { 
+      const response = await api.post('/api/auth/reset-password', { 
         token, 
         password 
       });
@@ -105,10 +105,10 @@ const ResetPassword: React.FC = () => {
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter new password (min 6 characters)"
+                  placeholder="Enter new password (min 8 characters)"
                   required
                   disabled={loading}
-                  minLength={6}
+                  minLength={8}
                 />
               </div>
 
@@ -122,7 +122,7 @@ const ResetPassword: React.FC = () => {
                   placeholder="Confirm new password"
                   required
                   disabled={loading}
-                  minLength={6}
+                  minLength={8}
                 />
               </div>
 
