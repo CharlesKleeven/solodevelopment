@@ -40,11 +40,11 @@ app.use(limiter);
 // CORS configuration - MUST be before routes
 app.use(cors({
     origin: process.env.NODE_ENV === 'production'
-        ? ['https://solodevelopment-frontend.onrender.com', 'https://solodevelopment.org']
+        ? ['https://solodevelopment.org']
         : ['http://localhost:3000'],
     credentials: true, // Allow cookies
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type']
 }));
 
 // Body parsing middleware
