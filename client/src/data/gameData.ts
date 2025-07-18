@@ -9,6 +9,7 @@ export interface Game {
     jamUrl: string;
     jamType: 'marathon' | 'themed'; // Simplified to just marathon vs themed
     jamTheme?: string; // Added theme field
+    placement?: number; // Winner placement (1st, 2nd, 3rd)
     thumb: string;
     image?: string;
 }
@@ -205,6 +206,45 @@ export const gameData: Game[] = [
         jamTheme: "Minimalism",
         thumb: "T",
         image: "/images/games/something-wrong-world.png"
+    },
+    {
+        id: 17,
+        title: "Star Modulus",
+        author: "@Blurr507",
+        url: "https://blurr507.itch.io/star-modulus",
+        jamName: "SoloDevelopment 72hr Jam 7",
+        jamUrl: "https://itch.io/jam/solodevelopment-jam-7",
+        jamType: "themed",
+        jamTheme: "Parts and Upgrades",
+        placement: 1,
+        thumb: "S",
+        image: "/images/games/star-modulus.png"
+    },
+    {
+        id: 18,
+        title: "Cow Combo",
+        author: "@LateAFCoffee",
+        url: "https://lateafcoffee.itch.io/cow-combo",
+        jamName: "SoloDevelopment 72hr Jam 7",
+        jamUrl: "https://itch.io/jam/solodevelopment-jam-7",
+        jamType: "themed",
+        jamTheme: "Parts and Upgrades",
+        placement: 2,
+        thumb: "C",
+        image: "/images/games/cow-combo.png"
+    },
+    {
+        id: 19,
+        title: "Modular Mayhem",
+        author: "@Unremarkable1",
+        url: "https://unremarkable1.itch.io/modular-mayhem",
+        jamName: "SoloDevelopment 72hr Jam 7",
+        jamUrl: "https://itch.io/jam/solodevelopment-jam-7",
+        jamType: "themed",
+        jamTheme: "Parts and Upgrades",
+        placement: 3,
+        thumb: "M",
+        image: "/images/games/modular-mayhem.png"
     }
 ];
 

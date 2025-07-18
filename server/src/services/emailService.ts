@@ -22,7 +22,7 @@ interface SendPasswordResetEmailParams {
 export const sendPasswordResetEmail = async ({ to, username, resetUrl }: SendPasswordResetEmailParams) => {
   try {
     const { data, error } = await getResend().emails.send({
-      from: 'SoloDevelopment <onboarding@resend.dev>', // Using Resend's free domain
+      from: 'SoloDevelopment <noreply@solodevelopment.org>',
       to,
       subject: 'Reset Your Password - SoloDevelopment',
       html: `
@@ -120,7 +120,7 @@ interface SendContactEmailParams {
 export const sendContactEmail = async ({ userEmail, message, timestamp }: SendContactEmailParams) => {
     try {
         const { data, error } = await getResend().emails.send({
-            from: 'SoloDevelopment <onboarding@resend.dev>',
+            from: 'SoloDevelopment <noreply@solodevelopment.org>',
             to: process.env.ADMIN_EMAIL!,
             subject: 'New Contact Form Submission - SoloDevelopment',
             html: `
