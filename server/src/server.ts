@@ -56,9 +56,14 @@ app.use('/api/jam', jamRoutes);
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 
-// Connect to MongoDB
+// Connect to MongoDB with longer timeout for Render
 mongoose
-    .connect(process.env.MONGO_URI!)
+    .connect(process.env.MONGO_URI!, {
+        serverSelectionTimeoutMS: 30000, // 30 seconds to connect
+        socketTimeoutMS: 45000, // 45 seconds for socket operations
+        bufferMaxEntries: 0, // Disable mongoose buffering
+        bufferCommands: false, // Disable mongoose buffering
+    })
     .then(() => console.log('Connected to MongoDB'))
     .catch((err) => console.error('MongoDB connection error:', err));
 
