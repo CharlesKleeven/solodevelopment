@@ -390,6 +390,11 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
       // Send email
       try {
+        console.log('Attempting to send password reset email to:', user.email);
+        console.log('Reset URL:', resetUrl);
+        console.log('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
+        console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
+        
         await sendPasswordResetEmail({
           to: user.email,
           username: user.displayName || user.username,
@@ -404,6 +409,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
         await user.save();
         
         console.error('Failed to send password reset email:', emailError);
+        console.error('Email error details:', emailError);
         return res.status(500).json({ error: 'Failed to send reset email. Please try again.' });
       }
     }
