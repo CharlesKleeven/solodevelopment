@@ -19,10 +19,17 @@ const api = axios.create({
     timeout: 30000, // 30 second timeout for Render cold starts
 });
 
-// Request interceptor
+// Request interceptor - add token from localStorage
 api.interceptors.request.use(
     (config) => {
         console.log('API Request:', config.method?.toUpperCase(), config.url);
+        
+        // Add token from localStorage if available
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        
         return config;
     },
     (error: AxiosError) => {
@@ -49,15 +56,25 @@ api.interceptors.response.use(
 export const authAPI = {
     register: async (data: { username: string; email: string; password: string }) => {
         const response = await api.post('/api/auth/register', data);
+        // Store token in localStorage
+        if (response.data.token) {
+            localStorage.setItem('token', response.data.token);
+        }
         return response.data;
     },
 
     login: async (data: { emailOrUsername: string; password: string }) => {
         const response = await api.post('/api/auth/login', data);
+        // Store token in localStorage
+        if (response.data.token) {
+            localStorage.setItem('token', response.data.token);
+        }
         return response.data;
     },
 
     logout: async () => {
+        // Remove token from localStorage
+        localStorage.removeItem('token');
         const response = await api.post('/api/auth/logout');
         return response.data;
     },
