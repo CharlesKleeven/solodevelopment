@@ -42,20 +42,22 @@
 .current-jam-banner {
     background: var(--bg-secondary);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--border-radius);
-    padding: var(--space-6);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-8);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: var(--space-6);
+    gap: var(--space-8);
+    position: relative;
+    overflow: hidden;
 }
+
 
 .jam-info {
     text-align: left;
 }
 
 .jam-badge {
-    background: var(--color-success);
     color: var(--bg-primary);
     padding: var(--space-1) var(--space-3);
     border-radius: var(--border-radius);
@@ -63,6 +65,7 @@
     font-weight: 600;
     display: inline-block;
     margin-bottom: var(--space-2);
+    background: var(--text-tertiary); /* Neutral fallback */
 }
 
 .jam-badge.upcoming {
@@ -124,9 +127,11 @@
 .stats-box {
     background: var(--bg-secondary);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--border-radius);
-    padding: var(--space-6);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-8);
+    position: relative;
 }
+
 
 .box-title {
     font-size: var(--text-lg);
@@ -253,13 +258,13 @@
 .featured-game {
     background: var(--bg-secondary);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--border-radius);
-    padding: var(--space-6);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-8);
     text-decoration: none;
     display: flex;
     align-items: center;
     gap: var(--space-6);
-    transition: border-color var(--transition), opacity 0.3s ease, transform 0.3s ease;
+    transition: border-color 0.2s ease;
     min-height: 160px;
     animation: fadeInUp 0.4s ease forwards;
 }
@@ -276,16 +281,31 @@
     }
 }
 
+/* Override global a:hover rule for game cards */
 .featured-game:hover {
     border-color: var(--text-tertiary);
+    color: inherit;
+}
+
+.featured-game:hover .game-info-clean .game-title-clean {
+    color: var(--color-accent);
+}
+
+/* Ensure jam title and author stay unchanged on hover */
+.featured-game:hover .game-info-clean .game-jam-clean {
+    color: var(--text-quaternary) !important;
+}
+
+.featured-game:hover .game-info-clean .game-author-clean {
+    color: var(--text-tertiary) !important;
 }
 
 .game-thumb-large {
-    width: 140px;
-    height: 140px;
+    width: 160px;
+    height: 160px;
     background: var(--bg-tertiary);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -316,6 +336,7 @@
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: var(--space-1);
+    transition: color var(--transition);
 }
 
 .game-author-clean {
@@ -329,6 +350,7 @@
     color: var(--text-quaternary);
     font-style: italic;
     opacity: 0.8;
+    transition: none;
 }
 
 /* ===== MINI EXPLORE SECTION ===== */
@@ -339,7 +361,7 @@
 .section-label {
     font-size: var(--text-sm);
     font-weight: 500;
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.04em;
     margin-bottom: var(--space-4);

@@ -35,7 +35,8 @@
 
     /* === BORDERS & BADGES === */
     --border-subtle: #2c2f35;
-    --border-radius: 6px;
+    --border-radius: 8px;
+    --border-radius-lg: 12px;
 
     --badge-upcoming: #b3a4ff;
     --badge-complete: #55e2c2;

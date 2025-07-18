@@ -82,22 +82,25 @@
 /* ===== JAM CARDS ===== */
 .jam-winner-section {
     background: var(--bg-secondary);
-    border-radius: var(--border-radius);
-    padding: var(--space-6);
-    margin-bottom: var(--space-6);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-8);
+    margin-bottom: var(--space-8);
     display: inline-block;
     width: 100%;
-    box-shadow: 0 0 0 1px var(--border-subtle);
+    border: 1px solid var(--border-subtle);
     break-inside: avoid;
     vertical-align: top;
+    position: relative;
 }
 
 .jam-winner-section h3 {
     font-size: var(--text-xl);
     font-weight: 600;
     color: var(--text-primary);
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-3);
+    position: relative;
 }
+
 
 .jam-description {
     font-size: var(--text-sm);
@@ -124,51 +127,64 @@
 
 .winner-featured {
     display: flex;
-    gap: var(--space-4);
+    gap: var(--space-6);
     background: var(--bg-tertiary);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--border-radius);
-    padding: var(--space-4);
-    transition: all var(--transition);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-6);
+    transition: border-color 0.2s ease;
     cursor: pointer;
     position: relative;
     align-items: center;
     text-decoration: none;
     color: inherit;
+    margin-bottom: var(--space-4);
 }
 
 .winner-featured:hover {
     border-color: var(--text-tertiary);
 }
 
+.winner-featured:hover .winner-title {
+    color: var(--color-accent);
+}
+
 .winner-secondary {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
+    flex-direction: row;
+    gap: var(--space-4);
+    justify-content: space-between;
 }
 
 .winner-item {
     display: flex;
+    flex-direction: column;
     gap: var(--space-3);
     background: var(--bg-tertiary);
     border: 1px solid var(--border-subtle);
     border-radius: var(--border-radius);
-    padding: var(--space-3);
-    transition: all var(--transition);
+    padding: var(--space-4);
+    transition: border-color 0.2s ease;
     cursor: pointer;
     position: relative;
     align-items: center;
     text-decoration: none;
     color: inherit;
+    flex: 1;
+    text-align: center;
 }
 
 .winner-item:hover {
     border-color: var(--text-tertiary);
 }
 
+.winner-item:hover .winner-title {
+    color: var(--color-accent);
+}
+
 /* ===== THUMBNAILS ===== */
 .showcase-thumb {
-    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    background: var(--bg-tertiary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -179,17 +195,18 @@
 }
 
 .winner-featured .showcase-thumb {
-    width: 140px;
-    height: 140px;
+    width: 160px;
+    height: 160px;
     font-size: var(--text-2xl);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-lg);
+    flex-shrink: 0;
 }
 
 .winner-item .showcase-thumb {
-    width: 60px;
-    height: 60px;
+    width: 120px;
+    height: 120px;
     border-radius: var(--border-radius);
-    font-size: var(--text-lg);
+    font-size: var(--text-xl);
 }
 
 .showcase-thumb img {
@@ -207,9 +224,7 @@
 }
 
 .showcase-thumb.no-image {
-    background: linear-gradient(135deg,
-        rgba(245, 94, 59, 0.05) 0%,
-        rgba(98, 213, 248, 0.05) 100%);
+    background: var(--bg-secondary);
     color: var(--text-secondary);
 }
 
@@ -225,12 +240,15 @@
 .winner-item .winner-info {
     padding: 0;
     gap: var(--space-1);
+    text-align: center;
+    align-items: center;
 }
 
 .winner-title {
     font-weight: 600;
     color: var(--text-primary);
     line-height: 1.3;
+    transition: color var(--transition);
 }
 
 .winner-featured .winner-title {
@@ -260,17 +278,18 @@
     position: absolute;
     bottom: var(--space-2);
     right: var(--space-2);
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 400;
     color: var(--text-tertiary);
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 2px;
-    padding: 1px 3px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    opacity: 0.6;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    padding: 2px 6px;
+    text-transform: lowercase;
+    letter-spacing: 0.01em;
     line-height: 1;
     z-index: 2;
+    opacity: 0.5;
 }
 
 /* ===== RESPONSIVE ===== */
@@ -300,8 +319,8 @@
     }
     
     .winner-featured .showcase-thumb {
-        width: 100px;
-        height: 100px;
+        width: 120px;
+        height: 120px;
     }
     
     .winner-featured .winner-info {
@@ -311,6 +330,22 @@
     .winner-item {
         gap: var(--space-2);
         padding: var(--space-2);
+    }
+    
+    .winner-secondary {
+        flex-direction: column;
+        gap: var(--space-3);
+    }
+    
+    .winner-item {
+        flex-direction: row;
+        text-align: left;
+        align-items: center;
+    }
+    
+    .winner-item .winner-info {
+        text-align: left;
+        align-items: flex-start;
     }
     
     .winner-item .showcase-thumb {
