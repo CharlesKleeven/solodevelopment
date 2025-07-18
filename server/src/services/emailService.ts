@@ -98,8 +98,9 @@ export const sendPasswordResetEmail = async ({ to, username, resetUrl }: SendPas
     });
 
     if (error) {
-      console.error('Error sending password reset email:', error);
-      throw new Error('Failed to send password reset email');
+      console.error('Resend API error:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
+      throw new Error(`Resend error: ${JSON.stringify(error)}`);
     }
 
     console.log('Password reset email sent successfully:', data);
