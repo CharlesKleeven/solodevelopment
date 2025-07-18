@@ -87,6 +87,41 @@
     padding: 0.5rem 1.25rem;
 }
 
+.contact-form button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* === SUCCESS/ERROR MESSAGES === */
+.success-message,
+.error-message {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    font-size: var(--text-sm);
+    font-weight: 500;
+}
+
+.success-message {
+    background: rgba(74, 222, 128, 0.1);
+    color: var(--color-success);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+.error-message {
+    background: rgba(245, 94, 59, 0.1);
+    color: var(--color-accent);
+    border: 1px solid rgba(245, 94, 59, 0.2);
+}
+
+.char-count {
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+    text-align: right;
+    display: block;
+    margin-top: 0.25rem;
+}
+
 /* === RESPONSIVE === */
 @media (max-width: 480px) {
     .support-page {
