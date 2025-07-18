@@ -1,6 +1,6 @@
 // hooks/useJam.ts
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 
 interface JamData {
     title: string;
@@ -23,7 +23,7 @@ export const useJam = () => {
     useEffect(() => {
         const fetchJamData = async () => {
             try {
-                const response = await axios.get('/api/jam/current');
+                const response = await api.get('/api/jam/current');
                 setJamData(response.data);
                 setError(null);
             } catch (err) {
