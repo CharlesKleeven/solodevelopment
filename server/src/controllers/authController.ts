@@ -139,24 +139,14 @@ export const register = async (req: Request, res: Response) => {
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      sameSite: 'lax',
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
     });
 
-    // Debug cookie - should be visible in browser
-    res.cookie('debug-auth', 'logged-in', {
-      httpOnly: false, // Visible in browser
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      path: '/',
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
-
-    // Send success response with token (temporary localStorage approach)
+    // Send success response
     res.status(201).json({
       message: 'User created successfully',
-      token: token, // Add token to response for localStorage
       user: {
         id: user._id,
         username: user.username,
@@ -217,24 +207,14 @@ export const login = async (req: Request, res: Response) => {
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      sameSite: 'lax',
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
-    // Debug cookie - should be visible in browser
-    res.cookie('debug-auth', 'logged-in', {
-      httpOnly: false, // Visible in browser
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      path: '/',
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
-
-    // Send success response with token (temporary localStorage approach)
+    // Send success response
     res.json({
       message: 'Login successful',
-      token: token, // Add token to response for localStorage
       user: {
         id: user._id,
         username: user.username,
