@@ -41,6 +41,7 @@ const Footer: React.FC = () => {
           <div className="footer-column">
             <h4>Support</h4>
             <ul>
+              <li><a className="footer-link" href="https://practicalmedia.io/p/article-application" target="_blank" rel="noreferrer">Share your story</a></li>
               <li><a className="footer-link" href="/support">Contact</a></li>
               <li><a className="footer-link" href="/privacy">Privacy</a></li>
             </ul>
