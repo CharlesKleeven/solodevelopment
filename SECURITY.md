@@ -2,7 +2,7 @@
 
 ## Found a Security Issue?
 
-If you discover a vulnerability, please don't create a public issue. Email us privately at: [your-email@example.com] with details about what you found and how to reproduce it.
+If you discover a vulnerability, please don't create a public issue. Email us privately at: [issues@SoloDevelopment.org] with details about what you found and how to reproduce it.
 
 ## How We Protect User Data
 
