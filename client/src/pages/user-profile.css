@@ -1,0 +1,394 @@
+.user-profile-page {
+    min-height: 100vh;
+    background: var(--bg-primary);
+    padding: 4rem 0 2rem 0;
+}
+
+.user-profile-page .profile-container {
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+}
+
+.profile-hero {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding: 0;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.user-profile-page .profile-name {
+    color: var(--text-primary);
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    line-height: 1.2;
+}
+
+.user-profile-page .profile-username {
+    color: var(--text-tertiary);
+    font-size: 1rem;
+    margin: 0 0 1.5rem;
+    font-weight: 400;
+}
+
+
+.user-profile-page .profile-bio {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0 0 1rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.user-profile-page .profile-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin: 0.75rem 0 2rem;
+}
+
+.user-profile-page .profile-links:empty {
+    display: none;
+}
+
+.user-profile-page .profile-link {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: color 0.2s ease;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.user-profile-page .profile-link:hover {
+    color: var(--text-primary);
+    border-color: var(--color-accent);
+}
+
+
+.private-profile {
+    text-align: center;
+    padding: 3rem 2rem;
+}
+
+.private-notice {
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 2rem;
+    border: none;
+}
+
+.private-notice h3 {
+    color: var(--text-primary);
+    margin: 0 0 1rem;
+}
+
+.private-notice p {
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.stats-section {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: var(--bg-secondary);
+    border: none;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 120px;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+
+.user-profile-page .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+.user-profile-page .portfolio-item {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+}
+
+.user-profile-page .portfolio-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-accent);
+}
+
+.user-profile-page .portfolio-item:hover .portfolio-thumbnail {
+    box-shadow: var(--shadow-md);
+}
+
+.user-profile-page .portfolio-thumbnail {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    background: var(--bg-secondary);
+    overflow: hidden;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.user-profile-page .portfolio-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-profile-page .portfolio-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    opacity: 0.8;
+    background: var(--bg-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.user-profile-page .portfolio-info {
+    padding: 1.25rem;
+}
+
+.user-profile-page .portfolio-title {
+    margin: 0 0 0.5rem;
+    color: var(--text-primary);
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.4;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.user-profile-page .portfolio-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0 0 0.75rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.user-profile-page .portfolio-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0;
+}
+
+.user-profile-page .portfolio-tag {
+    background: var(--bg-tertiary);
+    color: var(--color-accent-alt);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid var(--color-accent-alt);
+}
+
+.user-profile-page .portfolio-tag-more {
+    background: var(--bg-tertiary);
+    color: var(--text-tertiary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid var(--border-subtle);
+}
+
+.user-profile-page .portfolio-actions {
+    margin-top: auto;
+    padding-top: 1rem;
+}
+
+.user-profile-page .btn-placeholder {
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+
+.profile-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.joined-date {
+    color: var(--text-tertiary);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.loading-state, .error-state {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.loading-state {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.error-state h1 {
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.error-state p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .user-profile-page .profile-container {
+        padding: 0 1.5rem;
+    }
+    
+    .user-profile-page .portfolio-grid {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .user-profile-page .profile-container {
+        padding: 0 1rem;
+    }
+    
+    .profile-hero {
+        margin-bottom: 3rem;
+    }
+    
+    .user-profile-page .profile-name {
+        font-size: 2.5rem;
+    }
+    
+    .user-profile-page .profile-username {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .user-profile-page .profile-bio {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .user-profile-page .portfolio-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        margin-top: 1.5rem;
+    }
+    
+    .user-profile-page .portfolio-thumbnail {
+        height: 220px;
+        margin-bottom: 1rem;
+    }
+    
+    .user-profile-page .profile-links {
+        gap: 0.75rem;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-profile-page {
+        padding: 1rem 0;
+    }
+    
+    .user-profile-page .profile-container {
+        padding: 0 0.75rem;
+    }
+    
+    .profile-hero {
+        margin-bottom: 2rem;
+    }
+    
+    .user-profile-page .profile-name {
+        font-size: 2rem;
+    }
+    
+    .user-profile-page .profile-username {
+        font-size: 1rem;
+    }
+    
+    .user-profile-page .profile-bio {
+        font-size: 1rem;
+    }
+    
+    .user-profile-page .portfolio-grid {
+        gap: 1.5rem;
+    }
+    
+    .user-profile-page .portfolio-thumbnail {
+        height: 200px;
+    }
+    
+    .user-profile-page .portfolio-title {
+        font-size: 1.1rem;
+    }
+    
+    .user-profile-page .profile-links {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .user-profile-page .profile-link {
+        text-align: center;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+}

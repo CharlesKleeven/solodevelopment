@@ -24,6 +24,7 @@
     margin-bottom: 4rem;
 }
 
+
 .support-section h2 {
     font-size: var(--text-2xl);
     font-weight: 600;
@@ -103,15 +104,15 @@
 }
 
 .success-message {
-    background: rgba(74, 222, 128, 0.1);
+    background: var(--color-success-bg);
     color: var(--color-success);
-    border: 1px solid rgba(74, 222, 128, 0.2);
+    border: 1px solid var(--color-success-border);
 }
 
 .error-message {
-    background: rgba(245, 94, 59, 0.1);
+    background: var(--color-danger-bg);
     color: var(--color-accent);
-    border: 1px solid rgba(245, 94, 59, 0.2);
+    border: 1px solid var(--color-danger-border);
 }
 
 .char-count {

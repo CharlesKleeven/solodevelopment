@@ -31,8 +31,6 @@ export const getCurrentJam = async (_req: Request, res: Response) => {
     
     if (!cachedParticipants || (now - lastFetch) > CACHE_DURATION) {
         try {
-            console.log('Fetching participant count from itch.io...');
-            
             const response = await axios.get(currentJam.url, {
                 headers: {
                     'User-Agent': 'Mozilla/5.0 (compatible; SoloDev-Bot/1.0)'
@@ -47,20 +45,16 @@ export const getCurrentJam = async (_req: Request, res: Response) => {
             
             // Look for the specific pattern: <div class="stat_value">70</div><div class="stat_label">Joined</div>
             const statElements = $('.stat_value');
-            console.log(`Found ${statElements.length} stat_value elements`);
             
             statElements.each((_, el) => {
                 const nextElement = $(el).next();
                 const value = $(el).text().trim();
                 const label = nextElement.text().trim().toLowerCase();
                 
-                console.log(`Stat: ${value} - Label: ${label}`);
-                
                 if (label.includes('joined')) {
                     const num = parseInt(value);
                     if (!isNaN(num)) {
                         participants = num;
-                        console.log(`✅ Found participant count: ${participants}`);
                         return false; // Break out of each loop
                     }
                 }
@@ -71,13 +65,10 @@ export const getCurrentJam = async (_req: Request, res: Response) => {
             lastKnownGoodValue = participants || lastKnownGoodValue; // Only update if we got a valid number
             lastFetch = now;
             
-            console.log(`✅ Scraped participant count: ${participants}`);
-            
         } catch (error) {
-            console.error('❌ Failed to scrape participant count:', error);
+            console.error('Failed to scrape participant count:', error);
             // Use cached value or last known good value (avoid showing 0)
             participants = cachedParticipants || lastKnownGoodValue;
-            console.log(`🔄 Using fallback participant count: ${participants}`);
         }
     }
 
@@ -107,12 +98,6 @@ export const getCurrentJam = async (_req: Request, res: Response) => {
         status
     };
 
-    console.log('📊 Serving jam data:', { 
-        title: jamData.title, 
-        participants: jamData.participants, 
-        status: jamData.status,
-        timeLeft: jamData.timeLeft
-    });
 
     res.json(jamData);
 };

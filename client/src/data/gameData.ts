@@ -25,7 +25,7 @@ export const gameData: Game[] = [
         jamType: "themed",
         jamTheme: "Minimalism",
         thumb: "T",
-        image: "/images/games/something-wrong-world.png"
+        image: "/images/games/something-wrong-world.jpg"
     },
     {
         id: 2,
@@ -37,7 +37,7 @@ export const gameData: Game[] = [
         jamType: "marathon",
         jamTheme: "Work on your own project",
         thumb: "D",
-        image: "/images/games/df-fbla.png"
+        image: "/images/games/df-fbla.jpg"
     },
     {
         id: 3,
@@ -49,7 +49,7 @@ export const gameData: Game[] = [
         jamType: "themed",
         jamTheme: "Ghosts doing Normal People Things",
         thumb: "I",
-        image: "/images/games/i-came-home-tonight.png"
+        image: "/images/games/i-came-home-tonight.jpg"
     },
     {
         id: 4,
@@ -61,7 +61,7 @@ export const gameData: Game[] = [
         jamType: "themed",
         jamTheme: "End is Near",
         thumb: "T",
-        image: "/images/games/track-master.png"
+        image: "/images/games/track-master.jpg"
     },
     {
         id: 5,
@@ -73,7 +73,7 @@ export const gameData: Game[] = [
         jamType: "marathon",
         jamTheme: "Work on your own project",
         thumb: "S",
-        image: "/images/games/scavengers-planet-x.png"
+        image: "/images/games/scavengers-planet-x.jpg"
     },
     {
         id: 6,
@@ -85,7 +85,7 @@ export const gameData: Game[] = [
         jamType: "marathon",
         jamTheme: "Work on your own project",
         thumb: "O",
-        image: "/images/games/out-here-alone.png"
+        image: "/images/games/out-here-alone.jpg"
     },
     {
         id: 7,
@@ -97,7 +97,7 @@ export const gameData: Game[] = [
         jamType: "themed",
         jamTheme: "Two Button Controls",
         thumb: "M",
-        image: "/images/games/mutual-destruction.png"
+        image: "/images/games/mutual-destruction.jpg"
     },
     {
         id: 8,
@@ -109,7 +109,7 @@ export const gameData: Game[] = [
         jamType: "themed",
         jamTheme: "Two Button Controls",
         thumb: "D",
-        image: "/images/games/dodge-the-question.png"
+        image: "/images/games/dodge-the-question.jpg"
     },
     {
         id: 9,
@@ -121,7 +121,7 @@ export const gameData: Game[] = [
         jamType: "themed",
         jamTheme: "Two Button Controls",
         thumb: "S",
-        image: "/images/games/six-rolls-six.png"
+        image: "/images/games/six-rolls-six.jpg"
     },
     {
         id: 10,
@@ -133,7 +133,7 @@ export const gameData: Game[] = [
         jamType: "themed",
         jamTheme: "Fight The Dark",
         thumb: "G",
-        image: "/images/games/guardian-of-the-grave.png"
+        image: "/images/games/guardian-of-the-grave.jpg"
     },
     {
         id: 11,
@@ -145,7 +145,7 @@ export const gameData: Game[] = [
         jamType: "themed",
         jamTheme: "Fight The Dark",
         thumb: "H",
-        image: "/images/games/hank-the-imp.png"
+        image: "/images/games/hank-the-imp.jpg"
     },
     {
         id: 12,
@@ -157,7 +157,7 @@ export const gameData: Game[] = [
         jamType: "themed",
         jamTheme: "Fight The Dark",
         thumb: "M",
-        image: "/images/games/maybel-hazy-hotel.png"
+        image: "/images/games/maybel-hazy-hotel.jpg"
     },
     {
         id: 13,
@@ -169,7 +169,7 @@ export const gameData: Game[] = [
         jamType: "themed",
         jamTheme: "Under the Surface / Hot and Cold",
         thumb: "O",
-        image: "/images/games/operation-mc.png"
+        image: "/images/games/operation-mc.jpg"
     },
     {
         id: 14,
@@ -181,7 +181,7 @@ export const gameData: Game[] = [
         jamType: "marathon",
         jamTheme: "Work on your own project",
         thumb: "H",
-        image: "/images/games/hack-the-loop.png"
+        image: "/images/games/hack-the-loop.jpg"
     },
     {
         id: 15,
@@ -193,7 +193,7 @@ export const gameData: Game[] = [
         jamType: "marathon",
         jamTheme: "Work on your own project",
         thumb: "Y",
-        image: "/images/games/yestersol.png"
+        image: "/images/games/yestersol.jpg"
     },
     {
         id: 16,
@@ -205,7 +205,7 @@ export const gameData: Game[] = [
         jamType: "marathon",
         jamTheme: "Work on your own project",
         thumb: "S",
-        image: "/images/games/daves-coffee.png"
+        image: "/images/games/daves-coffee.jpg"
     },
     {
         id: 17,
@@ -218,7 +218,7 @@ export const gameData: Game[] = [
         jamTheme: "Parts and Upgrades",
         placement: 1,
         thumb: "S",
-        image: "/images/games/star-modulus.png"
+        image: "/images/games/star-modulus.jpg"
     },
     {
         id: 18,
@@ -231,7 +231,7 @@ export const gameData: Game[] = [
         jamTheme: "Parts and Upgrades",
         placement: 2,
         thumb: "C",
-        image: "/images/games/cow-combo.png"
+        image: "/images/games/cow-combo.jpg"
     },
     {
         id: 19,
@@ -244,7 +244,7 @@ export const gameData: Game[] = [
         jamTheme: "Parts and Upgrades",
         placement: 3,
         thumb: "M",
-        image: "/images/games/modular-mayhem.png"
+        image: "/images/games/modular-mayhem.jpg"
     }
 ];
 

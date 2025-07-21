@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import './App.css';
 import './styles/globals.css';
 import './styles/layout.css';
 import './styles/components.css';
@@ -17,6 +16,10 @@ import Support from './pages/Support';
 import Privacy from './pages/Privacy';
 import Profile from './pages/Profile';
 import About from './pages/About';
+import GameDashboard from './pages/GameDashboard';
+import GameForm from './pages/GameForm';
+import Community from './pages/Community';
+import UserProfile from './pages/UserProfile';
 
 // Components
 import Navbar from './components/Navbar';
@@ -47,6 +50,11 @@ function AppContent() {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/about" element={<About />} />
+            <Route path="/dashboard/games" element={<GameDashboard />} />
+            <Route path="/games/new" element={<GameForm />} />
+            <Route path="/games/:id/edit" element={<GameForm />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/users/:username" element={<UserProfile />} />
           </Routes>
         </main>
       )}

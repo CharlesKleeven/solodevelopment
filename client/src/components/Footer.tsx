@@ -42,6 +42,7 @@ const Footer: React.FC = () => {
             <h4>Support</h4>
             <ul>
               <li><a className="footer-link" href="/about">About</a></li>
+              <li><a className="footer-link" href="/resources">Resources</a></li>
               <li><a className="footer-link" href="/support">Contact</a></li>
               <li><a className="footer-link" href="/privacy">Privacy</a></li>
             </ul>

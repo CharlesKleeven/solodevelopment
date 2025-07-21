@@ -78,9 +78,127 @@ export const profileAPI = {
     updateProfile: async (data: {
         displayName?: string;
         bio?: string;
+        profileVisibility?: 'public' | 'private';
         links?: string[];
     }) => {
         const response = await api.put('/api/auth/profile', data);
+        return response.data;
+    },
+};
+
+// Game API endpoints
+export const gameAPI = {
+    // Get user's own games
+    getMyGames: async (page = 1, limit = 12) => {
+        const response = await api.get(`/api/games/my/games?page=${page}&limit=${limit}`);
+        return response.data;
+    },
+
+    // Create a new game
+    createGame: async (gameData: {
+        title: string;
+        description: string;
+        shortDescription?: string;
+        thumbnailUrl?: string;
+        screenshots?: string[];
+        videoUrl?: string;
+        playUrl?: string;
+        sourceUrl?: string;
+        devlogUrl?: string;
+        tags?: string[];
+        engine?: string;
+        platforms: string[];
+        jamEntry?: boolean;
+        jamName?: string;
+        jamPlacement?: number;
+        visibility?: 'public' | 'unlisted' | 'private';
+    }) => {
+        const response = await api.post('/api/games', gameData);
+        return response.data;
+    },
+
+    // Get a single game
+    getGame: async (id: string) => {
+        const response = await api.get(`/api/games/${id}`);
+        return response.data;
+    },
+
+    // Update a game
+    updateGame: async (id: string, gameData: any) => {
+        const response = await api.put(`/api/games/${id}`, gameData);
+        return response.data;
+    },
+
+    // Delete a game
+    deleteGame: async (id: string) => {
+        const response = await api.delete(`/api/games/${id}`);
+        return response.data;
+    },
+
+    // Get games by username (public portfolio)
+    getUserGames: async (username: string, page = 1, limit = 12) => {
+        const response = await api.get(`/api/games/user/${username}?page=${page}&limit=${limit}`);
+        return response.data;
+    },
+
+    // Search/browse games
+    searchGames: async (params: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        tags?: string[];
+        engine?: string;
+        platform?: string;
+    } = {}) => {
+        const queryParams = new URLSearchParams();
+        
+        if (params.page) queryParams.append('page', params.page.toString());
+        if (params.limit) queryParams.append('limit', params.limit.toString());
+        if (params.search) queryParams.append('search', params.search);
+        if (params.engine) queryParams.append('engine', params.engine);
+        if (params.platform) queryParams.append('platform', params.platform);
+        if (params.tags) {
+            params.tags.forEach(tag => queryParams.append('tags', tag));
+        }
+
+        const response = await api.get(`/api/games?${queryParams.toString()}`);
+        return response.data;
+    },
+
+    // Get featured games
+    getFeaturedGames: async (limit = 6) => {
+        const response = await api.get(`/api/games/featured/list?limit=${limit}`);
+        return response.data;
+    },
+};
+
+// User search API endpoints
+export const userSearchAPI = {
+    // Search users by username/display name
+    searchUsers: async (params: {
+        q: string;
+        page?: number;
+        limit?: number;
+    }) => {
+        const queryParams = new URLSearchParams();
+        
+        queryParams.append('q', params.q);
+        if (params.page) queryParams.append('page', params.page.toString());
+        if (params.limit) queryParams.append('limit', params.limit.toString());
+
+        const response = await api.get(`/api/users/search?${queryParams.toString()}`);
+        return response.data;
+    },
+
+    // Get featured community members
+    getFeaturedCommunityMembers: async (limit = 10) => {
+        const response = await api.get(`/api/users/featured?limit=${limit}`);
+        return response.data;
+    },
+
+    // Get user stats/profile
+    getUserStats: async (username: string) => {
+        const response = await api.get(`/api/users/${username}/stats`);
         return response.data;
     },
 };

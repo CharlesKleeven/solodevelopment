@@ -8,8 +8,42 @@
     z-index: 1000;
 }
 
+/* Light mode navbar enhancements */
+@media (prefers-color-scheme: light) {
+    .navbar {
+        background: var(--bg-secondary);
+        border-bottom: 2px solid var(--bg-tertiary);
+        box-shadow: var(--shadow-subtle);
+    }
+    
+    .navbar-title {
+        color: var(--text-primary);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+    
+    .navbar-logo {
+        background: var(--text-primary);
+        color: var(--bg-primary);
+        font-weight: 700;
+    }
+    
+    .nav-link {
+        color: var(--text-secondary);
+        font-weight: 600;
+    }
+    
+    .nav-link.active {
+        color: var(--text-primary);
+    }
+    
+    .nav-link:hover:not(.active) {
+        color: var(--text-primary);
+    }
+}
+
 .navbar-container {
-    max-width: 64rem;
+    max-width: 68rem;
     margin: 0 auto;
     padding: 0 var(--space-6);
     display: flex;
@@ -182,7 +216,7 @@
     display: flex;
     align-items: center;
     gap: var(--space-2);
-    background: none;
+    background: var(--bg-tertiary);
     border: 1px solid var(--border-subtle);
     border-radius: var(--border-radius);
     padding: var(--space-2) var(--space-3);
@@ -212,7 +246,7 @@
     background: var(--bg-secondary);
     border: 1px solid var(--border-subtle);
     border-radius: var(--border-radius);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-md);
     min-width: 140px;
     z-index: 1000;
     overflow: hidden;
@@ -254,7 +288,7 @@
 }
 
 .logout-btn:hover {
-    background: rgba(245, 94, 59, 0.1);
+    background: var(--color-accent-bg);
     color: var(--color-accent);
 }
 
@@ -324,41 +358,3 @@
     }
 }
 
-/* ===== LIGHT MODE NAVBAR IMPROVEMENTS ===== */
-@media (prefers-color-scheme: light) {
-    .navbar {
-        background: #ffffff;
-        border-bottom: 1px solid #e2e8f0;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-
-    .nav-link {
-        color: #2d3748;
-    }
-
-    .nav-link:hover,
-    .nav-link.active {
-        color: var(--color-accent);
-        background: rgba(255, 107, 53, 0.08);
-    }
-
-    .user-button {
-        border-color: #cbd5e0;
-        background: #ffffff;
-    }
-
-    .user-button:hover {
-        border-color: var(--color-accent);
-        background: rgba(255, 107, 53, 0.05);
-    }
-
-    .mobile-menu {
-        background: #ffffff;
-        border-bottom: 1px solid #e2e8f0;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-    }
-
-    .hamburger-line {
-        background: #4a5568;
-    }
-}

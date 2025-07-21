@@ -74,10 +74,10 @@ const Navbar: React.FC = () => {
                             Showcase
                         </Link>
                         <Link
-                            to="/resources"
-                            className={`nav-link ${isActive('/resources') ? 'active' : ''}`}
+                            to="/community"
+                            className={`nav-link ${isActive('/community') ? 'active' : ''}`}
                         >
-                            Resources
+                            Community
                         </Link>
                     </div>
 
@@ -101,6 +101,13 @@ const Navbar: React.FC = () => {
                                             onClick={() => setIsUserMenuOpen(false)}
                                         >
                                             Profile
+                                        </Link>
+                                        <Link
+                                            to="/dashboard/games"
+                                            className="dropdown-item"
+                                            onClick={() => setIsUserMenuOpen(false)}
+                                        >
+                                            My Games
                                         </Link>
                                         <button
                                             onClick={handleLogout}
@@ -156,11 +163,11 @@ const Navbar: React.FC = () => {
                         Showcase
                     </Link>
                     <Link
-                        to="/resources"
-                        className={`mobile-nav-link ${isActive('/resources') ? 'active' : ''}`}
+                        to="/community"
+                        className={`mobile-nav-link ${isActive('/community') ? 'active' : ''}`}
                         onClick={() => setIsMobileMenuOpen(false)}
                     >
-                        Resources
+                        Community
                     </Link>
 
                     {user ? (
@@ -171,6 +178,13 @@ const Navbar: React.FC = () => {
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
                                 {getDisplayName()}
+                            </Link>
+                            <Link
+                                to="/dashboard/games"
+                                className="mobile-nav-link"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                                My Games
                             </Link>
                             <button
                                 onClick={handleLogout}

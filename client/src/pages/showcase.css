@@ -3,6 +3,7 @@
     background: var(--bg-primary);
 }
 
+
 /* ===== CONTROLS (TABS + SEARCH) ===== */
 .section-compact {
     padding: var(--space-4) 0;
@@ -45,6 +46,7 @@
 .tab.active {
     background: var(--color-accent);
     color: var(--bg-primary);
+    border: 1px solid var(--color-accent);
 }
 
 .search-bar {
@@ -132,21 +134,24 @@
     border: 1px solid var(--border-subtle);
     border-radius: var(--border-radius-lg);
     padding: var(--space-6);
-    transition: border-color 0.2s ease;
+    transition: all 0.15s ease;
     cursor: pointer;
     position: relative;
     align-items: center;
     text-decoration: none;
     color: inherit;
     margin-bottom: var(--space-4);
+    opacity: 0.95;
 }
 
 .winner-featured:hover {
-    border-color: var(--text-tertiary);
+    border-color: var(--border-subtle);
+    opacity: 1;
+    transform: translateY(-1px);
 }
 
 .winner-featured:hover .winner-title {
-    color: var(--color-accent);
+    color: var(--text-primary);
 }
 
 .winner-secondary {
@@ -164,7 +169,7 @@
     border: 1px solid var(--border-subtle);
     border-radius: var(--border-radius);
     padding: var(--space-4);
-    transition: border-color 0.2s ease;
+    transition: all 0.15s ease;
     cursor: pointer;
     position: relative;
     align-items: center;
@@ -172,14 +177,17 @@
     color: inherit;
     flex: 1;
     text-align: center;
+    opacity: 0.95;
 }
 
 .winner-item:hover {
-    border-color: var(--text-tertiary);
+    border-color: var(--border-subtle);
+    opacity: 1;
+    transform: translateY(-1px);
 }
 
 .winner-item:hover .winner-title {
-    color: var(--color-accent);
+    color: var(--text-primary);
 }
 
 /* ===== THUMBNAILS ===== */

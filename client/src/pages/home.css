@@ -4,6 +4,7 @@
     background: var(--bg-primary);
 }
 
+
 /* ===== HERO ===== */
 .home-hero {
     padding: var(--space-12) 0 var(--space-8);
@@ -69,9 +70,8 @@
 }
 
 .jam-badge.upcoming {
-    background: var(--color-warm-yellow);
-    color: var(--bg-primary);
-    /* dark text on yellow badge */
+    background: var(--badge-upcoming);
+    color: white;
 }
 
 .jam-badge.active {
@@ -457,30 +457,4 @@
     }
 }
 
-/* ===== LIGHT MODE TEXT IMPROVEMENTS ===== */
-@media (prefers-color-scheme: light) {
-    .game-jam-clean {
-        color: var(--text-tertiary);
-        opacity: 1;
-    }
-
-    .game-author-clean {
-        color: var(--text-secondary);
-    }
-
-    .jam-description {
-        color: var(--text-secondary);
-    }
-
-    .activity-item {
-        color: var(--text-secondary);
-    }
-
-    .activity-item .user {
-        color: var(--text-primary);
-    }
-
-    .stat-label {
-        color: var(--text-secondary);
-    }
-}
+/* Light mode uses color variables from globals.css */

@@ -95,14 +95,14 @@
 }
 
 .auth-message.success {
-    background: rgba(74, 222, 128, 0.1);
-    border: 1px solid rgba(74, 222, 128, 0.2);
+    background: var(--color-success-bg);
+    border: 1px solid var(--color-success-border);
     color: var(--color-success);
 }
 
 .auth-message.error {
-    background: rgba(245, 94, 59, 0.1);
-    border: 1px solid rgba(245, 94, 59, 0.2);
+    background: var(--color-danger-bg);
+    border: 1px solid var(--color-danger-border);
     color: var(--color-accent);
 }
 
@@ -179,8 +179,8 @@
 
 /* Success message styling */
 .success-message {
-    background: rgba(104, 211, 145, 0.1);
-    border: 1px solid rgba(104, 211, 145, 0.2);
+    background: var(--color-success-bg);
+    border: 1px solid var(--color-success-border);
     border-radius: var(--border-radius);
     padding: var(--space-4);
     margin-bottom: var(--space-4);
@@ -190,8 +190,8 @@
 }
 
 .error-message {
-    background: rgba(245, 94, 59, 0.1);
-    border: 1px solid rgba(245, 94, 59, 0.2);
+    background: var(--color-danger-bg);
+    border: 1px solid var(--color-danger-border);
     border-radius: var(--border-radius);
     padding: var(--space-4);
     margin-bottom: var(--space-4);

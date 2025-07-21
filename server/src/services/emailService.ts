@@ -99,11 +99,9 @@ export const sendPasswordResetEmail = async ({ to, username, resetUrl }: SendPas
 
     if (error) {
       console.error('Resend API error:', error);
-      console.error('Error details:', JSON.stringify(error, null, 2));
       throw new Error(`Resend error: ${JSON.stringify(error)}`);
     }
 
-    console.log('Password reset email sent successfully:', data);
     return data;
   } catch (error) {
     console.error('Email service error:', error);
@@ -157,7 +155,6 @@ export const sendContactEmail = async ({ userEmail, message, timestamp }: SendCo
             throw new Error('Failed to send contact email');
         }
 
-        console.log('Contact email sent successfully:', data);
         return data;
     } catch (error) {
         console.error('Error sending contact email:', error);

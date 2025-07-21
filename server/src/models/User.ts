@@ -7,6 +7,7 @@ interface IUser {
   displayName: string; // Required now, not optional
   bio?: string;
   links?: string[];
+  profileVisibility: 'public' | 'private';
   resetPasswordToken?: string;
   resetPasswordExpires?: Date;
   createdAt: Date;
@@ -54,6 +55,11 @@ const userSchema = new mongoose.Schema<IUser>(
       type: String,
       maxlength: 500, // Increased to accommodate JSON storage
     }],
+    profileVisibility: {
+      type: String,
+      enum: ['public', 'private'],
+      default: 'public'
+    },
     resetPasswordToken: {
       type: String,
     },

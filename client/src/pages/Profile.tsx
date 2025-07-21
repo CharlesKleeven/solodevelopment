@@ -12,11 +12,13 @@ const Profile: React.FC = () => {
     // Current values
     const [displayName, setDisplayName] = useState('');
     const [bio, setBio] = useState('');
+    const [profileVisibility, setProfileVisibility] = useState<'public' | 'private'>('public');
     const [links, setLinks] = useState<string[]>(['', '', '', '']);
 
     // Original values for canceling
     const [originalDisplayName, setOriginalDisplayName] = useState('');
     const [originalBio, setOriginalBio] = useState('');
+    const [originalProfileVisibility, setOriginalProfileVisibility] = useState<'public' | 'private'>('public');
     const [originalLinks, setOriginalLinks] = useState<string[]>(['', '', '', '']);
 
     // Initialize profile data from user context
@@ -24,6 +26,7 @@ const Profile: React.FC = () => {
         if (user) {
             const userDisplayName = user.displayName; // No fallback needed since it's required
             const userBio = user.bio || '';
+            const userProfileVisibility = (user as any).profileVisibility || 'public';
 
             // Parse links from stored JSON format and extract display text
             let userLinks: string[] = [];
@@ -47,11 +50,13 @@ const Profile: React.FC = () => {
 
             setDisplayName(userDisplayName);
             setBio(userBio);
+            setProfileVisibility(userProfileVisibility);
             setLinks(paddedLinks);
 
             // Set originals
             setOriginalDisplayName(userDisplayName);
             setOriginalBio(userBio);
+            setOriginalProfileVisibility(userProfileVisibility);
             setOriginalLinks(paddedLinks);
         }
     }, [user]);
@@ -67,6 +72,7 @@ const Profile: React.FC = () => {
             await profileAPI.updateProfile({
                 displayName: displayName.trim(),
                 bio: bio.trim(),
+                profileVisibility,
                 links: filteredLinks,
             });
 
@@ -76,6 +82,7 @@ const Profile: React.FC = () => {
             // Update original values to current values
             setOriginalDisplayName(displayName);
             setOriginalBio(bio);
+            setOriginalProfileVisibility(profileVisibility);
             setOriginalLinks([...links]);
 
             setIsEditing(false);
@@ -98,6 +105,7 @@ const Profile: React.FC = () => {
         // Reset to original values
         setDisplayName(originalDisplayName);
         setBio(originalBio);
+        setProfileVisibility(originalProfileVisibility);
         setLinks([...originalLinks]);
         setIsEditing(false);
         setError(null);
@@ -107,6 +115,7 @@ const Profile: React.FC = () => {
         // Store current values as originals when starting to edit
         setOriginalDisplayName(displayName);
         setOriginalBio(bio);
+        setOriginalProfileVisibility(profileVisibility);
         setOriginalLinks([...links]);
         setIsEditing(true);
         setError(null);
@@ -239,6 +248,30 @@ const Profile: React.FC = () => {
                             </p>
                         )}
                     </div>
+
+                    {/* Privacy Section - Only when editing */}
+                    {isEditing && (
+                        <div className="profile-section">
+                            <h3>Privacy</h3>
+                            <div className="privacy-dropdown-container">
+                                <select
+                                    value={profileVisibility}
+                                    onChange={(e) => setProfileVisibility(e.target.value as 'public' | 'private')}
+                                    className="privacy-dropdown"
+                                    disabled={isSaving}
+                                >
+                                    <option value="public">Public - Discoverable in search and featured</option>
+                                    <option value="private">Private - Hidden from search (accessible via link)</option>
+                                </select>
+                                <p className="privacy-note">
+                                    {profileVisibility === 'public' 
+                                        ? 'Public profiles can be featured on the homepage and appear in community search.'
+                                        : 'Private profiles work like YouTube unlisted - hidden from search but accessible via direct link.'
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Links Section - Always show */}
                     <div className="profile-section">

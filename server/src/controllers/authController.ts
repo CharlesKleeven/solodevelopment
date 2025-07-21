@@ -45,6 +45,10 @@ export const updateProfileValidation = [
     .optional()
     .isLength({ max: 280 })
     .withMessage('Bio must be 280 characters or less'),
+  body('profileVisibility')
+    .optional()
+    .isIn(['public', 'private'])
+    .withMessage('Profile visibility must be either public or private'),
   body('links')
     .optional()
     .isArray({ max: 4 })
@@ -154,6 +158,7 @@ export const register = async (req: Request, res: Response) => {
         displayName: user.displayName,
         bio: user.bio,
         links: user.links,
+        profileVisibility: user.profileVisibility,
         createdAt: user.createdAt
       }
     });
@@ -222,6 +227,7 @@ export const login = async (req: Request, res: Response) => {
         displayName: user.displayName,
         bio: user.bio,
         links: user.links,
+        profileVisibility: user.profileVisibility,
         createdAt: user.createdAt
       }
     });
@@ -254,6 +260,7 @@ export const me = async (req: AuthRequest, res: Response) => {
         displayName: user.displayName,
         bio: user.bio,
         links: user.links,
+        profileVisibility: user.profileVisibility,
         createdAt: user.createdAt
       }
     });
@@ -279,6 +286,7 @@ export const getProfile = async (req: AuthRequest, res: Response) => {
         displayName: user.displayName,
         bio: user.bio || '',
         links: user.links || [],
+        profileVisibility: user.profileVisibility,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       }
@@ -301,7 +309,7 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    const { displayName, bio, links } = req.body;
+    const { displayName, bio, profileVisibility, links } = req.body;
 
     // Find and update user
     const user = await User.findById(req.user.userId);
@@ -316,6 +324,10 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
 
     if (bio !== undefined) {
       user.bio = bio.trim();
+    }
+
+    if (profileVisibility !== undefined) {
+      user.profileVisibility = profileVisibility;
     }
 
     if (links !== undefined) {
@@ -348,6 +360,7 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
         displayName: user.displayName,
         bio: user.bio || '',
         links: user.links || [],
+        profileVisibility: user.profileVisibility,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       }
@@ -393,18 +406,11 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
       // Send email
       try {
-        console.log('Attempting to send password reset email to:', user.email);
-        console.log('Reset URL:', resetUrl);
-        console.log('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
-        console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
-        
         await sendPasswordResetEmail({
           to: user.email,
           username: user.displayName || user.username,
           resetUrl
         });
-        
-        console.log(`Password reset email sent to ${user.email}`);
       } catch (emailError) {
         // Clear the reset token if email fails
         user.resetPasswordToken = undefined;
@@ -412,7 +418,6 @@ export const forgotPassword = async (req: Request, res: Response) => {
         await user.save();
         
         console.error('Failed to send password reset email:', emailError);
-        console.error('Email error details:', emailError);
         return res.status(500).json({ error: 'Failed to send reset email. Please try again.' });
       }
     }
@@ -465,7 +470,6 @@ export const resetPassword = async (req: Request, res: Response) => {
 
     await user.save();
 
-    console.log(`Password reset successful for user: ${user.email}`);
 
     res.json({ 
       message: 'Password has been reset successfully. You can now log in with your new password.' 

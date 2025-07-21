@@ -16,6 +16,28 @@
     /* Deeper green for nature feel */
     --color-coral: #fb7185;
     /* Soft coral for warmth */
+    --color-danger: #dc2626;
+    /* Error/danger red */
+    --color-danger-light: #b91c1c;
+    /* Darker danger red */
+    --color-danger-bg: rgba(239, 68, 68, 0.1);
+    /* Danger background */
+    --color-danger-border: rgba(239, 68, 68, 0.3);
+    /* Danger border */
+    --color-success-bg: rgba(74, 222, 128, 0.1);
+    /* Success background */
+    --color-success-border: rgba(74, 222, 128, 0.2);
+    /* Success border */
+    --color-accent-bg: rgba(255, 107, 53, 0.1);
+    /* Accent background */
+    
+    /* === SHADOWS === */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+    /* Small shadow */
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
+    /* Medium shadow */
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.1);
+    /* Card shadow */
 
     /* === WARM DARK BACKGROUNDS === */
     --bg-primary: #0f1419;
@@ -43,8 +65,8 @@
     --border-radius: 6px;
     --border-radius-lg: 10px;
 
-    --badge-upcoming: #a78bfa;
-    --badge-complete: #2dd4bf;
+    --badge-upcoming: #0891b2;
+    --badge-complete: #16a34a;
 
     /* === SPACING === */
     --space-1: 0.25rem;
@@ -75,41 +97,55 @@
 /* ===== LIGHT MODE THEME ===== */
 @media (prefers-color-scheme: light) {
     :root {
-        /* === SOFT LIGHT BACKGROUNDS === */
-        --bg-primary: #faf8f5;
-        /* Warm cream base, easier on eyes */
-        --bg-secondary: #f4f1ec;
-        /* Soft warm beige for cards */
-        --bg-tertiary: #ede9e3;
-        /* Subtle warm contrast */
-        --bg-fade: #f7f5f2;
-        /* Very light warm cream for sections */
+        /* === WARM HIGH CONTRAST BACKGROUNDS === */
+        --bg-primary: #fefcf8;
+        /* Warm off-white, not pure white */
+        --bg-secondary: #f5f1ea;
+        /* Warm cream cards - strong contrast */
+        --bg-tertiary: #ebe4d7;
+        /* Rich warm sand - clear separation */
+        --bg-fade: #f9f6f1;
+        /* Warm sections */
 
-        /* === READABLE TEXT COLORS === */
-        --text-primary: #1a202c;
-        /* Darker for better readability */
-        --text-secondary: #2d3748;
-        /* Medium dark for secondary text */
-        --text-tertiary: #4a5568;
-        /* Medium gray for tertiary */
-        --text-quaternary: #718096;
-        /* Light gray for subtle text */
+        /* === WARM HIGH CONTRAST TEXT === */
+        --text-primary: #1c1611;
+        /* Deep warm brown - strong contrast */
+        --text-secondary: #3d342b;
+        /* Rich brown */
+        --text-tertiary: #5d4f42;
+        /* Medium warm brown */
+        --text-quaternary: #8a7865;
+        /* Warm taupe */
 
-        /* === SOFT BORDERS === */
-        --border-subtle: #e2d9d1;
-        /* Warm light border */
+        /* === WARM BORDERS === */
+        --border-subtle: #d4c4b0;
+        /* Warm tan border - visible contrast */
 
-        /* === GENTLE SHADOWS === */
-        --shadow-subtle: 0 1px 2px rgba(45, 55, 72, 0.06);
-        --shadow-soft: 0 4px 6px -1px rgba(45, 55, 72, 0.1);
+        /* === BOLD BADGES === */
+        --badge-upcoming: #0369a1;
+        /* Deep sky blue */
+        --badge-complete: #15803d;
+        /* Strong green */
 
-        /* === ACCENT COLORS (consistent warmth) === */
-        --color-accent: #ff6b35;
-        /* Keep warm orange accent */
-        --color-accent-alt: #4fd1c7;
-        /* Keep warm cyan */
-        --color-success: #2dd4bf;
-        /* Keep teal-green */
+        /* === WARM SHADOWS === */
+        --shadow-subtle: 0 1px 3px rgba(28, 22, 17, 0.15);
+        --shadow-soft: 0 4px 6px rgba(28, 22, 17, 0.1), 0 10px 15px rgba(28, 22, 17, 0.05);
+
+        /* === BOLD ACCENT COLORS === */
+        --color-accent: #ea580c;
+        /* Strong orange */
+        --color-accent-alt: #0891b2;
+        /* Bold cyan */
+        --color-success: #16a34a;
+        /* Strong green */
+        --color-purple: #7c3aed;
+        /* Deep purple */
+        --color-warm-yellow: #d97706;
+        /* Bold amber */
+        --color-forest: #047857;
+        /* Deep forest */
+        --color-coral: #dc2626;
+        /* Strong red */
     }
 }
 
@@ -221,8 +257,8 @@ svg {
 
 /* ===== LAYOUT CONTAINERS ===== */
 .container {
-    max-width: 64rem;
-    /* 1024px - smaller for better readability */
+    max-width: 68rem;
+    /* 1088px - balanced width */
     margin: 0 auto;
     padding: 0 var(--space-6);
 }

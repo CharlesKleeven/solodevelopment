@@ -8,6 +8,8 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth';  // Import auth routes
 import jamRoutes from './routes/jam';
 import contactRoutes from './routes/contact';
+import gameRoutes from './routes/game';
+import userSearchRoutes from './routes/userSearch';
 
 // Load environment variables
 dotenv.config();
@@ -55,6 +57,8 @@ app.use(cookieParser());
 app.use('/api/jam', jamRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/games', gameRoutes);
+app.use('/api/users', userSearchRoutes);
 
 // Connect to MongoDB with longer timeout for Render
 mongoose
@@ -89,6 +93,4 @@ app.get('/api/test', (req, res) => {
 // Start server
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-    console.log(`API available at http://localhost:${PORT}`);
-    console.log(`Auth endpoints: http://localhost:${PORT}/api/auth/register & /api/auth/login`);
 });

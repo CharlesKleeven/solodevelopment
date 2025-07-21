@@ -3,7 +3,7 @@
 .profile-page {
     background: var(--bg-primary);
     min-height: calc(100vh - 64px);
-    padding: var(--space-8) 0;
+    padding: var(--space-12) 0 var(--space-8) 0;
 }
 
 .profile-container {
@@ -78,8 +78,8 @@
 
 /* ===== ERROR DISPLAY ===== */
 .profile-error {
-    background: rgba(245, 94, 59, 0.1);
-    border: 1px solid rgba(245, 94, 59, 0.2);
+    background: var(--color-danger-bg);
+    border: 1px solid var(--color-danger-border);
     color: var(--color-accent);
     padding: var(--space-3);
     border-radius: var(--border-radius);
@@ -230,6 +230,39 @@
     color: var(--text-tertiary);
     font-style: italic;
     font-size: var(--text-sm);
+}
+
+/* ===== PRIVACY SETTINGS ===== */
+.privacy-dropdown-container {
+    margin-top: var(--space-2);
+}
+
+.privacy-dropdown {
+    width: 100%;
+    padding: var(--space-3);
+    border: 2px solid var(--border-subtle);
+    border-radius: var(--border-radius);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: var(--text-base);
+    cursor: pointer;
+    transition: border-color var(--transition);
+}
+
+.privacy-dropdown:hover,
+.privacy-dropdown:focus {
+    border-color: var(--color-accent);
+    outline: none;
+}
+
+.privacy-note {
+    margin-top: var(--space-2);
+    padding: var(--space-3);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    line-height: 1.4;
 }
 
 /* ===== ACTIONS ===== */

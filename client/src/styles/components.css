@@ -57,7 +57,7 @@
 
 /* Dot background only */
 .jam-status.upcoming .status-dot {
-    background: var(--color-warm-yellow);
+    background: var(--badge-upcoming);
 }
 
 .jam-status.active .status-dot {
@@ -70,7 +70,7 @@
 
 /* Text color (not background!) */
 .jam-status.upcoming .status-text {
-    color: var(--color-warm-yellow);
+    color: var(--badge-upcoming);
 }
 
 .jam-status.active .status-text {
@@ -168,12 +168,12 @@
 }
 
 .badge-accent {
-    background: rgba(245, 94, 59, 0.1);
+    background: var(--color-accent-bg);
     color: var(--color-accent);
 }
 
 .badge-success {
-    background: rgba(74, 222, 128, 0.1);
+    background: var(--color-success-bg);
     color: var(--color-success);
 }
 
