@@ -1,4 +1,4 @@
 # API routes should go to backend server  
-/api/*  https://api.solodevelopment.org/api/:splat  200
+/api/*  https://solodevelopment.onrender.com/api/:splat  200
 # All other routes go to React app
 /*    /index.html   200
