@@ -5,7 +5,7 @@ import './auth.css';
 
 // API base URL - adjust for production vs development
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? '' // In production, use relative URLs (same domain)
+  ? 'https://api.solodevelopment.org' // In production, use API subdomain
   : 'http://localhost:3001'; // In development, use backend port
 
 const SelectUsername: React.FC = () => {
