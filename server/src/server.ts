@@ -37,8 +37,6 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Rate limiter temporarily removed for debugging
-
 // CORS configuration - MUST be before routes
 app.use(cors({
     origin: process.env.NODE_ENV === 'production'

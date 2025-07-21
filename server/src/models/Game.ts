@@ -36,7 +36,6 @@ const GameSchema = new Schema<IGame>({
   },
   slug: {
     type: String,
-    unique: true,
     lowercase: true
   },
   description: {
@@ -194,9 +193,29 @@ const GameSchema = new Schema<IGame>({
 });
 
 // Generate slug from title before saving
-GameSchema.pre('save', function(this: IGame) {
+GameSchema.pre('save', async function(this: IGame) {
   if (this.isModified('title') || this.isNew) {
-    this.slug = slugify(this.title, { lower: true, strict: true });
+    const baseSlug = slugify(this.title, { lower: true, strict: true });
+    let slug = baseSlug;
+    let counter = 1;
+    
+    // Check if slug exists for this user and generate a unique one if needed
+    while (true) {
+      const existingGame = await mongoose.model('Game').findOne({
+        slug: slug,
+        user: this.user,
+        _id: { $ne: this._id } // Exclude current game when updating
+      });
+      
+      if (!existingGame) {
+        this.slug = slug;
+        break;
+      }
+      
+      // Add counter to make it unique
+      slug = `${baseSlug}-${counter}`;
+      counter++;
+    }
   }
 });
 
@@ -211,8 +230,8 @@ GameSchema.methods.incrementViews = async function(this: IGame): Promise<void> {
   await this.save();
 };
 
-// Ensure slug uniqueness
-GameSchema.index({ slug: 1 }, { unique: true });
+// Ensure slug uniqueness per user (compound index)
+GameSchema.index({ user: 1, slug: 1 }, { unique: true });
 GameSchema.index({ user: 1, createdAt: -1 });
 GameSchema.index({ visibility: 1, createdAt: -1 });
 GameSchema.index({ tags: 1 });

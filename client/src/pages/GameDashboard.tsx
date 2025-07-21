@@ -41,6 +41,18 @@ const GameDashboard: React.FC = () => {
     const [games, setGames] = useState<Game[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [expandedTags, setExpandedTags] = useState<Set<number>>(new Set());
+    
+    const toggleTags = (gameIndex: number) => {
+        const newExpanded = new Set(expandedTags);
+        if (newExpanded.has(gameIndex)) {
+            newExpanded.delete(gameIndex);
+        } else {
+            newExpanded.add(gameIndex);
+        }
+        setExpandedTags(newExpanded);
+    };
+
     const [pagination, setPagination] = useState({
         page: 1,
         limit: 12,
@@ -162,7 +174,7 @@ const GameDashboard: React.FC = () => {
                     ) : (
                         <>
                             <div className="games-grid">
-                                {games.map((game) => (
+                                {games.map((game, index) => (
                                     <div key={game._id} className="game-card">
                                         {/* Thumbnail */}
                                         <div className="game-thumbnail">
@@ -198,13 +210,22 @@ const GameDashboard: React.FC = () => {
                                             {/* Tags */}
                                             {game.tags.length > 0 && (
                                                 <div className="game-tags">
-                                                    {game.tags.slice(0, 3).map((tag, index) => (
-                                                        <span key={index} className="tag">
+                                                    {(expandedTags.has(index) ? game.tags : game.tags.slice(0, 3)).map((tag, tagIndex) => (
+                                                        <span key={tagIndex} className="tag">
                                                             {tag}
                                                         </span>
                                                     ))}
                                                     {game.tags.length > 3 && (
-                                                        <span className="tag-more">+{game.tags.length - 3}</span>
+                                                        <button 
+                                                            className="tag-more"
+                                                            onClick={() => toggleTags(index)}
+                                                            type="button"
+                                                        >
+                                                            {expandedTags.has(index) 
+                                                                ? 'Show less' 
+                                                                : `+${game.tags.length - 3} more`
+                                                            }
+                                                        </button>
                                                     )}
                                                 </div>
                                             )}

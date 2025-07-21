@@ -252,6 +252,14 @@ router.post('/',
           details: error.errors 
         });
       }
+      
+      // Handle duplicate key error (this shouldn't happen with our new logic, but just in case)
+      if (error.code === 11000 && error.keyPattern && error.keyPattern.slug) {
+        return res.status(400).json({ 
+          error: 'A game with this title already exists in your collection. Please choose a different title.' 
+        });
+      }
+      
       console.error('Error creating game:', error);
       res.status(500).json({ error: 'Failed to create game' });
     }
@@ -331,6 +339,14 @@ router.put('/:id',
           details: error.errors 
         });
       }
+      
+      // Handle duplicate key error
+      if (error.code === 11000 && error.keyPattern && error.keyPattern.slug) {
+        return res.status(400).json({ 
+          error: 'You already have another game with this title. Please choose a different title.' 
+        });
+      }
+      
       console.error('Error updating game:', error);
       res.status(500).json({ error: 'Failed to update game' });
     }

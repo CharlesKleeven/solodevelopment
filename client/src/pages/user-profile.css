@@ -64,12 +64,11 @@
     font-weight: 500;
     padding: 0.5rem 1rem;
     border-radius: 6px;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
     background: var(--bg-secondary);
     border: 1px solid var(--border-subtle);
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
 }
 
 .user-profile-page .profile-link:hover {
@@ -237,13 +236,22 @@
 }
 
 .user-profile-page .portfolio-tag-more {
-    background: var(--bg-tertiary);
+    background: transparent;
     color: var(--text-tertiary);
     padding: 0.25rem 0.5rem;
     border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    border: 1px solid var(--border-subtle);
+    font-size: 0.7rem;
+    font-weight: 400;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+}
+
+.user-profile-page .portfolio-tag-more:hover {
+    color: var(--text-secondary);
+    text-decoration-color: var(--text-secondary);
 }
 
 .user-profile-page .portfolio-actions {

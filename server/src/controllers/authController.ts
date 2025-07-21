@@ -5,6 +5,7 @@ import { body, validationResult } from 'express-validator';
 import crypto from 'crypto';
 import User from '../models/User';
 import { sendPasswordResetEmail } from '../services/emailService';
+import { validateLink } from '../utils/linkValidator';
 
 interface AuthRequest extends Request {
   user?: any;
@@ -57,17 +58,10 @@ export const updateProfileValidation = [
       if (links && Array.isArray(links)) {
         for (const link of links) {
           if (link && link.trim() !== '') {
-            let urlToTest = link.trim();
-
-            // Auto-add https:// if no protocol specified for validation
-            if (!urlToTest.startsWith('http://') && !urlToTest.startsWith('https://')) {
-              urlToTest = 'https://' + urlToTest;
-            }
-
-            try {
-              new URL(urlToTest);
-            } catch {
-              throw new Error(`"${link}" is not a valid URL`);
+            // Use the link validator
+            const validation = validateLink(link);
+            if (!validation.isValid) {
+              throw new Error(validation.error || `"${link}" is not a valid URL`);
             }
           }
         }

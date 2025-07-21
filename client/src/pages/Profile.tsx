@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { profileAPI } from '../services/api';
+import { getLinkInfo, isAllowedPlatform } from '../utils/linkUtils';
 import './profile.css';
 
 const Profile: React.FC = () => {
@@ -14,6 +15,7 @@ const Profile: React.FC = () => {
     const [bio, setBio] = useState('');
     const [profileVisibility, setProfileVisibility] = useState<'public' | 'private'>('public');
     const [links, setLinks] = useState<string[]>(['', '', '', '']);
+    const [linkErrors, setLinkErrors] = useState<string[]>(['', '', '', '']);
 
     // Original values for canceling
     const [originalDisplayName, setOriginalDisplayName] = useState('');
@@ -62,6 +64,12 @@ const Profile: React.FC = () => {
     }, [user]);
 
     const handleSave = async () => {
+        // Check if there are any link errors
+        if (linkErrors.some(error => error !== '')) {
+            setError('Please fix the link errors before saving');
+            return;
+        }
+        
         setIsSaving(true);
         setError(null);
 
@@ -109,6 +117,7 @@ const Profile: React.FC = () => {
         setLinks([...originalLinks]);
         setIsEditing(false);
         setError(null);
+        setLinkErrors(['', '', '', '']);
     };
 
     const startEditing = () => {
@@ -125,28 +134,19 @@ const Profile: React.FC = () => {
         const newLinks = [...links];
         newLinks[index] = value;
         setLinks(newLinks);
-    };
-
-    // Helper function to get link info (you'll need to implement this)
-    const getLinkInfo = (link: string) => {
-        // Ensure URL has protocol
-        const url = link.startsWith('http') ? link : `https://${link}`;
-
-        // Simple display text extraction
-        let displayText = link;
-        try {
-            const urlObj = new URL(url);
-            displayText = urlObj.hostname.replace('www.', '');
-        } catch {
-            displayText = link;
+        
+        // Validate the link
+        const newErrors = [...linkErrors];
+        if (value.trim() === '') {
+            newErrors[index] = '';
+        } else if (!isAllowedPlatform(value)) {
+            newErrors[index] = 'Only verified social media and portfolio platforms are allowed';
+        } else {
+            newErrors[index] = '';
         }
-
-        return {
-            url,
-            displayText,
-            icon: '🔗' // You can replace this with proper icons later
-        };
+        setLinkErrors(newErrors);
     };
+
 
     if (loading) {
         return (
@@ -279,15 +279,19 @@ const Profile: React.FC = () => {
                         {isEditing ? (
                             <div className="links-edit">
                                 {links.map((link, index) => (
-                                    <input
-                                        key={index}
-                                        type="url"
-                                        value={link}
-                                        onChange={(e) => updateLink(index, e.target.value)}
-                                        placeholder={`Link ${index + 1} (optional)`}
-                                        className="link-input"
-                                        disabled={isSaving}
-                                    />
+                                    <div key={index} className="link-input-wrapper">
+                                        <input
+                                            type="url"
+                                            value={link}
+                                            onChange={(e) => updateLink(index, e.target.value)}
+                                            placeholder={`Link ${index + 1} (optional)`}
+                                            className={`link-input ${linkErrors[index] ? 'link-input-error' : ''}`}
+                                            disabled={isSaving}
+                                        />
+                                        {linkErrors[index] && (
+                                            <span className="link-error-message">{linkErrors[index]}</span>
+                                        )}
+                                    </div>
                                 ))}
                                 <p className="links-help">Add up to 4 links to your work, social profiles, or portfolio</p>
                             </div>

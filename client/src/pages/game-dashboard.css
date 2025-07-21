@@ -220,12 +220,22 @@
 }
 
 .tag-more {
-    background: var(--border-subtle);
-    color: var(--text-secondary);
+    background: transparent;
+    color: var(--text-tertiary);
     padding: 0.25rem 0.5rem;
     border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 500;
+    font-size: 0.7rem;
+    font-weight: 400;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+}
+
+.tag-more:hover {
+    color: var(--text-secondary);
+    text-decoration-color: var(--text-secondary);
 }
 
 .game-actions {

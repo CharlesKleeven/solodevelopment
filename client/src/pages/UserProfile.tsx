@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { userSearchAPI } from '../services/api';
+import { parseStoredLink, getLinkInfo } from '../utils/linkUtils';
 import './user-profile.css';
 
 interface UserStats {
@@ -33,6 +34,17 @@ const UserProfile: React.FC = () => {
     const [userStats, setUserStats] = useState<UserStats | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [expandedTags, setExpandedTags] = useState<Set<number>>(new Set());
+
+    const toggleTags = (gameIndex: number) => {
+        const newExpanded = new Set(expandedTags);
+        if (newExpanded.has(gameIndex)) {
+            newExpanded.delete(gameIndex);
+        } else {
+            newExpanded.add(gameIndex);
+        }
+        setExpandedTags(newExpanded);
+    };
 
     useEffect(() => {
         const fetchUserStats = async () => {
@@ -102,32 +114,19 @@ const UserProfile: React.FC = () => {
                     {user.links && user.links.length > 0 && (
                         <div className="profile-links">
                             {user.links.map((link: string, index: number) => {
-                                // Parse links from stored JSON format and extract display text
-                                let displayText = link;
-                                let url = link;
-                                
-                                try {
-                                    const linkData = JSON.parse(link);
-                                    displayText = linkData.display || link;
-                                    url = linkData.url || link;
-                                } catch {
-                                    // Fallback for old format or simple string
-                                    displayText = link.replace(/^https?:\/\//, '').replace(/^www\./, '');
-                                    url = link;
-                                }
-                                
-                                // Ensure URL has protocol
-                                const finalUrl = url.startsWith('http') ? url : `https://${url}`;
+                                const parsedLink = parseStoredLink(link);
+                                const linkInfo = getLinkInfo(parsedLink.display);
                                 
                                 return (
                                     <a 
                                         key={index}
-                                        href={finalUrl}
+                                        href={linkInfo.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="profile-link"
+                                        title={linkInfo.platform}
                                     >
-                                        {displayText}
+                                        {linkInfo.displayText}
                                     </a>
                                 );
                             })}
@@ -162,11 +161,20 @@ const UserProfile: React.FC = () => {
                                                 )}
                                                 {game.tags && game.tags.length > 0 && (
                                                     <div className="portfolio-tags">
-                                                        {game.tags.slice(0, 3).map((tag: string, tagIndex: number) => (
+                                                        {(expandedTags.has(index) ? game.tags : game.tags.slice(0, 3)).map((tag: string, tagIndex: number) => (
                                                             <span key={tagIndex} className="portfolio-tag">{tag}</span>
                                                         ))}
                                                         {game.tags.length > 3 && (
-                                                            <span className="portfolio-tag-more">+{game.tags.length - 3}</span>
+                                                            <button 
+                                                                className="portfolio-tag-more" 
+                                                                onClick={() => toggleTags(index)}
+                                                                type="button"
+                                                            >
+                                                                {expandedTags.has(index) 
+                                                                    ? 'Show less' 
+                                                                    : `+${game.tags.length - 3} more`
+                                                                }
+                                                            </button>
                                                         )}
                                                     </div>
                                                 )}
