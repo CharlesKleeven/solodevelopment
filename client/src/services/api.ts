@@ -5,7 +5,7 @@ import axios, { AxiosResponse, AxiosError } from 'axios';
 const isDevelopment = window.location.hostname === 'localhost';
 const API_BASE_URL = isDevelopment
     ? 'http://localhost:3001'
-    : 'https://api.solodevelopment.org';
+    : '';
 
 console.log('Environment:', { isDevelopment, hostname: window.location.hostname, API_BASE_URL });
 
