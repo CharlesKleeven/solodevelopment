@@ -12,6 +12,9 @@ async function migrateGameSlugIndex() {
     console.log('Connected to MongoDB');
 
     const db = mongoose.connection.db;
+    if (!db) {
+      throw new Error('Database connection not available');
+    }
     const gamesCollection = db.collection('games');
 
     // Step 1: Drop the old unique index on slug if it exists

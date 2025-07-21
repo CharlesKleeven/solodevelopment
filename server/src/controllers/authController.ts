@@ -6,26 +6,7 @@ import crypto from 'crypto';
 import User from '../models/User';
 import { sendPasswordResetEmail } from '../services/emailService';
 import { validateLink } from '../utils/linkValidator';
-
-interface AuthRequest extends Request {
-  user?: any;
-}
-
-// Validation rules
-export const registerValidation = [
-  body('username')
-    .isLength({ min: 5, max: 20 })
-    .withMessage('Username must be 5-20 characters')
-    .matches(/^[a-zA-Z0-9_]+$/)
-    .withMessage('Username can only contain letters, numbers, and underscores'),
-  body('email')
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('Please provide a valid email'),
-  body('password')
-    .isLength({ min: 8 })
-    .withMessage('Password must be at least 8 characters')
-];
+import { AuthenticatedRequest } from '../types/express';
 
 export const loginValidation = [
   body('emailOrUsername')
@@ -87,82 +68,6 @@ export const resetPasswordValidation = [
     .withMessage('Password must be at least 8 characters long'),
 ];
 
-// Register new user
-export const register = async (req: Request, res: Response) => {
-  try {
-    // Check validation errors
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        error: 'Validation failed',
-        details: errors.array()
-      })
-    }
-
-    const { username, email, password } = req.body;
-
-    // Check if user already exists
-    const existingUser = await User.findOne({
-      $or: [{ email }, { username }]
-    });
-
-    if (existingUser) {
-      return res.status(400).json({
-        error: 'User with this email or username already exists'
-      });
-    }
-
-    // Hash password with higher saltRounds for production
-    const saltRounds = 12;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    // Create user in database
-    const user = new User({
-      username,
-      email,
-      password: hashedPassword,
-      displayName: username // Explicitly set displayName to username
-    });
-
-    await user.save();
-
-    // Generate JWT
-    const token = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_SECRET!,
-      { expiresIn: '7d' }
-    );
-
-    // Set httpOnly cookie
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
-    });
-
-    // Send success response
-    res.status(201).json({
-      message: 'User created successfully',
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        displayName: user.displayName,
-        bio: user.bio,
-        links: user.links,
-        profileVisibility: user.profileVisibility,
-        createdAt: user.createdAt
-      }
-    });
-
-  } catch (error) {
-    console.error('Register error:', error);
-    res.status(500).json({ error: 'Server error during registration' });
-  }
-};
-
 // Login existing user
 export const login = async (req: Request, res: Response) => {
   try {
@@ -187,6 +92,11 @@ export const login = async (req: Request, res: Response) => {
 
     if (!user) {
       return res.status(400).json({ error: 'Invalid credentials' });
+    }
+
+    // Check if user has a password (local users only)
+    if (!user.password) {
+      return res.status(400).json({ error: 'Invalid credentials. Please use OAuth to login.' });
     }
 
     // Check if password matches the hashed password in database
@@ -239,7 +149,7 @@ export const logout = async (req: Request, res: Response) => {
 }
 
 // Get current user
-export const me = async (req: AuthRequest, res: Response) => {
+export const me = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const user = await User.findById(req.user.userId).select('-password');
     if (!user) {
@@ -265,7 +175,7 @@ export const me = async (req: AuthRequest, res: Response) => {
 };
 
 // Get user profile (with bio and links)
-export const getProfile = async (req: AuthRequest, res: Response) => {
+export const getProfile = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const user = await User.findById(req.user.userId).select('-password');
     if (!user) {
@@ -292,7 +202,7 @@ export const getProfile = async (req: AuthRequest, res: Response) => {
 };
 
 // Update user profile
-export const updateProfile = async (req: AuthRequest, res: Response) => {
+export const updateProfile = async (req: AuthenticatedRequest, res: Response) => {
   try {
     // Check validation errors
     const errors = validationResult(req);

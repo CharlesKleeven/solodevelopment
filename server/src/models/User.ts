@@ -3,11 +3,17 @@ import mongoose from 'mongoose';
 interface IUser {
   username: string;
   email: string;
-  password: string;
+  password?: string; // Optional for OAuth users
   displayName: string; // Required now, not optional
   bio?: string;
   links?: string[];
   profileVisibility: 'public' | 'private';
+  
+  // OAuth fields
+  googleId?: string;
+  discordId?: string;
+  provider: 'local' | 'google' | 'discord' | 'mixed'; // Track auth method
+  
   resetPasswordToken?: string;
   resetPasswordExpires?: Date;
   createdAt: Date;
@@ -32,7 +38,7 @@ const userSchema = new mongoose.Schema<IUser>(
     },
     password: {
       type: String,
-      required: true,
+      required: false, // Optional for OAuth users
       minlength: 6,
     },
     displayName: {
@@ -60,6 +66,22 @@ const userSchema = new mongoose.Schema<IUser>(
       enum: ['public', 'private'],
       default: 'public'
     },
+    
+    // OAuth fields
+    googleId: {
+      type: String,
+      sparse: true, // Allows null values but ensures uniqueness when present
+    },
+    discordId: {
+      type: String,
+      sparse: true,
+    },
+    provider: {
+      type: String,
+      enum: ['local', 'google', 'discord', 'mixed'],
+      default: 'local'
+    },
+    
     resetPasswordToken: {
       type: String,
     },

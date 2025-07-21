@@ -214,3 +214,193 @@
         font-size: var(--text-xl);
     }
 }
+
+/* ===== OAUTH STYLES ===== */
+.oauth-divider {
+    display: flex;
+    align-items: center;
+    margin: var(--space-8) 0;
+    text-align: center;
+}
+
+.oauth-divider::before,
+.oauth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-subtle);
+}
+
+.oauth-divider span {
+    padding: 0 var(--space-4);
+    color: var(--text-tertiary);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    background: var(--bg-secondary);
+}
+
+.oauth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+}
+
+.btn-oauth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    width: 100%;
+    padding: var(--space-4) var(--space-6);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: var(--text-base);
+    font-weight: 500;
+    text-decoration: none;
+    transition: all var(--transition);
+    cursor: pointer;
+}
+
+.btn-oauth:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--border-hover);
+    text-decoration: none;
+    color: var(--text-primary);
+}
+
+.btn-oauth:active {
+    transform: translateY(1px);
+}
+
+.btn-google svg {
+    flex-shrink: 0;
+}
+
+.btn-discord {
+    color: var(--text-primary);
+}
+
+.btn-discord svg {
+    flex-shrink: 0;
+    fill: #5865F2;
+}
+
+.btn-discord:hover svg {
+    fill: #4752C4;
+}
+
+@media (max-width: 480px) {
+    .oauth-buttons {
+        gap: var(--space-2);
+    }
+    
+    .btn-oauth {
+        padding: var(--space-3) var(--space-4);
+        font-size: var(--text-sm);
+    }
+}
+
+/* ===== USERNAME SELECTION STYLES ===== */
+.oauth-user-info {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius);
+    padding: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.oauth-user-info p {
+    margin: var(--space-1) 0;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.oauth-user-info strong {
+    color: var(--text-primary);
+}
+
+.username-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.username-input-container .form-input {
+    padding-right: var(--space-10);
+}
+
+.username-input-container .form-input.valid {
+    border-color: var(--color-success);
+}
+
+.username-input-container .form-input.invalid {
+    border-color: var(--color-accent);
+}
+
+.status-icon {
+    position: absolute;
+    right: var(--space-3);
+    font-size: var(--text-lg);
+    font-weight: bold;
+}
+
+.status-icon.available {
+    color: var(--color-success);
+}
+
+.status-icon.unavailable {
+    color: var(--color-accent);
+}
+
+.status-icon.checking {
+    opacity: 0.6;
+}
+
+.username-status {
+    font-size: var(--text-sm);
+    margin-top: var(--space-2);
+    font-weight: 500;
+}
+
+.username-status.available {
+    color: var(--color-success);
+}
+
+.username-status.taken,
+.username-status.invalid {
+    color: var(--color-accent);
+}
+
+.username-help {
+    margin-top: var(--space-3);
+    padding: var(--space-3);
+    background: var(--bg-tertiary);
+    border-radius: var(--border-radius);
+}
+
+.username-help p {
+    margin: var(--space-1) 0;
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+}
+
+.btn-small {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-sm);
+    margin-top: var(--space-3);
+}
+
+.btn-secondary {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+}
+
+.btn-secondary:hover {
+    background: var(--bg-primary);
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+}

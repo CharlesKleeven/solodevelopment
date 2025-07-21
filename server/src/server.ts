@@ -1,10 +1,13 @@
 import express from 'express';
+
 import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import passport from './config/passport';
 import authRoutes from './routes/auth';  // Import auth routes
 import jamRoutes from './routes/jam';
 import contactRoutes from './routes/contact';
@@ -13,6 +16,15 @@ import userSearchRoutes from './routes/userSearch';
 
 // Load environment variables
 dotenv.config();
+
+// Validate required environment variables
+const requiredEnvVars = ['JWT_SECRET', 'MONGO_URI', 'FRONTEND_URL', 'RESEND_API_KEY'];
+const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+if (missingVars.length > 0) {
+    console.error('❌ Missing required environment variables:', missingVars);
+    console.error('Please check your .env file and ensure all required variables are set.');
+    process.exit(1);
+}
 
 // Create Express app
 const app = express();
@@ -40,16 +52,32 @@ app.use(limiter);
 // CORS configuration - MUST be before routes
 app.use(cors({
     origin: process.env.NODE_ENV === 'production'
-        ? ['https://solodevelopment.org']
+        ? [process.env.FRONTEND_URL || 'https://solodevelopment.org']
         : ['http://localhost:3000'],
     credentials: true, // Allow cookies
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type']
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 200 // For legacy browser support
 }));
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
+
+// Session middleware for OAuth
+app.use(session({
+    secret: process.env.JWT_SECRET!,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+}));
+
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Routes
 app.use('/api/jam', jamRoutes);
@@ -67,8 +95,11 @@ mongoose
         maxPoolSize: 10, // Connection pool size
         minPoolSize: 1,
     })
-    .then(() => console.log('Connected to MongoDB'))
-    .catch((err) => console.error('MongoDB connection error:', err));
+    .then(() => console.log('✅ Connected to MongoDB'))
+    .catch((err) => {
+        console.error('❌ MongoDB connection error:', err);
+        process.exit(1);
+    });
 
 // Disable Mongoose buffering globally
 mongoose.set('bufferCommands', false);
@@ -80,6 +111,17 @@ app.get('/', (req, res) => {
     res.json({ message: 'SoloDevelopment API is running!' });
 });
 
+// Health check endpoint for monitoring
+app.get('/health', (req, res) => {
+    res.json({ 
+        status: 'healthy', 
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        memory: process.memoryUsage(),
+        env: process.env.NODE_ENV || 'development'
+    });
+});
+
 app.get('/api/test', (req, res) => {
     res.json({
         message: 'API endpoint working!',
@@ -89,6 +131,42 @@ app.get('/api/test', (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+const server = app.listen(PORT, () => {
+    console.log(`✅ Server running on port ${PORT}`);
+    console.log(`✅ Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`✅ Health check available at: http://localhost:${PORT}/health`);
 });
+
+// Graceful shutdown handling
+const gracefulShutdown = (signal: string) => {
+    console.log(`\n${signal} received. Starting graceful shutdown...`);
+    
+    server.close((err) => {
+        if (err) {
+            console.error('❌ Error during server shutdown:', err);
+            process.exit(1);
+        }
+        
+        console.log('✅ HTTP server closed.');
+        
+        // Close database connection
+        mongoose.connection.close().then(() => {
+            console.log('✅ MongoDB connection closed.');
+            console.log('✅ Graceful shutdown completed.');
+            process.exit(0);
+        }).catch((err) => {
+            console.error('❌ Error closing MongoDB connection:', err);
+            process.exit(1);
+        });
+    });
+    
+    // Force close after 10 seconds
+    setTimeout(() => {
+        console.error('❌ Could not close connections in time, forcefully shutting down');
+        process.exit(1);
+    }, 10000);
+};
+
+// Handle shutdown signals
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));

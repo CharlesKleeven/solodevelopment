@@ -8,18 +8,9 @@ const router = express.Router();
 import User from '../models/User';
 import Game, { IGame } from '../models/Game';
 
-// Extend Request interface to include user and game
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        userId: string;
-        username?: string;
-        email?: string;
-      };
-      game?: any;
-    }
-  }
+// Game type interfaces  
+interface GameRequest extends express.Request {
+  game?: any;
 }
 
 // Import auth middleware
@@ -192,7 +183,7 @@ const gameValidationRules = () => {
 };
 
 // Middleware to check game ownership
-const checkGameOwnership = async (req: Request, res: Response, next: NextFunction) => {
+const checkGameOwnership = async (req: any, res: Response, next: NextFunction) => {
   try {
     const game = await Game.findById(req.params.id);
     
@@ -216,7 +207,7 @@ router.post('/',
   authenticate, 
   gameValidationRules(), 
   handleValidationErrors,
-  async (req: Request, res: Response) => {
+  async (req: any, res: Response) => {
     try {
       // Count user's existing games for rate limiting
       const gameCount = await Game.countDocuments({ 
@@ -270,7 +261,7 @@ router.post('/',
 router.get('/:id',
   param('id').isMongoId().withMessage('Invalid game ID'),
   handleValidationErrors,
-  async (req: Request, res: Response) => {
+  async (req: any, res: Response) => {
     try {
       const game = await Game.findById(req.params.id)
         .populate('user', 'username displayName bio');
@@ -303,7 +294,7 @@ router.put('/:id',
   gameValidationRules(),
   handleValidationErrors,
   checkGameOwnership,
-  async (req: Request, res: Response) => {
+  async (req: any, res: Response) => {
     try {
       // Update fields
       const allowedUpdates = [
@@ -359,7 +350,7 @@ router.delete('/:id',
   param('id').isMongoId().withMessage('Invalid game ID'),
   handleValidationErrors,
   checkGameOwnership,
-  async (req: Request, res: Response) => {
+  async (req: any, res: Response) => {
     try {
       await req.game!.deleteOne();
       res.json({ message: 'Game deleted successfully' });
@@ -376,7 +367,7 @@ router.get('/user/:username',
   query('page').optional().isInt({ min: 1 }).withMessage('Invalid page number'),
   query('limit').optional().isInt({ min: 1, max: 50 }).withMessage('Invalid limit'),
   handleValidationErrors,
-  async (req: Request, res: Response) => {
+  async (req: any, res: Response) => {
     try {
       // Find user by username
       const user = await User.findOne({ username: req.params.username });
@@ -438,7 +429,7 @@ router.get('/',
   query('platform').optional(),
   query('search').optional(),
   handleValidationErrors,
-  async (req: Request, res: Response) => {
+  async (req: any, res: Response) => {
     try {
       // Pagination
       const page = parseInt(req.query.page as string) || 1;
@@ -505,7 +496,7 @@ router.get('/my/games',
   query('page').optional().isInt({ min: 1 }).withMessage('Invalid page number'),
   query('limit').optional().isInt({ min: 1, max: 50 }).withMessage('Invalid limit'),
   handleValidationErrors,
-  async (req: Request, res: Response) => {
+  async (req: any, res: Response) => {
     try {
       // Pagination
       const page = parseInt(req.query.page as string) || 1;

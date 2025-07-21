@@ -9,6 +9,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import SelectUsername from './pages/SelectUsername';
+import OAuthCallback from './pages/OAuthCallback';
 import Jams from './pages/Jams';
 import Showcase from './pages/Showcase';
 import Resources from './pages/Resources';
@@ -28,7 +30,7 @@ import { AuthProvider } from './context/AuthContext';
 
 function AppContent() {
   const location = useLocation();
-  const isAuthPage = ['/login', '/forgot-password', '/reset-password'].includes(location.pathname);
+  const isAuthPage = ['/login', '/forgot-password', '/reset-password', '/select-username', '/oauth-callback'].includes(location.pathname);
 
   return (
     <div className="app">
@@ -38,6 +40,8 @@ function AppContent() {
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/select-username" element={<SelectUsername />} />
+          <Route path="/oauth-callback" element={<OAuthCallback />} />
         </Routes>
       ) : (
         <main className="main-content">
