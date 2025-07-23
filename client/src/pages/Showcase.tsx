@@ -96,15 +96,15 @@ const Showcase: React.FC = () => {
 
     return (
       <div key={jamName} className={jamClass}>
-        <h3>{jamName}</h3>
+        <h3>
+          <a href={games[0].jamUrl} target="_blank" rel="noopener noreferrer nofollow">
+            {jamName}
+          </a>
+        </h3>
         <p className="jam-description">
           {theme && theme !== 'Work on your own project' && (
-            <>Theme: "{theme}" • </>
+            <>Theme: "{theme}"</>
           )}
-          From{' '}
-          <a href={games[0].jamUrl} target="_blank" rel="noopener noreferrer nofollow">
-            itch.io
-          </a>
         </p>
         <div className="winner-list">
           {games.length > 0 && renderGameItem(games[0], 0, games.length, true)}

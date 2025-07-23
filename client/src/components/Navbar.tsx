@@ -6,6 +6,8 @@ import './navbar.css';
 const Navbar: React.FC = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const [showLogoutSuccess, setShowLogoutSuccess] = useState(false);
     const location = useLocation();
     const { user, logout, loading } = useAuth();
     const userMenuRef = useRef<HTMLDivElement>(null);
@@ -39,9 +41,13 @@ const Navbar: React.FC = () => {
     };
 
     const handleLogout = async () => {
+        setIsLoggingOut(true);
         await logout();
         setIsUserMenuOpen(false);
         setIsMobileMenuOpen(false);
+        setIsLoggingOut(false);
+        setShowLogoutSuccess(true);
+        setTimeout(() => setShowLogoutSuccess(false), 2000);
     };
 
     return (
@@ -112,8 +118,9 @@ const Navbar: React.FC = () => {
                                         <button
                                             onClick={handleLogout}
                                             className="dropdown-item logout-btn"
+                                            disabled={isLoggingOut}
                                         >
-                                            Sign Out
+                                            {isLoggingOut ? 'Signing Out...' : 'Sign Out'}
                                         </button>
                                     </div>
                                 )}
@@ -189,8 +196,9 @@ const Navbar: React.FC = () => {
                             <button
                                 onClick={handleLogout}
                                 className="mobile-nav-link logout-mobile"
+                                disabled={isLoggingOut}
                             >
-                                Sign Out
+                                {isLoggingOut ? 'Signing Out...' : 'Sign Out'}
                             </button>
                         </>
                     ) : (
@@ -204,6 +212,13 @@ const Navbar: React.FC = () => {
                     )}
                 </div>
             </div>
+            
+            {/* Logout Success Toast */}
+            {showLogoutSuccess && (
+                <div className="logout-toast">
+                    Successfully signed out
+                </div>
+            )}
         </nav>
     );
 };

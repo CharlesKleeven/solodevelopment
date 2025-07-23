@@ -101,8 +101,8 @@ const Login: React.FC = () => {
     return (
       <div className="auth-page">
         <div className="auth-container">
-          <div className="auth-card">
-            <div className="auth-header">
+          <div className="auth-card loading-card">
+            <div className="auth-header loading-only">
               <h1>Loading...</h1>
             </div>
           </div>

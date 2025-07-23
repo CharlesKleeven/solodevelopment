@@ -24,9 +24,17 @@
     box-shadow: var(--shadow-soft);
 }
 
+.auth-card.loading-card {
+    padding: var(--space-8);
+}
+
 .auth-header {
     margin-bottom: var(--space-12);
     text-align: center;
+}
+
+.auth-header.loading-only {
+    margin: var(--space-4) 0;
 }
 
 .auth-header h1 {
@@ -34,6 +42,11 @@
     font-weight: 600;
     margin-bottom: var(--space-3);
     color: var(--text-primary);
+}
+
+.auth-header.loading-only h1 {
+    font-size: var(--text-lg);
+    margin-bottom: 0;
 }
 
 .auth-header p {

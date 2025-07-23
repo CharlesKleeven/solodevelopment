@@ -39,7 +39,7 @@ router.get('/search',
       const skip = (page - 1) * limit;
 
       // Build search query - search in username and displayName, only public profiles
-      const searchRegex = new RegExp(searchQuery, 'i'); // Case insensitive
+      const searchRegex = new RegExp(searchQuery, 'i');
       const query = {
         $and: [
           { profileVisibility: 'public' },
@@ -114,8 +114,8 @@ router.get('/featured',
         profileVisibility: 'public'
       })
         .select('username displayName bio createdAt')
-        .sort({ createdAt: -1 }) // Most recent users first
-        .limit(limit * 3) // Get more users to filter from
+        .sort({ createdAt: -1 })
+        .limit(limit * 3)
         .lean();
 
       // Get game counts for each user

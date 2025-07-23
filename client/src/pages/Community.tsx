@@ -30,7 +30,6 @@ const Community: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isSearching, setIsSearching] = useState(false);
-    
     const [pagination, setPagination] = useState({
         page: 1,
         limit: 12,
@@ -109,11 +108,17 @@ const Community: React.FC = () => {
         }
     };
 
-
     const CommunityMemberCard: React.FC<{ member: CommunityMember }> = ({ member }) => (
         <div className="community-card">
             <div className="community-info">
-                <h3 className="community-name">{member.displayName}</h3>
+                <div className="community-header">
+                    <h3 className="community-name">{member.displayName}</h3>
+                    {member.gameCount > 0 && (
+                        <span className="game-badge" title={`${member.gameCount} published game${member.gameCount === 1 ? '' : 's'}`}>
+                            {member.gameCount} game{member.gameCount === 1 ? '' : 's'}
+                        </span>
+                    )}
+                </div>
                 <p className="community-username">@{member.username}</p>
                 
                 {member.bio && (
@@ -143,7 +148,6 @@ const Community: React.FC = () => {
             
             <section className="section-compact" data-fade data-delay="2">
                 <div className="container">
-
                 {/* Search */}
                 <section className="search-section" data-fade data-delay="2">
                     <form onSubmit={handleSearchSubmit} className="search-form">

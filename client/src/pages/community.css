@@ -86,7 +86,7 @@
 .search-results p,
 .featured-section p {
     color: var(--text-secondary);
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
 }
 
 .community-grid {
@@ -102,20 +102,12 @@
 .community-card {
     background: var(--bg-secondary);
     border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    padding: 1.5rem;
-    transition: all 0.2s ease;
-    box-shadow: var(--shadow-sm);
+    border-radius: 8px;
+    padding: 1.25rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 160px;
-    position: relative;
-}
-
-.community-card:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
+    min-height: 140px;
 }
 
 .community-info {
@@ -123,11 +115,32 @@
     margin-bottom: 1rem;
 }
 
+.community-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+    gap: 0.5rem;
+}
+
 .community-name {
     color: var(--text-primary);
     font-size: 1.25rem;
     font-weight: 600;
-    margin: 0 0 0.25rem;
+    margin: 0;
+    flex: 1;
+    min-width: 0; /* Allow text to truncate */
+}
+
+.game-badge {
+    background: var(--color-accent-alt);
+    color: var(--bg-primary);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.4rem;
+    border-radius: 6px;
+    white-space: nowrap;
+    cursor: help;
 }
 
 .community-username {
@@ -145,32 +158,6 @@
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
-}
-
-.community-stats {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-}
-
-.stat {
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-}
-
-.stat strong {
-    color: var(--text-primary);
-    font-weight: 600;
-}
-
-.creator-meta {
-    margin-bottom: 1rem;
-}
-
-.joined-date {
-    color: var(--text-tertiary);
-    font-size: 0.8rem;
 }
 
 .community-actions {
@@ -227,7 +214,7 @@
     cursor: not-allowed;
 }
 
-.no-results, .empty-state, .loading-state {
+.no-results, .empty-state {
     text-align: center;
     padding: 3rem 2rem;
     color: var(--text-secondary);
@@ -238,6 +225,8 @@
 }
 
 .loading-state {
+    text-align: center;
+    padding: 2rem 1rem;
     font-size: 1.1rem;
     color: var(--text-tertiary);
 }
