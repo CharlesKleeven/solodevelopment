@@ -9,7 +9,6 @@ interface CommunityMember {
     displayName: string;
     bio?: string;
     gameCount: number;
-    totalViews?: number;
     joinedAt: string;
 }
 
@@ -32,8 +31,6 @@ const Community: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [isSearching, setIsSearching] = useState(false);
     
-    // Initialize fade animations
-    useFadeInOnScroll([searchQuery, loading, featuredUsers]);
     const [pagination, setPagination] = useState({
         page: 1,
         limit: 12,
@@ -113,7 +110,7 @@ const Community: React.FC = () => {
     };
 
 
-    const CommunityMemberCard: React.FC<{ member: CommunityMember; showStats?: boolean }> = ({ member }) => (
+    const CommunityMemberCard: React.FC<{ member: CommunityMember }> = ({ member }) => (
         <div className="community-card">
             <div className="community-info">
                 <h3 className="community-name">{member.displayName}</h3>
@@ -122,8 +119,6 @@ const Community: React.FC = () => {
                 {member.bio && (
                     <p className="community-bio">{member.bio}</p>
                 )}
-
-
             </div>
 
             <div className="community-actions">
@@ -225,14 +220,14 @@ const Community: React.FC = () => {
                     ) : (
                         <div className="featured-section">
                             <h2>Community Members</h2>
-                            <p>Developers who have shared games on the platform</p>
+                            <p>Discover fellow game developers in our community</p>
                             
                             {loading ? (
                                 <div className="loading-state">Loading community members...</div>
                             ) : featuredUsers.length > 0 ? (
                                 <div className="community-grid">
                                     {featuredUsers.map((member) => (
-                                        <CommunityMemberCard key={member.username} member={member} showStats={false} />
+                                        <CommunityMemberCard key={member.username} member={member} />
                                     ))}
                                 </div>
                             ) : (

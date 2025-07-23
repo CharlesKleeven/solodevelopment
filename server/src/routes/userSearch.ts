@@ -1,10 +1,9 @@
 import express, { Request, Response } from 'express';
 import { query, validationResult } from 'express-validator';
 import User from '../models/User';
+import Game from '../models/Game';
 
 const router = express.Router();
-
-import Game from '../models/Game';
 
 // Helper to check validation errors
 const handleValidationErrors = (req: Request, res: Response, next: Function) => {
@@ -99,7 +98,7 @@ router.get('/search',
   }
 );
 
-// Get community members (only users with games for featured section)
+// Get community members (all public users, with those who have games shown first)
 router.get('/featured',
   query('limit')
     .optional()
@@ -137,11 +136,14 @@ router.get('/featured',
         })
       );
 
-      // Filter to only users with games, sort by game count (desc) then by join date (desc)
+      // Sort all users: those with games first, then those without games
       const sortedUsers = communityUsers
-        .filter(user => user.gameCount > 0) // Only show users with games in featured
         .sort((a, b) => {
-          // First sort by game count (users with more games first)
+          // First sort by whether they have games (users with games first)
+          if ((a.gameCount > 0) !== (b.gameCount > 0)) {
+            return a.gameCount > 0 ? -1 : 1;
+          }
+          // Then sort by game count (users with more games first)
           if (a.gameCount !== b.gameCount) {
             return b.gameCount - a.gameCount;
           }
