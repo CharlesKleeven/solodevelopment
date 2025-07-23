@@ -56,7 +56,7 @@ const Showcase: React.FC = () => {
         key={game.id}
         href={game.url}
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noopener noreferrer nofollow"
         className={containerClass}
       >
         <div className="showcase-thumb">
@@ -102,7 +102,7 @@ const Showcase: React.FC = () => {
             <>Theme: "{theme}" • </>
           )}
           From{' '}
-          <a href={games[0].jamUrl} target="_blank" rel="noopener noreferrer">
+          <a href={games[0].jamUrl} target="_blank" rel="noopener noreferrer nofollow">
             itch.io
           </a>
         </p>

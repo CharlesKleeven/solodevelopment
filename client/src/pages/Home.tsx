@@ -72,8 +72,8 @@ const Home: React.FC = () => {
                         A quiet space for devs building projects at their own pace.
                     </p>
                     <div className="home-buttons">
-                        <a href="https://discord.gg/uXeapAkAra" className="btn btn-primary" target="_blank" rel="noreferrer">Join Discord</a>
-                        <a href="https://reddit.com/r/solodevelopment" className="btn btn-secondary" target="_blank" rel="noreferrer">Browse Reddit</a>
+                        <a href="https://discord.gg/uXeapAkAra" className="btn btn-primary" target="_blank" rel="noopener noreferrer nofollow">Join Discord</a>
+                        <a href="https://reddit.com/r/solodevelopment" className="btn btn-secondary" target="_blank" rel="noopener noreferrer nofollow">Browse Reddit</a>
                     </div>
                 </div>
             </section>
@@ -100,7 +100,7 @@ const Home: React.FC = () => {
                                     <p className="jam-description">{jamData.description} • {jamData.timeLeft}</p>
                                 </div>
                                 <div className="jam-cta">
-                                    <a href={jamData.url} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
+                                    <a href={jamData.url} target="_blank" rel="noopener noreferrer nofollow" className="btn btn-secondary">
                                         {jamData.status === 'upcoming' ? 'Learn More' :
                                             jamData.status === 'active' ? 'Join Now' : 'View Results'}
                                     </a>
@@ -137,7 +137,7 @@ const Home: React.FC = () => {
                                 key={`${game.id}-${index}`}
                                 className="featured-game"
                                 target="_blank"
-                                rel="noreferrer"
+                                rel="noopener noreferrer nofollow"
                             >
                                 <div className="game-thumb-large">
                                     {game.image ? (

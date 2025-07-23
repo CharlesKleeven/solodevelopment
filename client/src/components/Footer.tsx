@@ -20,17 +20,17 @@ const Footer: React.FC = () => {
             <h4>Community</h4>
             <ul>
               <li>
-                <a className="footer-link" href="https://discord.gg/uXeapAkAra" target="_blank" rel="noreferrer">
+                <a className="footer-link" href="https://discord.gg/uXeapAkAra" target="_blank" rel="noopener noreferrer nofollow">
                   Discord
                 </a>
               </li>
               <li>
-                <a className="footer-link" href="https://reddit.com/r/solodevelopment" target="_blank" rel="noreferrer">
+                <a className="footer-link" href="https://reddit.com/r/solodevelopment" target="_blank" rel="noopener noreferrer nofollow">
                   Reddit
                 </a>
               </li>
               <li>
-                <a className="footer-link" href="https://solodevelopment.itch.io/" target="_blank" rel="noreferrer">
+                <a className="footer-link" href="https://solodevelopment.itch.io/" target="_blank" rel="noopener noreferrer nofollow">
                   Itch.io
                 </a>
               </li>

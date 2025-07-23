@@ -236,7 +236,7 @@ const GameDashboard: React.FC = () => {
                                                     href={game.playUrl || '#'} 
                                                     className="btn btn-sm btn-ghost"
                                                     target="_blank"
-                                                    rel="noopener noreferrer"
+                                                    rel="noopener noreferrer nofollow"
                                                     style={{ opacity: game.playUrl ? 1 : 0.5, pointerEvents: game.playUrl ? 'auto' : 'none' }}
                                                 >
                                                     View

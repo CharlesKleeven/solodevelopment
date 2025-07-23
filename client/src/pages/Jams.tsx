@@ -171,7 +171,7 @@ const Jams = () => {
               </div>
 
               <div className="jam-actions">
-                <a href="https://itch.io/jam/solodevelopment-summer-jam" className="btn btn-primary" target="_blank" rel="noreferrer">Learn More</a>
+                <a href="https://itch.io/jam/solodevelopment-summer-jam" className="btn btn-primary" target="_blank" rel="noopener noreferrer nofollow">Learn More</a>
               </div>
             </div>
           )}
@@ -205,7 +205,7 @@ const Jams = () => {
               <ul className="jam-list">
                 {marathon.map((jam) => (
                   <li key={jam.jamName}>
-                    <a href={jam.jamUrl} className="jam-title-link" target="_blank" rel="noopener noreferrer">
+                    <a href={jam.jamUrl} className="jam-title-link" target="_blank" rel="noopener noreferrer nofollow">
                       {jam.jamName}
                     </a>
                   </li>
@@ -222,7 +222,7 @@ const Jams = () => {
               <ul className="jam-list">
                 {themed.map((jam) => (
                   <li key={jam.jamName}>
-                    <a href={jam.jamUrl} className="jam-title-link" target="_blank" rel="noopener noreferrer">
+                    <a href={jam.jamUrl} className="jam-title-link" target="_blank" rel="noopener noreferrer nofollow">
                       {jam.jamName}
                     </a>
                     {jam.jamTheme && <span className="jam-note">— {jam.jamTheme}</span>}

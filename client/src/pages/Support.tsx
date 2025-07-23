@@ -48,8 +48,8 @@ const Support: React.FC = () => {
         <div className="contact-card">
           <p className="contact-note">
             The fastest way to get help is by messaging the moderators on{' '}
-            <a href="https://discord.gg/uXeapAkAra" target="_blank" rel="noreferrer">Discord</a> and{' '}
-            <a href="https://reddit.com/r/solodevelopment" target="_blank" rel="noreferrer">Reddit</a>. You can also leave us a note below.
+            <a href="https://discord.gg/uXeapAkAra" target="_blank" rel="noopener noreferrer nofollow">Discord</a> and{' '}
+            <a href="https://reddit.com/r/solodevelopment" target="_blank" rel="noopener noreferrer nofollow">Reddit</a>. You can also leave us a note below.
           </p>
 
           {success && (

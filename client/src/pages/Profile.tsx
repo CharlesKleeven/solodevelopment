@@ -305,7 +305,7 @@ const Profile: React.FC = () => {
                                                 key={index}
                                                 href={linkInfo.url}
                                                 target="_blank"
-                                                rel="noopener noreferrer"
+                                                rel="noopener noreferrer nofollow"
                                                 className="link-item"
                                             >
                                                 {linkInfo.displayText}

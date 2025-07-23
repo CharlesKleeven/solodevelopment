@@ -122,7 +122,7 @@ const UserProfile: React.FC = () => {
                                         key={index}
                                         href={linkInfo.url}
                                         target="_blank"
-                                        rel="noopener noreferrer"
+                                        rel="noopener noreferrer nofollow"
                                         className="profile-link"
                                         title={linkInfo.platform}
                                     >
@@ -183,7 +183,7 @@ const UserProfile: React.FC = () => {
                                                         <a 
                                                             href={game.playUrl} 
                                                             target="_blank" 
-                                                            rel="noopener noreferrer" 
+                                                            rel="noopener noreferrer nofollow" 
                                                             className="btn btn-primary btn-sm"
                                                         >
                                                             Play Game
