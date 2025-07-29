@@ -14,6 +14,11 @@ interface IUser {
   discordId?: string;
   provider: 'local' | 'google' | 'discord' | 'mixed'; // Track auth method
   
+  // Email verification fields
+  emailVerified: boolean;
+  emailVerificationToken?: string;
+  emailVerificationExpires?: Date;
+  
   resetPasswordToken?: string;
   resetPasswordExpires?: Date;
   createdAt: Date;
@@ -80,6 +85,18 @@ const userSchema = new mongoose.Schema<IUser>(
       type: String,
       enum: ['local', 'google', 'discord', 'mixed'],
       default: 'local'
+    },
+    
+    // Email verification fields
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    emailVerificationToken: {
+      type: String,
+    },
+    emailVerificationExpires: {
+      type: Date,
     },
     
     resetPasswordToken: {

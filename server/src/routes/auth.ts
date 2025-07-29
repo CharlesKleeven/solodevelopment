@@ -8,6 +8,8 @@ import jwt from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
 import User from '../models/User';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
+import { sendEmailVerificationEmail } from '../services/emailService';
 
 // Auth-specific rate limiter - 20 attempts per 15 minutes
 const authLimiter = rateLimit({
@@ -66,39 +68,42 @@ router.post('/register', authLimiter, [
         const saltRounds = 12;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
+        // Generate email verification token
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+        
         // Create user in database
         const user = new User({
             username,
             email,
             password: hashedPassword,
-            displayName: username
+            displayName: username,
+            emailVerified: false,
+            emailVerificationToken: verificationToken,
+            emailVerificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
         });
 
         await user.save();
 
-        // Generate JWT
-        const token = jwt.sign(
-            { userId: user._id },
-            process.env.JWT_SECRET!,
-            { expiresIn: '7d' }
-        );
+        // Send verification email
+        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
+        
+        try {
+            await sendEmailVerificationEmail({
+                to: user.email,
+                username: user.displayName || user.username,
+                verificationUrl
+            });
+        } catch (emailError) {
+            // If email fails, delete the user and return error
+            await User.findByIdAndDelete(user._id);
+            console.error('Failed to send verification email:', emailError);
+            return res.status(500).json({ error: 'Failed to send verification email. Please try again.' });
+        }
 
-        // Set token in cookie
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        });
-
+        // Don't generate JWT or set cookie - user needs to verify email first
         res.status(201).json({
-            message: 'User registered successfully',
-            user: {
-                id: user._id,
-                username: user.username,
-                email: user.email,
-                displayName: user.displayName
-            }
+            message: 'Registration successful! Please check your email to verify your account.',
+            requiresVerification: true
         });
 
     } catch (error: any) {
@@ -129,6 +134,160 @@ router.post('/forgot-password', authLimiter, forgotPasswordValidation, forgotPas
 
 // POST /api/auth/reset-password: reset password with token
 router.post('/reset-password', authLimiter, resetPasswordValidation, resetPassword);
+
+// Email verification validation
+const verifyEmailValidation = [
+    body('token')
+        .notEmpty()
+        .withMessage('Verification token is required')
+];
+
+const resendVerificationValidation = [
+    body('email')
+        .isEmail()
+        .normalizeEmail()
+        .withMessage('Please provide a valid email address')
+];
+
+// POST /api/auth/verify-email: verify email with token
+router.post('/verify-email', authLimiter, verifyEmailValidation, async (req: express.Request, res: express.Response) => {
+    try {
+        // Check validation errors
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                error: 'Validation failed',
+                details: errors.array()
+            });
+        }
+
+        const { token } = req.body;
+
+        // Find user with valid verification token
+        const user = await User.findOne({
+            emailVerificationToken: token,
+            emailVerificationExpires: { $gt: new Date() } // Token not expired
+        });
+
+        if (!user) {
+            return res.status(400).json({ 
+                error: 'Invalid or expired verification token. Please request a new verification email.' 
+            });
+        }
+
+        // Update user as verified
+        user.emailVerified = true;
+        user.emailVerificationToken = undefined;
+        user.emailVerificationExpires = undefined;
+
+        await user.save();
+
+        // Generate JWT token for auto-login after verification
+        const jwtToken = jwt.sign(
+            { userId: user._id },
+            process.env.JWT_SECRET!,
+            { expiresIn: '7d' }
+        );
+
+        // Set token in cookie
+        res.cookie('token', jwtToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
+
+        res.json({ 
+            message: 'Email verified successfully! You are now logged in.',
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                displayName: user.displayName
+            }
+        });
+
+    } catch (error) {
+        console.error('Email verification error:', error);
+        res.status(500).json({ error: 'Server error during email verification' });
+    }
+});
+
+// POST /api/auth/resend-verification: resend verification email
+router.post('/resend-verification', authLimiter, resendVerificationValidation, async (req: express.Request, res: express.Response) => {
+    try {
+        // Check validation errors
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                error: 'Validation failed',
+                details: errors.array()
+            });
+        }
+
+        const { email } = req.body;
+
+        // Find user by email
+        const user = await User.findOne({ email });
+        
+        // Always return success to prevent email enumeration
+        if (!user) {
+            return res.json({ 
+                message: 'If an account with that email exists and is unverified, a new verification email has been sent.' 
+            });
+        }
+
+        // Check if already verified
+        if (user.emailVerified) {
+            return res.status(400).json({ 
+                error: 'This email is already verified. You can log in.' 
+            });
+        }
+
+        // Check if user is OAuth user
+        if (user.provider !== 'local') {
+            return res.status(400).json({ 
+                error: 'OAuth accounts do not require email verification.' 
+            });
+        }
+
+        // Generate new verification token
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+        
+        // Update token and expiration
+        user.emailVerificationToken = verificationToken;
+        user.emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+        
+        await user.save();
+
+        // Send verification email
+        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
+        
+        try {
+            await sendEmailVerificationEmail({
+                to: user.email,
+                username: user.displayName || user.username,
+                verificationUrl
+            });
+        } catch (emailError) {
+            // Reset the token if email fails
+            user.emailVerificationToken = undefined;
+            user.emailVerificationExpires = undefined;
+            await user.save();
+            
+            console.error('Failed to send verification email:', emailError);
+            return res.status(500).json({ error: 'Failed to send verification email. Please try again.' });
+        }
+
+        res.json({ 
+            message: 'Verification email has been resent. Please check your inbox.' 
+        });
+
+    } catch (error) {
+        console.error('Resend verification error:', error);
+        res.status(500).json({ error: 'Server error during resend verification' });
+    }
+});
 
 // OAuth helper function to handle JWT generation and redirection
 const handleOAuthCallback = (req: express.Request, res: express.Response) => {
@@ -254,6 +413,7 @@ router.post('/oauth/complete',
                 email: tempUser.email,
                 displayName: tempUser.displayName,
                 provider: tempUser.provider,
+                emailVerified: true, // OAuth users are automatically verified
                 ...(tempUser.googleId && { googleId: tempUser.googleId }),
                 ...(tempUser.discordId && { discordId: tempUser.discordId })
             });

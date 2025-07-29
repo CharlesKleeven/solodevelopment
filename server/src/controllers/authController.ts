@@ -105,6 +105,15 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
 
+    // Check if email is verified for local users
+    if (user.provider === 'local' && !user.emailVerified) {
+      return res.status(403).json({ 
+        error: 'Please verify your email before logging in',
+        needsVerification: true,
+        email: user.email
+      });
+    }
+
     // Generate JWT
     const token = jwt.sign(
       { userId: user._id },

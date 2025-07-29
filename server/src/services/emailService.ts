@@ -109,6 +109,102 @@ export const sendPasswordResetEmail = async ({ to, username, resetUrl }: SendPas
   }
 };
 
+interface SendEmailVerificationParams {
+  to: string;
+  username: string;
+  verificationUrl: string;
+}
+
+export const sendEmailVerificationEmail = async ({ to, username, verificationUrl }: SendEmailVerificationParams) => {
+  try {
+    const { data, error } = await getResend().emails.send({
+      from: 'SoloDevelopment <noreply@solodevelopment.org>',
+      to,
+      subject: 'Verify Your Email - SoloDevelopment',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Verify Your Email</title>
+        </head>
+        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 20px; text-align: center; border-radius: 10px 10px 0 0;">
+            <h1 style="color: white; margin: 0; font-size: 28px;">SoloDevelopment</h1>
+          </div>
+          
+          <div style="background: #f8f9fa; padding: 40px 30px; border-radius: 0 0 10px 10px;">
+            <h2 style="color: #333; margin-top: 0;">Verify Your Email Address</h2>
+            
+            <p style="font-size: 16px; margin-bottom: 20px;">
+              Hi <strong>${username}</strong>,
+            </p>
+            
+            <p style="font-size: 16px; margin-bottom: 20px;">
+              Thanks for signing up for SoloDevelopment! Please verify your email address to complete your registration and start showcasing your projects.
+            </p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${verificationUrl}" 
+                 style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                        color: white; 
+                        text-decoration: none; 
+                        padding: 15px 30px; 
+                        border-radius: 5px; 
+                        font-weight: bold; 
+                        font-size: 16px; 
+                        display: inline-block;">
+                Verify Email Address
+              </a>
+            </div>
+            
+            <p style="font-size: 14px; color: #666; margin-top: 30px;">
+              This verification link will expire in 24 hours.
+            </p>
+            
+            <p style="font-size: 14px; color: #666; margin-top: 20px;">
+              If the button doesn't work, copy and paste this link into your browser:<br>
+              <a href="${verificationUrl}" style="color: #667eea; word-break: break-all;">${verificationUrl}</a>
+            </p>
+            
+            <hr style="border: none; border-top: 1px solid #e9ecef; margin: 30px 0;">
+            
+            <p style="font-size: 12px; color: #999; text-align: center; margin-bottom: 0;">
+              This email was sent by SoloDevelopment. If you didn't create an account, you can safely ignore this email.
+            </p>
+          </div>
+        </body>
+        </html>
+      `,
+      text: `
+        Hi ${username},
+        
+        Thanks for signing up for SoloDevelopment! Please verify your email address to complete your registration.
+        
+        Click this link to verify your email: ${verificationUrl}
+        
+        This link will expire in 24 hours.
+        
+        If you didn't create an account, you can safely ignore this email.
+        
+        Thanks,
+        SoloDevelopment Team
+      `
+    });
+
+    if (error) {
+      console.error('Resend API error:', error);
+      throw new Error(`Resend error: ${JSON.stringify(error)}`);
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Email service error:', error);
+    throw error;
+  }
+};
+
 interface SendContactEmailParams {
     userEmail: string;
     message: string;

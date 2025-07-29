@@ -70,17 +70,28 @@ const Login: React.FC = () => {
 
     try {
       if (isRegistering) {
-        await register(username, email, password);
-        setMessage('Registration successful! Welcome to the community.');
-        // Navigation will happen via useEffect when user state updates
+        const response = await register(username, email, password);
+        if (response?.requiresVerification) {
+          setMessage('Registration successful! Please check your email to verify your account.');
+          // Don't navigate - user needs to verify email
+        } else {
+          setMessage('Registration successful! Welcome to the community.');
+          // Navigation will happen via useEffect when user state updates
+        }
       } else {
         await login(emailOrUsername, password);
         setMessage('Login successful! Redirecting...');
         // Navigation will happen via useEffect when user state updates
       }
     } catch (error: any) {
-      // Error is handled by the context and will be displayed via useEffect
-      console.error('Auth error:', error);
+      // Check for specific error types
+      if (error.needsVerification) {
+        setMessage(`${error.message || 'Please verify your email before logging in'}`);
+        // Optionally show resend verification link
+      } else {
+        // Error is handled by the context and will be displayed via useEffect
+        console.error('Auth error:', error);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -242,6 +253,13 @@ const Login: React.FC = () => {
           {message && (
             <div className={`auth-message ${message.includes('Error') ? 'error' : 'success'}`}>
               {message}
+              {message.includes('verify your email') && message.includes('before logging in') && (
+                <div style={{ marginTop: '10px' }}>
+                  <Link to="/verify-email" style={{ color: '#667eea', textDecoration: 'underline' }}>
+                    Resend verification email
+                  </Link>
+                </div>
+              )}
             </div>
           )}
 

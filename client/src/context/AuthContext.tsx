@@ -16,7 +16,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   login: (emailOrUsername: string, password: string) => Promise<void>;
-  register: (username: string, email: string, password: string) => Promise<void>;
+  register: (username: string, email: string, password: string) => Promise<any>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>; // Add this for real-time updates
   loading: boolean;
@@ -89,6 +89,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       } else if (axiosError.response?.data?.error) {
         // API error message
         setError(axiosError.response.data.error);
+        // Check if it's an email verification error
+        if (axiosError.response?.data?.needsVerification) {
+          throw {
+            message: axiosError.response.data.error,
+            needsVerification: true,
+            email: axiosError.response.data.email
+          };
+        }
       } else if (axiosError.message) {
         // Network or other errors
         setError(axiosError.message);
@@ -102,15 +110,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const register = async (username: string, email: string, password: string): Promise<void> => {
+  const register = async (username: string, email: string, password: string): Promise<any> => {
     try {
       setError(null);
       setLoading(true);
 
       const response = await authAPI.register({ username, email, password });
 
-      if (response.user) {
+      if (response.requiresVerification) {
+        // Don't set user - they need to verify email first
+        return response;
+      } else if (response.user) {
         setUser(response.user);
+        return response;
       } else {
         throw new Error('Registration successful but no user data received');
       }
