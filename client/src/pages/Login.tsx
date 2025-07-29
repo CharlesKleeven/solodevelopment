@@ -70,28 +70,17 @@ const Login: React.FC = () => {
 
     try {
       if (isRegistering) {
-        const response = await register(username, email, password);
-        if (response?.requiresVerification) {
-          setMessage('Registration successful! Please check your email to verify your account.');
-          // Don't navigate - user needs to verify email
-        } else {
-          setMessage('Registration successful! Welcome to the community.');
-          // Navigation will happen via useEffect when user state updates
-        }
+        await register(username, email, password);
+        setMessage('Registration successful! Please check your email to verify your account.');
+        // Navigation will happen via useEffect when user state updates
       } else {
         await login(emailOrUsername, password);
         setMessage('Login successful! Redirecting...');
         // Navigation will happen via useEffect when user state updates
       }
     } catch (error: any) {
-      // Check for specific error types
-      if (error.needsVerification) {
-        setMessage(`${error.message || 'Please verify your email before logging in'}`);
-        // Optionally show resend verification link
-      } else {
-        // Error is handled by the context and will be displayed via useEffect
-        console.error('Auth error:', error);
-      }
+      // Error is handled by the context and will be displayed via useEffect
+      console.error('Auth error:', error);
     } finally {
       setIsLoading(false);
     }

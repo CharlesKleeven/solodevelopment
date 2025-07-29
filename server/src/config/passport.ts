@@ -115,6 +115,9 @@ passport.use(new DiscordStrategy({
   scope: ['identify', 'email']
 }, async (accessToken, refreshToken, profile, done) => {
   try {
+    // Log profile to see what fields are available
+    console.log('Discord profile object:', JSON.stringify(profile, null, 2));
+    
     // Check if user already exists with this Discord ID
     let existingUser = await User.findOne({ discordId: profile.id });
     
@@ -125,12 +128,17 @@ passport.use(new DiscordStrategy({
     // Check if user exists with the same email (for account linking)
     const userEmail = profile.email;
     
+    // Check if email is verified - Discord provides this in the profile
+    // The 'verified' field should be available if the email scope is granted
+    const emailVerified = (profile as any).verified || false;
+    
     // For new users, prepare temporary user data for username selection
     const tempUserData = {
       isNewUser: true,
       provider: 'discord',
       discordId: profile.id,
       email: userEmail,
+      emailVerified: emailVerified, // Pass the verified status
       displayName: profile.displayName || profile.username || userEmail?.split('@')[0] || 'user',
       suggestedUsername: await generateUniqueUsername(profile.username || userEmail?.split('@')[0] || 'user')
     };

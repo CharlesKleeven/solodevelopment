@@ -89,14 +89,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       } else if (axiosError.response?.data?.error) {
         // API error message
         setError(axiosError.response.data.error);
-        // Check if it's an email verification error
-        if (axiosError.response?.data?.needsVerification) {
-          throw {
-            message: axiosError.response.data.error,
-            needsVerification: true,
-            email: axiosError.response.data.email
-          };
-        }
       } else if (axiosError.message) {
         // Network or other errors
         setError(axiosError.message);
@@ -117,10 +109,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       const response = await authAPI.register({ username, email, password });
 
-      if (response.requiresVerification) {
-        // Don't set user - they need to verify email first
-        return response;
-      } else if (response.user) {
+      if (response.user) {
         setUser(response.user);
         return response;
       } else {

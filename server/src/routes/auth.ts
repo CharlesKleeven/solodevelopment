@@ -84,7 +84,7 @@ router.post('/register', authLimiter, [
 
         await user.save();
 
-        // Send verification email
+        // Send verification email (but don't block on failure)
         const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
         
         try {
@@ -94,16 +94,35 @@ router.post('/register', authLimiter, [
                 verificationUrl
             });
         } catch (emailError) {
-            // If email fails, delete the user and return error
-            await User.findByIdAndDelete(user._id);
+            // Log error but don't fail registration
             console.error('Failed to send verification email:', emailError);
-            return res.status(500).json({ error: 'Failed to send verification email. Please try again.' });
+            // Continue with registration anyway
         }
 
-        // Don't generate JWT or set cookie - user needs to verify email first
+        // Generate JWT and auto-login the user
+        const token = jwt.sign(
+            { userId: user._id },
+            process.env.JWT_SECRET!,
+            { expiresIn: '7d' }
+        );
+
+        // Set token in cookie
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+
         res.status(201).json({
             message: 'Registration successful! Please check your email to verify your account.',
-            requiresVerification: true
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                displayName: user.displayName,
+                emailVerified: user.emailVerified
+            }
         });
 
     } catch (error: any) {
@@ -413,7 +432,8 @@ router.post('/oauth/complete',
                 email: tempUser.email,
                 displayName: tempUser.displayName,
                 provider: tempUser.provider,
-                emailVerified: true, // OAuth users are automatically verified
+                // For Discord, use the verified status from Discord; for Google, assume verified
+                emailVerified: tempUser.provider === 'discord' ? (tempUser.emailVerified || false) : true,
                 ...(tempUser.googleId && { googleId: tempUser.googleId }),
                 ...(tempUser.discordId && { discordId: tempUser.discordId })
             });
