@@ -1,0 +1,606 @@
+/* Admin page styles */
+.admin-page {
+    min-height: calc(100vh - 80px);
+    padding: var(--space-6) 0;
+    background: var(--bg-primary);
+}
+
+.admin-page h1 {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-3);
+    color: var(--text-primary);
+}
+
+.admin-note {
+    color: var(--color-accent);
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-6);
+    font-style: italic;
+}
+
+.theme-form {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-6);
+    margin-bottom: var(--space-6);
+}
+
+.theme-form h2 {
+    font-size: var(--text-base);
+    margin-bottom: var(--space-2);
+    color: var(--text-primary);
+}
+
+.form-group {
+    margin-bottom: var(--space-3);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--space-1);
+    color: var(--text-secondary);
+    font-size: var(--text-xs);
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: var(--space-2);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: var(--text-sm);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 200px;
+    font-family: monospace;
+}
+
+.message {
+    margin-top: var(--space-4);
+    padding: var(--space-3);
+    border-radius: var(--border-radius);
+    font-size: var(--text-sm);
+}
+
+.message.success {
+    background: var(--color-success-bg);
+    color: var(--color-success);
+    border: 1px solid var(--color-success-border);
+}
+
+.message.error {
+    background: var(--color-danger-bg);
+    color: var(--color-danger);
+    border: 1px solid var(--color-danger-border);
+}
+
+.admin-help {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-6);
+}
+
+.admin-help h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-3);
+    color: var(--text-primary);
+}
+
+.admin-help ol {
+    margin-left: var(--space-6);
+    color: var(--text-secondary);
+}
+
+.admin-help li {
+    margin-bottom: var(--space-2);
+}
+
+/* ===== JAM MANAGEMENT STYLES ===== */
+.admin-actions {
+    margin-bottom: var(--space-4);
+}
+
+.jam-form {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius);
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.jam-form h2 {
+    font-size: var(--text-base);
+    margin-bottom: var(--space-2);
+    color: var(--text-primary);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.form-group select {
+    width: 100%;
+    padding: var(--space-3);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: var(--text-base);
+}
+
+.input-with-button {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.input-with-button input {
+    flex: 1;
+}
+
+.btn-sm {
+    padding: var(--space-2) var(--space-3) !important;
+    font-size: var(--text-sm) !important;
+}
+
+.form-actions {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+}
+
+.jams-list {
+    margin-top: var(--space-8);
+}
+
+.jams-list h2 {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-4);
+    color: var(--text-primary);
+}
+
+.jams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: var(--space-4);
+}
+
+.jam-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius);
+    padding: var(--space-3);
+    transition: all var(--transition);
+}
+
+.jam-card.current {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 1px var(--color-accent);
+}
+
+.jam-card:hover {
+    border-color: var(--text-tertiary);
+}
+
+.jam-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-3);
+}
+
+.jam-header h3 {
+    font-size: var(--text-base);
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.current-badge {
+    background: var(--color-accent);
+    color: var(--bg-primary);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--border-radius);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.jam-details {
+    margin-bottom: var(--space-4);
+}
+
+.jam-details p {
+    margin-bottom: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.jam-details strong {
+    color: var(--text-tertiary);
+    font-weight: 500;
+}
+
+
+.jam-actions {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.btn-danger {
+    background: var(--color-danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: var(--color-danger-light);
+}
+
+/* Light mode adjustments */
+[data-theme="light"] .jam-card {
+    background: #f8fafc;
+    border-color: var(--border-subtle);
+}
+
+[data-theme="light"] .jam-form {
+    background: #f8fafc;
+}
+
+[data-theme="light"] .form-group input,
+[data-theme="light"] .form-group textarea,
+[data-theme="light"] .form-group select {
+    background: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .jams-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .jam-actions {
+        flex-direction: column;
+    }
+    
+    .jam-actions button {
+        width: 100%;
+    }
+}
+
+/* ===== ADMIN DASHBOARD STYLES ===== */
+.admin-header {
+    margin-bottom: var(--space-6);
+}
+
+.admin-header h1 {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-3);
+}
+
+.admin-tabs {
+    display: flex;
+    gap: var(--space-1);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.admin-tab {
+    padding: var(--space-3) var(--space-6);
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: var(--text-sm);
+    border-bottom: 2px solid transparent;
+    transition: all var(--transition);
+    margin-bottom: -1px;
+}
+
+.admin-tab:hover {
+    color: var(--text-primary);
+}
+
+.admin-tab.active {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+}
+
+.admin-content {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    padding: var(--space-4);
+}
+
+/* Simplify nested admin sections */
+.admin-jams,
+.admin-themes {
+    max-width: 100%;
+}
+
+.admin-jams h2,
+.admin-themes h2 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-3);
+    color: var(--text-primary);
+}
+
+/* Theme form h2 is already styled by the first .theme-form rule */
+
+/* Light mode adjustments */
+[data-theme="light"] .admin-content {
+    background: white;
+    border: 1px solid var(--border-subtle);
+}
+
+[data-theme="light"] .theme-form {
+    background: #f8fafc;
+}
+
+[data-theme="light"] .admin-tab {
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .admin-tab.active {
+    color: var(--color-accent);
+}
+
+/* Current Jam Section */
+.current-jam-section {
+    margin-top: var(--space-4);
+}
+
+.current-jam-section .jam-card {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.status-text {
+    display: inline-block;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--border-radius);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-text.upcoming {
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+}
+
+.status-text.active {
+    background: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.status-text.ended {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+/* Admin Page Refinements */
+.admin-jams .btn-primary,
+.admin-themes .btn-primary {
+    background: var(--text-secondary);
+    color: var(--bg-primary);
+}
+
+.admin-jams .btn-primary:hover,
+.admin-themes .btn-primary:hover {
+    background: var(--text-primary);
+    transform: translateY(-1px);
+}
+
+/* Voting Results */
+.voting-results {
+    margin-top: 2rem;
+    background: var(--bg-secondary);
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-subtle);
+}
+
+.voting-results h2 {
+    margin-bottom: 1rem;
+}
+
+.results-info {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.themes-table {
+    overflow-x: auto;
+}
+
+.themes-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.themes-table th,
+.themes-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.themes-table th {
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+}
+
+.themes-table tr.top-theme {
+    background: rgba(74, 222, 128, 0.05);
+}
+
+.themes-table .score {
+    font-weight: 600;
+    font-family: monospace;
+}
+
+.themes-table .score.positive {
+    color: #4ade80;
+}
+
+.themes-table .score.negative {
+    color: #f87171;
+}
+
+.vote-bar {
+    position: relative;
+    height: 8px;
+    background: var(--border-subtle);
+    border-radius: 4px;
+    overflow: hidden;
+    min-width: 100px;
+}
+
+.vote-bar-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+/* Voting status row */
+.voting-status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: var(--space-2);
+}
+
+.voting-status-row p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.status-badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--border-radius);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.open {
+    background: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.status-badge.closed {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+/* Success and danger button styles */
+.btn-success {
+    background: var(--color-success);
+    color: white;
+}
+
+.btn-success:hover {
+    background: #22c55e;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: var(--color-danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+/* Backup Management */
+.backup-management {
+    margin-top: 2rem;
+    background: var(--bg-secondary);
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-subtle);
+}
+
+.backup-management h2 {
+    margin-bottom: 1rem;
+}
+
+.backup-actions {
+    margin-bottom: 1.5rem;
+}
+
+.backup-info {
+    margin-top: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.backups-table {
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+}
+
+.backups-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.backups-table th,
+.backups-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.backups-table th {
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+}
+
+.backup-type {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.backup-type.automatic {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+.backup-type.manual {
+    background: var(--color-accent-bg);
+    color: var(--color-accent);
+}
+
+.backup-type.pre_update {
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+}

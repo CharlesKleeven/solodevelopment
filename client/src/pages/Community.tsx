@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { userSearchAPI } from '../services/api';
 import useFadeInOnScroll from '../hooks/useFadeInOnScroll';
 import './community.css';
@@ -139,6 +140,11 @@ const Community: React.FC = () => {
 
     return (
         <div className="community-page">
+            <Helmet>
+                <title>Community - SoloDevelopment</title>
+                <meta name="robots" content="noindex, follow" />
+                <meta name="description" content="Find fellow solo game developers and discover their projects" />
+            </Helmet>
             <section className="page-header" data-fade data-delay="1">
                 <div className="container">
                     <h1>Community</h1>

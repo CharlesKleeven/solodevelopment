@@ -13,6 +13,10 @@ import jamRoutes from './routes/jam';
 import contactRoutes from './routes/contact';
 import gameRoutes from './routes/game';
 import userSearchRoutes from './routes/userSearch';
+import themeRoutes from './routes/theme';
+import jamManagementRoutes from './routes/jamManagement';
+import backupRoutes from './routes/backup';
+import { initializeCronJobs } from './services/cronJobs';
 
 // Load environment variables
 dotenv.config();
@@ -51,12 +55,25 @@ app.use(limiter);
 
 // CORS configuration - MUST be before routes
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production'
-        ? [process.env.FRONTEND_URL || 'https://solodevelopment.org']
-        : ['http://localhost:3000'],
+    origin: function(origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        const allowedOrigins = process.env.NODE_ENV === 'production'
+            ? [process.env.FRONTEND_URL || 'https://solodevelopment.org']
+            : ['http://localhost:3000', 'http://127.0.0.1:3000'];
+            
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true, // Allow cookies
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    exposedHeaders: ['Content-Length', 'X-Requested-With'],
+    maxAge: 86400, // 24 hours
     optionsSuccessStatus: 200 // For legacy browser support
 }));
 
@@ -85,6 +102,9 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/games', gameRoutes);
 app.use('/api/users', userSearchRoutes);
+app.use('/api/themes', themeRoutes);
+app.use('/api/jam-management', jamManagementRoutes);
+app.use('/api/backup', backupRoutes);
 
 // Connect to MongoDB with longer timeout for Render
 mongoose
@@ -135,6 +155,9 @@ const server = app.listen(PORT, () => {
     console.log(`✅ Server running on port ${PORT}`);
     console.log(`✅ Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`✅ Health check available at: http://localhost:${PORT}/health`);
+    
+    // Initialize cron jobs after server starts
+    initializeCronJobs();
 });
 
 // Graceful shutdown handling

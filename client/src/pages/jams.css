@@ -7,7 +7,7 @@
 /* ===== FEATURED JAM - CENTERPIECE ===== */
 .jam-featured {
     padding: var(--space-2) 0;
-    margin-bottom: var(--space-8);
+    margin-bottom: var(--space-4);
 }
 
 .jam-featured-card {
@@ -128,7 +128,7 @@
 
 /* ===== INFO SECTION ===== */
 .section-info {
-    padding: var(--space-8) 0;
+    padding: var(--space-6) 0;
     background: var(--bg-primary);
 }
 
@@ -363,4 +363,9 @@
         margin: 0 var(--space-3);
         padding: var(--space-4);
     }
+}
+
+/* Theme Voting Section */
+.theme-voting-section {
+    padding: var(--space-4) 0;
 }

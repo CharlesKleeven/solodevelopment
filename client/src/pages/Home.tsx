@@ -99,20 +99,31 @@ const Home: React.FC = () => {
                         ) : jamData ? (
                             <>
                                 <div className="jam-info">
-                                    <div className={`jam-badge ${jamData.status}`}>
-                                        {jamData.status === 'upcoming' ? 'Upcoming' :
-                                            jamData.status === 'active' ? 'Active' : 'Ended'}
+                                    <div className="jam-meta">
+                                        <div className={`jam-badge ${jamData.status}`}>
+                                            {jamData.status === 'upcoming' ? 'Upcoming' :
+                                                jamData.status === 'active' ? 'Active' : 'Ended'}
+                                        </div>
+                                        {jamData.isVotingOpen && (
+                                            <span className="voting-indicator">• Theme voting open</span>
+                                        )}
                                     </div>
                                     <h2 className="jam-title">
-                                        {jamData.title}{jamData.theme !== 'TBD' ? `: "${jamData.theme}"` : `: ${jamData.theme}`}
+                                        {jamData.title}{jamData.theme !== 'TBD' ? `: "${jamData.theme}"` : ''}
                                     </h2>
                                     <p className="jam-description">{jamData.description} • {jamData.timeLeft}</p>
                                 </div>
                                 <div className="jam-cta">
-                                    <a href={jamData.url} target="_blank" rel="noopener noreferrer nofollow" className="btn btn-secondary">
-                                        {jamData.status === 'upcoming' ? 'Learn More' :
-                                            jamData.status === 'active' ? 'Join Now' : 'View Results'}
-                                    </a>
+                                    {jamData.isVotingOpen ? (
+                                        <a href="/jams" className="btn btn-secondary">
+                                            Vote on Themes
+                                        </a>
+                                    ) : (
+                                        <a href={jamData.url} target="_blank" rel="noopener noreferrer nofollow" className="btn btn-secondary">
+                                            {jamData.status === 'upcoming' ? 'Learn More' :
+                                                jamData.status === 'active' ? 'Join Now' : 'View Results'}
+                                        </a>
+                                    )}
                                     <span className="jam-stats">{jamData.participants} joined</span>
                                 </div>
                             </>
@@ -131,7 +142,7 @@ const Home: React.FC = () => {
             <section className="featured-section" data-fade data-delay="3">
                 <div className="container">
                     <div className="section-header-inline">
-                        <div className="section-label">{/* from the community */}</div>
+                        <div className="section-label">// from the community</div>
                         <div className="section-actions">
                             <button onClick={handleShuffle} className="btn btn-ghost btn-sm shuffle-btn">
                                 Shuffle
@@ -181,7 +192,7 @@ const Home: React.FC = () => {
             {/* Mini Explore Section */}
             <section className="mini-explore-section" data-fade data-delay="8">
                 <div className="container">
-                    <div className="section-label">{/* explore */}</div>
+                    <div className="section-label">// explore</div>
                 </div>
             </section>
 

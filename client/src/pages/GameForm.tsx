@@ -141,8 +141,6 @@ const GameForm: React.FC = () => {
                 gameData.thumbnailUrl = formData.thumbnailUrl.trim();
             }
 
-
-            console.log('Game data being sent:', gameData);
             
             if (isEditing && id) {
                 await gameAPI.updateGame(id, gameData);
@@ -154,9 +152,11 @@ const GameForm: React.FC = () => {
                 setTimeout(() => navigate('/dashboard/games'), 2000);
             }
         } catch (error: any) {
-            console.error('Failed to save game:', error);
-            console.error('Error response data:', error.response?.data);
-            console.error('Error response status:', error.response?.status);
+            if (process.env.NODE_ENV === 'development') {
+                console.error('Failed to save game:', error);
+                console.error('Error response data:', error.response?.data);
+                console.error('Error response status:', error.response?.status);
+            }
             
             if (error.response?.data?.errors) {
                 const errorMessages = error.response.data.errors.map((err: any) => err.msg).join(', ');
@@ -164,7 +164,9 @@ const GameForm: React.FC = () => {
             } else if (error.response?.data?.error) {
                 setError(error.response.data.error);
             } else if (error.response?.data?.details) {
-                console.error('Validation details:', error.response.data.details);
+                if (process.env.NODE_ENV === 'development') {
+                    console.error('Validation details:', error.response.data.details);
+                }
                 setError('Validation error: ' + JSON.stringify(error.response.data.details));
             } else {
                 setError('Failed to save game. Please try again.');

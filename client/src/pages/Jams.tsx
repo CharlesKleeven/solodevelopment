@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import './jams.css';
 import { gameData } from '../data/gameData';
-import { useJam } from '../hooks/useJam'; // Add this import
+import { useJam } from '../hooks/useJam';
 import useFadeInOnScroll from '../hooks/useFadeInOnScroll';
+import ThemeVoting from '../components/ThemeVoting';
 
 interface JamEntry {
   jamName: string;
@@ -51,7 +52,7 @@ function extractJamGroups() {
 
 const Jams = () => {
   useFadeInOnScroll();
-  const { jamData, loading: jamLoading } = useJam(); // Add this
+  const { jamData, loading: jamLoading } = useJam();
   const [showMarathon, setShowMarathon] = useState(false);
   const [showThemed, setShowThemed] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -67,18 +68,15 @@ const Jams = () => {
   }, []);
 
   // Use dynamic target time based on status
-  let targetTime, timerLabel;
+  let targetTime;
   if (jamData) {
     if (jamData.status === 'upcoming') {
       targetTime = new Date(jamData.startDate);
-      timerLabel = 'starts in:';
     } else {
       targetTime = new Date(jamData.endDate);
-      timerLabel = 'ends in:';
     }
   } else {
     targetTime = new Date(Date.now() + 1000 * 60 * 60 * 62);
-    timerLabel = 'ends in:';
   }
 
   const timeLeft = getTimeLeft(targetTime, currentTime);
@@ -178,7 +176,16 @@ const Jams = () => {
         </div>
       </section>
 
-      <section className="section-info" data-fade data-delay="3">
+      {/* Theme Voting Section - Component handles its own rendering */}
+      {jamData && jamData.status === 'upcoming' && (
+        <ThemeVoting 
+          jamId={jamData.id || 'summer-jam-2025'} 
+          votingDeadline={new Date(jamData.startDate)}
+          isVotingOpen={jamData.isVotingOpen ?? true}
+        />
+      )}
+
+      <section className="section-info" data-fade data-delay="5">
         <div className="container">
           <h2>What Are SoloDev Jams?</h2>
           <p>We run two kinds of jams:</p>
@@ -190,7 +197,7 @@ const Jams = () => {
         </div>
       </section>
 
-      <section className="section-past-jams" data-fade data-delay="4">
+      <section className="section-past-jams" data-fade data-delay="6">
         <div className="container">
           <div className="section-header">
             <h2 className="section-title">Past Jams</h2>

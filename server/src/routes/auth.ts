@@ -2,7 +2,7 @@ import express from 'express';
 import rateLimit from 'express-rate-limit';
 import passport from '../config/passport';
 import { login, logout, loginValidation, me, getProfile, updateProfile, updateProfileValidation, forgotPassword, resetPassword, forgotPasswordValidation, resetPasswordValidation } from '../controllers/authController';
-import { AuthenticatedRequest } from '../types/express';
+// Use Express Request type with user property added via type declaration
 import { authenticateToken } from '../middleware/auth';
 import jwt from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
@@ -140,13 +140,13 @@ router.post('/login', authLimiter, loginValidation, login);
 router.post('/logout', logout);
 
 // GET /api/auth/me: get current user (protected route)
-router.get('/me', authenticateToken, (req: express.Request, res: express.Response) => me(req as AuthenticatedRequest, res));
+router.get('/me', authenticateToken, me);
 
 // GET /api/auth/profile: get current user profile (protected route)
-router.get('/profile', authenticateToken, (req: express.Request, res: express.Response) => getProfile(req as AuthenticatedRequest, res));
+router.get('/profile', authenticateToken, getProfile);
 
 // PUT /api/auth/profile: update user profile (protected route)
-router.put('/profile', authenticateToken, updateProfileValidation, (req: express.Request, res: express.Response) => updateProfile(req as AuthenticatedRequest, res));
+router.put('/profile', authenticateToken, updateProfileValidation, updateProfile);
 
 // POST /api/auth/forgot-password: send password reset email
 router.post('/forgot-password', authLimiter, forgotPasswordValidation, forgotPassword);

@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import './styles/globals.css';
 import './styles/layout.css';
 import './styles/components.css';
@@ -23,6 +24,7 @@ import GameDashboard from './pages/GameDashboard';
 import GameForm from './pages/GameForm';
 import Community from './pages/Community';
 import UserProfile from './pages/UserProfile';
+import Admin from './pages/Admin';
 
 // Components
 import Navbar from './components/Navbar';
@@ -63,6 +65,7 @@ function AppContent() {
             <Route path="/games/:id/edit" element={<GameForm />} />
             <Route path="/community" element={<Community />} />
             <Route path="/users/:username" element={<UserProfile />} />
+            <Route path="/admin" element={<Admin />} />
           </Routes>
         </main>
       )}
@@ -73,15 +76,17 @@ function AppContent() {
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <ParticleProvider>
-          <Router>
-            <AppContent />
-          </Router>
-        </ParticleProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <HelmetProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <ParticleProvider>
+            <Router>
+              <AppContent />
+            </Router>
+          </ParticleProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </HelmetProvider>
   );
 }
 

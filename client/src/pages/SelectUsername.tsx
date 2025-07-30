@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import api from '../services/api';
 import './auth.css';
-
-// API base URL - adjust for production vs development
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://api.solodevelopment.org' // In production, use API subdomain
-  : 'http://localhost:3001'; // In development, use backend port
 
 const SelectUsername: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -28,17 +24,9 @@ const SelectUsername: React.FC = () => {
     // Fetch OAuth user data
     const fetchOAuthData = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/oauth/user-data`, {
-          credentials: 'include'
-        });
+        const response = await api.get('/auth/oauth/user-data');
 
-        if (!response.ok) {
-          // No OAuth registration in progress, redirect to login
-          navigate('/login');
-          return;
-        }
-
-        const data = await response.json();
+        const data = response.data;
         setOauthData(data);
         setUsername(data.suggestedUsername);
       } catch (error) {
@@ -60,16 +48,8 @@ const SelectUsername: React.FC = () => {
     const timeoutId = setTimeout(async () => {
       setIsCheckingAvailability(true);
       try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/oauth/check-username`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({ username })
-        });
-
-        const data = await response.json();
+        const response = await api.post('/auth/oauth/check-username', { username });
+        const data = response.data;
         if (data.available) {
           setUsernameStatus('available');
         } else if (data.error === 'Username is already taken') {
@@ -100,27 +80,15 @@ const SelectUsername: React.FC = () => {
     setMessage('');
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/oauth/complete`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ username })
-      });
-
-      if (response.ok) {
-        setMessage('Registration completed! Redirecting...');
-        
-        // Refresh auth status to pick up the new JWT cookie
-        await refreshUser();
-        
-        // Redirect to home after successful registration
-        setTimeout(() => navigate('/'), 1500);
-      } else {
-        const errorData = await response.json();
-        setMessage(`Error: ${errorData.error}`);
-      }
+      const response = await api.post('/auth/oauth/complete', { username });
+      
+      setMessage('Registration completed! Redirecting...');
+      
+      // Refresh auth status to pick up the new JWT cookie
+      await refreshUser();
+      
+      // Redirect to home after successful registration
+      setTimeout(() => navigate('/'), 1500);
     } catch (error) {
       console.error('Registration error:', error);
       setMessage('Error: Unable to complete registration');

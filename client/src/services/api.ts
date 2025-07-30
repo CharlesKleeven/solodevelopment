@@ -7,7 +7,10 @@ const API_BASE_URL = isDevelopment
     ? 'http://localhost:3001'
     : 'https://api.solodevelopment.org';
 
-console.log('Environment:', { isDevelopment, hostname: window.location.hostname, API_BASE_URL });
+// Only log in development
+if (isDevelopment) {
+    console.log('Environment:', { isDevelopment, hostname: window.location.hostname, API_BASE_URL });
+}
 
 // Create axios instance
 const api = axios.create({
@@ -22,7 +25,9 @@ const api = axios.create({
 // Request interceptor
 api.interceptors.request.use(
     (config) => {
-        console.log('API Request:', config.method?.toUpperCase(), config.url);
+        if (isDevelopment) {
+            console.log('API Request:', config.method?.toUpperCase(), config.url);
+        }
         return config;
     },
     (error: AxiosError) => {
@@ -200,6 +205,99 @@ export const userSearchAPI = {
     getUserStats: async (username: string) => {
         const response = await api.get(`/api/users/${username}/stats`);
         return response.data;
+    },
+};
+
+// Theme voting API
+export const themeAPI = {
+    // Get themes for a jam
+    getThemes: async (jamId: string) => {
+        const response = await api.get(`/api/themes/jam/${jamId}`);
+        return response;
+    },
+
+    // Vote on a theme
+    voteOnTheme: async (themeId: string, vote: -1 | 0 | 1) => {
+        const response = await api.post(`/api/themes/${themeId}/vote`, { vote });
+        return response;
+    },
+
+    // Create themes (admin only)
+    createThemes: async (jamId: string, themes: string[]) => {
+        const response = await api.post('/api/themes/create', { jamId, themes });
+        return response;
+    },
+
+    // Recalculate scores (admin only)
+    recalculateScores: async (jamId: string) => {
+        const response = await api.post(`/api/themes/recalculate/${jamId}`);
+        return response;
+    },
+};
+
+// Backup API
+export const backupAPI = {
+    // Create manual backup
+    createBackup: async (jamId: string, reason?: string) => {
+        const response = await api.post(`/api/backup/create/${jamId}`, { reason });
+        return response;
+    },
+
+    // Get all backups for a jam
+    getBackups: async (jamId: string) => {
+        const response = await api.get(`/api/backup/jam/${jamId}`);
+        return response;
+    },
+
+    // Get specific backup details
+    getBackupDetails: async (backupId: string) => {
+        const response = await api.get(`/api/backup/${backupId}`);
+        return response;
+    },
+
+    // Restore from backup
+    restoreBackup: async (backupId: string) => {
+        const response = await api.post(`/api/backup/restore/${backupId}`);
+        return response;
+    },
+};
+
+// Jam management API
+export const jamAPI = {
+    // Get all jams (admin only)
+    getAllJams: async () => {
+        const response = await api.get('/api/jam-management/all');
+        return response;
+    },
+
+    // Create a new jam (admin only)
+    createJam: async (jamData: any) => {
+        const response = await api.post('/api/jam-management/create', jamData);
+        return response;
+    },
+
+    // Update a jam (admin only)
+    updateJam: async (jamId: string, jamData: any) => {
+        const response = await api.put(`/api/jam-management/${jamId}`, jamData);
+        return response;
+    },
+
+    // Set current jam (admin only)
+    setCurrentJam: async (jamId: string) => {
+        const response = await api.post(`/api/jam-management/${jamId}/set-current`);
+        return response;
+    },
+
+    // Delete a jam (admin only)
+    deleteJam: async (jamId: string) => {
+        const response = await api.delete(`/api/jam-management/${jamId}`);
+        return response;
+    },
+
+    // Toggle voting for current jam (admin only)
+    toggleVoting: async () => {
+        const response = await api.post('/api/jam-management/toggle-voting');
+        return response;
     },
 };
 

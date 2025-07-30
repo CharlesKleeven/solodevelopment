@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import api from '../services/api';
 
 interface JamData {
+    id: string;
     title: string;
     theme: string;
     description: string;
@@ -13,6 +14,7 @@ interface JamData {
     submissions: number;
     timeLeft: string;
     status: 'active' | 'ended' | 'upcoming';
+    isVotingOpen?: boolean;
 }
 
 export const useJam = () => {
@@ -32,6 +34,7 @@ export const useJam = () => {
 
                 // Fallback data - matches current jam config
                 setJamData({
+                    id: "summer-jam-2025",
                     title: "Summer Jam",
                     theme: "TBD",
                     description: "3-day jam with theme to be announced",

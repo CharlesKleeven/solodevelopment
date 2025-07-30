@@ -6,7 +6,7 @@ import crypto from 'crypto';
 import User from '../models/User';
 import { sendPasswordResetEmail } from '../services/emailService';
 import { validateLink } from '../utils/linkValidator';
-import { AuthenticatedRequest } from '../types/express';
+// Use Express Request type with user property added via type declaration
 
 export const loginValidation = [
   body('emailOrUsername')
@@ -132,7 +132,9 @@ export const login = async (req: Request, res: Response) => {
         bio: user.bio,
         links: user.links,
         profileVisibility: user.profileVisibility,
-        createdAt: user.createdAt
+        createdAt: user.createdAt,
+        isAdmin: user.isAdmin || false,
+        emailVerified: user.emailVerified || false
       }
     });
 
@@ -149,9 +151,9 @@ export const logout = async (req: Request, res: Response) => {
 }
 
 // Get current user
-export const me = async (req: AuthenticatedRequest, res: Response) => {
+export const me = async (req: Request, res: Response) => {
   try {
-    const user = await User.findById(req.user.userId).select('-password');
+    const user = await User.findById((req.user as any)?.userId).select('-password');
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -165,7 +167,9 @@ export const me = async (req: AuthenticatedRequest, res: Response) => {
         bio: user.bio,
         links: user.links,
         profileVisibility: user.profileVisibility,
-        createdAt: user.createdAt
+        createdAt: user.createdAt,
+        isAdmin: user.isAdmin || false,
+        emailVerified: user.emailVerified || false
       }
     });
   } catch (error) {
@@ -175,9 +179,9 @@ export const me = async (req: AuthenticatedRequest, res: Response) => {
 };
 
 // Get user profile (with bio and links)
-export const getProfile = async (req: AuthenticatedRequest, res: Response) => {
+export const getProfile = async (req: Request, res: Response) => {
   try {
-    const user = await User.findById(req.user.userId).select('-password');
+    const user = await User.findById((req.user as any)?.userId).select('-password');
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -193,6 +197,8 @@ export const getProfile = async (req: AuthenticatedRequest, res: Response) => {
         profileVisibility: user.profileVisibility,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
+        isAdmin: user.isAdmin || false,
+        emailVerified: user.emailVerified || false
       }
     });
   } catch (error) {
@@ -202,7 +208,7 @@ export const getProfile = async (req: AuthenticatedRequest, res: Response) => {
 };
 
 // Update user profile
-export const updateProfile = async (req: AuthenticatedRequest, res: Response) => {
+export const updateProfile = async (req: Request, res: Response) => {
   try {
     // Check validation errors
     const errors = validationResult(req);
@@ -216,7 +222,7 @@ export const updateProfile = async (req: AuthenticatedRequest, res: Response) =>
     const { displayName, bio, profileVisibility, links } = req.body;
 
     // Find and update user
-    const user = await User.findById(req.user.userId);
+    const user = await User.findById((req.user as any)?.userId);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -267,6 +273,8 @@ export const updateProfile = async (req: AuthenticatedRequest, res: Response) =>
         profileVisibility: user.profileVisibility,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
+        isAdmin: user.isAdmin || false,
+        emailVerified: user.emailVerified || false
       }
     });
 

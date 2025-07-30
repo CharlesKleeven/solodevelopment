@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../context/AuthContext';
 import { profileAPI } from '../services/api';
 import { getLinkInfo, isAllowedPlatform } from '../utils/linkUtils';
@@ -183,6 +184,10 @@ const Profile: React.FC = () => {
 
     return (
         <div className="profile-page">
+            <Helmet>
+                <title>My Profile - SoloDevelopment</title>
+                <meta name="robots" content="noindex, nofollow" />
+            </Helmet>
             <div className="profile-container">
                 <div className="profile-card">
                     {/* Header */}

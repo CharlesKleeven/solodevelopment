@@ -10,6 +10,9 @@ interface User {
   bio?: string;
   links?: string[];
   createdAt?: string;
+  role?: string;
+  isAdmin?: boolean;
+  emailVerified?: boolean;
 }
 
 interface AuthContextType {
@@ -60,7 +63,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setUser(response.user);
       }
     } catch (error) {
-      console.error('Failed to refresh user data:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Failed to refresh user data:', error);
+      }
       // Don't clear user on refresh failure - might be temporary network issue
     }
   };
@@ -145,7 +150,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       await authAPI.logout();
     } catch (error) {
       // Log error but don't show to user - logout should always succeed locally
-      console.error('Logout error:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Logout error:', error);
+      }
     } finally {
       // Always clear user state, even if API call fails
       setUser(null);

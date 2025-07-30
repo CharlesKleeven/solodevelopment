@@ -51,7 +51,7 @@ const About: React.FC = () => {
 
             <div className="feature-item">
               <h3>Game jams</h3>
-              <p>We run monthly and seasonal jams to help you start (or finish) a project. No prizes, no pressure, just a reason to build.</p>
+              <p>We run monthly and seasonal jams to help you start (or finish) a project. Friendly competition, community feedback, and a chance to join our hall of fame.</p>
             </div>
 
             <div className="feature-item">

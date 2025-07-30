@@ -120,6 +120,15 @@ const Navbar: React.FC = () => {
                                         >
                                             My Games
                                         </Link>
+                                        {user?.isAdmin && (
+                                            <Link
+                                                to="/admin"
+                                                className="dropdown-item"
+                                                onClick={() => setIsUserMenuOpen(false)}
+                                            >
+                                                Admin
+                                            </Link>
+                                        )}
                                         <button
                                             onClick={handleLogout}
                                             className="dropdown-item logout-btn"

@@ -8,6 +8,7 @@ interface IUser {
   bio?: string;
   links?: string[];
   profileVisibility: 'public' | 'private';
+  isAdmin?: boolean; // Admin flag
   
   // OAuth fields
   googleId?: string;
@@ -71,6 +72,10 @@ const userSchema = new mongoose.Schema<IUser>(
       enum: ['public', 'private'],
       default: 'public'
     },
+    isAdmin: {
+      type: Boolean,
+      default: false
+    },
     
     // OAuth fields
     googleId: {
@@ -119,5 +124,11 @@ userSchema.pre('save', function (next) {
   }
   next();
 });
+
+// Create compound index for public profile queries
+userSchema.index({ profileVisibility: 1, createdAt: -1 });
+
+// Create index for OAuth provider lookups (already handled by sparse: true in schema)
+// No additional indexes needed here since sparse indexes are defined in the schema above
 
 export default mongoose.model<IUser>('User', userSchema);

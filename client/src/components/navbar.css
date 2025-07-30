@@ -10,9 +10,9 @@
 
 /* Light mode navbar enhancements */
 [data-theme="light"] .navbar {
-        background: #f7f8fa;
-        border-bottom: 1px solid #dde1e6;
-        box-shadow: none;
+        background: var(--bg-secondary);
+        border-bottom: 2px solid var(--bg-tertiary);
+        box-shadow: var(--shadow-subtle);
 }
     
 [data-theme="light"] .navbar-title {

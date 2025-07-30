@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { userSearchAPI } from '../services/api';
 import { parseStoredLink, getLinkInfo } from '../utils/linkUtils';
 import './user-profile.css';
@@ -102,6 +103,11 @@ const UserProfile: React.FC = () => {
 
     return (
         <div className="user-profile-page">
+            <Helmet>
+                <title>{user.displayName} (@{username}) - SoloDevelopment</title>
+                <meta name="robots" content="noindex, nofollow" />
+                <meta name="description" content={`View ${user.displayName}'s profile and games on SoloDevelopment`} />
+            </Helmet>
             <div className="profile-container">
                 <div className="profile-hero">
                     <h1 className="profile-name">{user.displayName}</h1>

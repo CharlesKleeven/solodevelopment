@@ -75,6 +75,7 @@
     --space-4: 1rem;
     --space-6: 1.5rem;
     --space-8: 2rem;
+    --space-10: 2.5rem;
     --space-12: 3rem;
     --space-16: 4rem;
 
@@ -96,29 +97,29 @@
 
 /* ===== LIGHT MODE THEME ===== */
 [data-theme="light"] {
-        /* === SOFTER LIGHT BACKGROUNDS === */
-        --bg-primary: #fafbfc;
-        /* Main background - matches home */
-        --bg-secondary: #f7f8fa;
-        /* Cards/panels - slightly darker */
-        --bg-tertiary: #eef0f3;
-        /* Interactive elements */
-        --bg-fade: #f5f6f8;
-        /* Subtle fade variation */
+        /* === SOFT NEUTRAL BACKGROUNDS === */
+        --bg-primary: #f9fafb;
+        /* Main background - soft cool gray */
+        --bg-secondary: #f5f6f8;
+        /* Cards/panels - light gray */
+        --bg-tertiary: #ebeef2;
+        /* Interactive elements - medium gray */
+        --bg-fade: #f7f8fa;
+        /* Subtle fade */
 
-        /* === READABLE TEXT HIERARCHY === */
-        --text-primary: #1a1a1a;
-        /* Almost black for max readability */
-        --text-secondary: #3f3f3f;
-        /* Dark gray - high contrast */
-        --text-tertiary: #5a5a5a;
-        /* Medium gray - still readable */
-        --text-quaternary: #787878;
-        /* Light gray but visible */
+        /* === WARM BLUE-GRAY TEXT === */
+        --text-primary: #1a1f2e;
+        /* Deep warm blue-black */
+        --text-secondary: #3d4558;
+        /* Warm blue-gray */
+        --text-tertiary: #596176;
+        /* Medium warm blue-gray */
+        --text-quaternary: #7b8496;
+        /* Light warm blue-gray */
 
-        /* === STRONGER BORDERS === */
-        --border-subtle: #b8bfc9;
-        /* Thicker, darker border for more weight */
+        /* === SOFT BLUE-TINTED BORDERS === */
+        --border-subtle: #d5d8de;
+        /* Soft blue-gray border */
 
         /* === PROFESSIONAL BADGES === */
         --badge-upcoming: #3b82f6;
@@ -155,26 +156,26 @@
 
 /* Light mode specific styles */
 [data-theme="light"] body {
-    background-color: #fafbfc;
+    background-color: #f9fafb;
 }
 
 [data-theme="light"] main,
 [data-theme="light"] .page-content,
 [data-theme="light"] .container {
-    background-color: #fafbfc;
+    background-color: #f9fafb;
 }
 
 [data-theme="light"] .navbar {
-    background: #f7f8fa;
-    border-bottom: 1px solid #dde1e6;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e5eb;
 }
 
 [data-theme="light"] .home-page {
-    background: #fafbfc;
+    background: #f9fafb;
 }
 
 [data-theme="light"] .home-hero {
-    background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
+    background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
 }
 
 [data-theme="light"] .current-jam-banner {
@@ -192,7 +193,7 @@
 }
 
 [data-theme="light"] .nav-card {
-    background: #f8f9fa;
+    background: #f5f6f8;
     border: 1px solid var(--border-subtle);
 }
 
@@ -202,7 +203,7 @@
 }
 
 [data-theme="light"] .footer {
-    background: #d4d6db;
+    background: #ebeef2;
     border-top: 1px solid var(--border-subtle);
     margin-top: 0;
 }
