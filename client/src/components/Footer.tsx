@@ -50,7 +50,7 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="footer-bottom">
-          <p>&copy; 2025 SoloDevelopment.org — Built solo, shared with all.</p>
+          <p>&copy; 2025 SoloDevelopment.org — By solo developers, for solo developers.</p>
         </div>
       </div>
     </footer>

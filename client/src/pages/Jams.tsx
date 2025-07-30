@@ -132,12 +132,12 @@ const Jams = () => {
               </div>
 
               <div className="jam-actions">
-                <a href={jamData.url} className="btn btn-primary">
+                <a href={jamData.url} className="btn btn-primary" target="_blank" rel="noopener noreferrer nofollow">
                   {jamData.status === 'upcoming' ? 'Learn More' :
                     jamData.status === 'active' ? 'Join Jam' : 'View Results'}
                 </a>
                 {(jamData.status === 'active' || jamData.status === 'ended') && (
-                  <a href={jamData.url} className="btn btn-secondary">View Submissions</a>
+                  <a href={jamData.url} className="btn btn-secondary" target="_blank" rel="noopener noreferrer nofollow">View Submissions</a>
                 )}
               </div>
             </div>
