@@ -9,37 +9,40 @@
 }
 
 /* Light mode navbar enhancements */
-@media (prefers-color-scheme: light) {
-    .navbar {
-        background: var(--bg-secondary);
-        border-bottom: 2px solid var(--bg-tertiary);
-        box-shadow: var(--shadow-subtle);
-    }
+[data-theme="light"] .navbar {
+        background: #f7f8fa;
+        border-bottom: 1px solid #dde1e6;
+        box-shadow: none;
+}
     
-    .navbar-title {
-        color: var(--text-primary);
+[data-theme="light"] .navbar-title {
+        color: var(--color-accent);
         font-weight: 700;
         letter-spacing: -0.02em;
-    }
+}
     
-    .navbar-logo {
+[data-theme="light"] .navbar-logo {
         background: var(--text-primary);
         color: var(--bg-primary);
         font-weight: 700;
-    }
+}
     
-    .nav-link {
+[data-theme="light"] .nav-link {
         color: var(--text-secondary);
         font-weight: 600;
-    }
+}
     
-    .nav-link.active {
+[data-theme="light"] .nav-link.active {
         color: var(--text-primary);
-    }
+}
     
-    .nav-link:hover:not(.active) {
+[data-theme="light"] .nav-link:hover:not(.active) {
         color: var(--text-primary);
-    }
+}
+
+[data-theme="light"] .nav-separator {
+        color: var(--text-tertiary);
+        opacity: 0.7;
 }
 
 .navbar-container {
@@ -94,6 +97,26 @@
     gap: var(--space-6);
 }
 
+/* Breadcrumb style navigation */
+.navbar-breadcrumb {
+    gap: var(--space-2);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', 'Monaco', monospace;
+}
+
+.nav-separator {
+    color: var(--text-tertiary);
+    font-size: var(--text-sm);
+    opacity: 0.5;
+    padding: 0 var(--space-1);
+}
+
+.navbar-breadcrumb .nav-link {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-sm);
+    font-weight: 400;
+    text-transform: lowercase;
+}
+
 .nav-link {
     color: var(--text-secondary);
     text-decoration: none;
@@ -101,15 +124,26 @@
     font-size: var(--text-sm);
     padding: var(--space-2) var(--space-3);
     border-radius: var(--border-radius);
-    transition: color var(--transition);
+    transition: color var(--transition), background var(--transition);
 }
 
-.nav-link:hover,
+.nav-link:hover {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+}
+
 .nav-link.active {
     color: var(--text-primary);
+    background: var(--bg-tertiary);
 }
 
-/* ===== MINIMAL LOGIN BUTTON ===== */
+/* ===== NAVBAR ACTIONS ===== */
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
 .navbar-actions .btn {
     font-size: var(--text-sm);
     padding: var(--space-2) var(--space-4);
@@ -205,6 +239,15 @@
 .mobile-nav-link.login-link:hover {
     opacity: 0.9;
     color: var(--bg-primary);
+}
+
+/* ===== MOBILE THEME TOGGLE ===== */
+.mobile-theme-toggle {
+    display: flex;
+    justify-content: center;
+    padding: var(--space-3) 0;
+    margin-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 /* ===== USER MENU STYLES ===== */

@@ -7,37 +7,96 @@
 
 /* ===== HERO ===== */
 .home-hero {
-    padding: var(--space-12) 0 var(--space-8);
-    background: var(--bg-primary);
+    padding: 4rem 0 3rem;
     text-align: center;
 }
 
 .hero-title {
-    font-size: var(--text-3xl);
+    font-size: 2rem;
     font-weight: 600;
     color: var(--text-primary);
-    margin-bottom: var(--space-4);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+    font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+@media (min-width: 768px) {
+    .hero-title {
+        font-size: 2.25rem;
+    }
 }
 
 .hero-subtitle {
-    font-size: var(--text-base);
+    font-size: 1.125rem;
+    font-weight: 400;
     color: var(--text-secondary);
-    max-width: 36rem;
+    max-width: 38rem;
     margin: 0 auto;
     line-height: 1.6;
+    font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+.hero-accent {
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
 .home-buttons {
-    margin-top: var(--space-6);
+    margin-top: 2rem;
     display: flex;
     justify-content: center;
-    flex-wrap: wrap;
-    gap: var(--space-4);
+    align-items: center;
+    gap: 1rem;
+}
+
+.home-buttons .btn {
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    font-size: 0.875rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: "Plus Jakarta Sans", sans-serif;
+    min-width: 140px;
+    text-align: center;
+}
+
+.home-buttons .btn-primary {
+    background: var(--color-accent);
+    color: var(--bg-primary);
+    border: 2px solid var(--color-accent);
+}
+
+.home-buttons .btn-primary:hover {
+    background: var(--color-coral);
+    border-color: var(--color-coral);
+}
+
+.home-buttons .btn-secondary {
+    background: transparent;
+    color: var(--text-primary);
+    border: 2px solid var(--border-subtle);
+}
+
+.home-buttons .btn-secondary:hover {
+    color: var(--text-primary);
+    border-color: var(--text-primary);
+    background: var(--bg-tertiary);
+}
+
+/* Light mode button adjustments */
+[data-theme="light"] .home-buttons .btn-secondary {
+    border-color: var(--text-tertiary);
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .home-buttons .btn-secondary:hover {
+    border-color: var(--text-primary);
+    color: var(--text-primary);
+    background: var(--bg-secondary);
 }
 
 /* ===== CURRENT JAM BANNER ===== */
 .current-jam-section {
-    padding: var(--space-8) 0;
+    padding: 2rem 0 3rem;
 }
 
 .current-jam-banner {
@@ -51,6 +110,7 @@
     gap: var(--space-8);
     position: relative;
     overflow: hidden;
+    box-shadow: var(--shadow-card);
 }
 
 
@@ -264,7 +324,7 @@
     display: flex;
     align-items: center;
     gap: var(--space-6);
-    transition: border-color 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
     min-height: 160px;
     animation: fadeInUp 0.4s ease forwards;
 }
@@ -309,7 +369,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 600;
+    font-weight: 700;
     font-size: var(--text-2xl);
     color: var(--text-secondary);
     overflow: hidden;
@@ -384,7 +444,8 @@
     border-radius: var(--border-radius);
     padding: var(--space-6);
     text-decoration: none;
-    transition: border-color var(--transition);
+    transition: border-color var(--transition), box-shadow var(--transition);
+    box-shadow: var(--shadow-card);
 }
 
 .nav-link-card:hover {
@@ -407,6 +468,18 @@
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
+    .home-hero {
+        padding: 3rem 0 2rem;
+    }
+    
+    .hero-title {
+        font-size: 1.75rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    
     .current-jam-banner {
         flex-direction: column;
         align-items: flex-start;
@@ -455,6 +528,17 @@
         flex-direction: column;
         align-items: flex-start;
     }
+}
+
+/* Light mode nav cards */
+[data-theme="light"] .nav-link-card {
+    background: #f5f6f8;
+    border: 1px solid var(--border-subtle);
+}
+
+[data-theme="light"] .nav-link-card:hover {
+    background: #ffffff;
+    border-color: var(--color-accent);
 }
 
 /* Light mode uses color variables from globals.css */

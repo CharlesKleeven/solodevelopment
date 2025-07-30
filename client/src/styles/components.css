@@ -11,7 +11,7 @@
     font-size: var(--text-sm);
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
     white-space: nowrap;
     position: relative;
@@ -25,6 +25,11 @@
 .btn-primary:hover {
     background: var(--color-coral);
     color: var(--bg-primary);
+    transform: translateY(-4px) scale(1.05);
+}
+
+.btn-primary:active {
+    transform: translateY(-1px) scale(0.98);
 }
 
 .btn-secondary {
@@ -36,6 +41,11 @@
 .btn-secondary:hover {
     background: var(--bg-secondary);
     border-color: var(--color-accent);
+    transform: translateY(-3px) scale(1.03);
+}
+
+.btn-secondary:active {
+    transform: translateY(-1px) scale(0.98);
 }
 
 .btn-ghost {
@@ -46,6 +56,7 @@
 
 .btn-ghost:hover {
     color: var(--text-primary);
+    transform: translateY(-2px);
 }
 
 .btn-sm {
@@ -94,7 +105,7 @@
 
 .card:hover {
     border-color: var(--text-tertiary);
-    transform: translateY(-2px);
+    transform: translateY(-6px) scale(1.02);
 }
 
 .card-simple {

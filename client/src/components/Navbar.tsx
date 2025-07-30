@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import ThemeToggle from './ThemeToggle';
 import './navbar.css';
 
 const Navbar: React.FC = () => {
@@ -60,34 +61,38 @@ const Navbar: React.FC = () => {
 
                 {/* Right Side - Navigation + Auth */}
                 <div className="navbar-right">
-                    <div className="navbar-nav">
+                    <div className="navbar-nav navbar-breadcrumb">
                         <Link
                             to="/"
                             className={`nav-link ${isActive('/') ? 'active' : ''}`}
                         >
-                            Home
+                            home
                         </Link>
+                        <span className="nav-separator">/</span>
                         <Link
                             to="/jams"
                             className={`nav-link ${isActive('/jams') ? 'active' : ''}`}
                         >
-                            Jams
+                            jams
                         </Link>
+                        <span className="nav-separator">/</span>
                         <Link
                             to="/showcase"
                             className={`nav-link ${isActive('/showcase') ? 'active' : ''}`}
                         >
-                            Showcase
+                            showcase
                         </Link>
+                        <span className="nav-separator">/</span>
                         <Link
                             to="/community"
                             className={`nav-link ${isActive('/community') ? 'active' : ''}`}
                         >
-                            Community
+                            community
                         </Link>
                     </div>
 
                     <div className="navbar-actions">
+                        <ThemeToggle />
                         {loading ? (
                             <div className="auth-loading">...</div>
                         ) : user ? (
@@ -148,6 +153,9 @@ const Navbar: React.FC = () => {
             {/* Mobile Menu */}
             <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
                 <div className="mobile-nav-links">
+                    <div className="mobile-theme-toggle">
+                        <ThemeToggle />
+                    </div>
                     <Link
                         to="/"
                         className={`mobile-nav-link ${isActive('/') ? 'active' : ''}`}

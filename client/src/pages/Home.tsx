@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { gameData } from '../data/gameData';
 import { useJam } from '../hooks/useJam'; // Add this import
 import useFadeInOnScroll from '../hooks/useFadeInOnScroll';
 import './home.css';
+
+
 
 const Home: React.FC = () => {
     const { user } = useAuth();
@@ -66,10 +68,17 @@ const Home: React.FC = () => {
             <section className="home-hero" data-fade data-delay="1">
                 <div className="container-narrow">
                     <h1 className="hero-title">
-                        {user ? `Welcome, ${user.displayName}` : 'Welcome, Solo Developer'}
+                        {user ? (
+                            <>Welcome back, <span className="hero-accent">{user.displayName}</span></>
+                        ) : (
+                            <>Welcome to <span className="hero-accent">SoloDevelopment</span></>
+                        )}
                     </h1>
                     <p className="hero-subtitle">
-                        A quiet space for devs building projects at their own pace.
+                        {user ? 
+                            "Glad to see you here" : 
+                            "A quiet space for devs building projects at their own pace."
+                        }
                     </p>
                     <div className="home-buttons">
                         <a href="https://discord.gg/uXeapAkAra" className="btn btn-primary" target="_blank" rel="noopener noreferrer nofollow">Join Discord</a>
@@ -122,7 +131,7 @@ const Home: React.FC = () => {
             <section className="featured-section" data-fade data-delay="3">
                 <div className="container">
                     <div className="section-header-inline">
-                        <div className="section-label">// from the community</div>
+                        <div className="section-label">{/* from the community */}</div>
                         <div className="section-actions">
                             <button onClick={handleShuffle} className="btn btn-ghost btn-sm shuffle-btn">
                                 Shuffle
@@ -172,7 +181,7 @@ const Home: React.FC = () => {
             {/* Mini Explore Section */}
             <section className="mini-explore-section" data-fade data-delay="8">
                 <div className="container">
-                    <div className="section-label">// explore</div>
+                    <div className="section-label">{/* explore */}</div>
                 </div>
             </section>
 

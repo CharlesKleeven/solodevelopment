@@ -95,59 +95,118 @@
 }
 
 /* ===== LIGHT MODE THEME ===== */
-@media (prefers-color-scheme: light) {
-    :root {
-        /* === WARM HIGH CONTRAST BACKGROUNDS === */
-        --bg-primary: #fefcf8;
-        /* Warm off-white, not pure white */
-        --bg-secondary: #f5f1ea;
-        /* Warm cream cards - strong contrast */
-        --bg-tertiary: #ebe4d7;
-        /* Rich warm sand - clear separation */
-        --bg-fade: #f9f6f1;
-        /* Warm sections */
+[data-theme="light"] {
+        /* === SOFTER LIGHT BACKGROUNDS === */
+        --bg-primary: #fafbfc;
+        /* Main background - matches home */
+        --bg-secondary: #f7f8fa;
+        /* Cards/panels - slightly darker */
+        --bg-tertiary: #eef0f3;
+        /* Interactive elements */
+        --bg-fade: #f5f6f8;
+        /* Subtle fade variation */
 
-        /* === WARM HIGH CONTRAST TEXT === */
-        --text-primary: #1c1611;
-        /* Deep warm brown - strong contrast */
-        --text-secondary: #3d342b;
-        /* Rich brown */
-        --text-tertiary: #5d4f42;
-        /* Medium warm brown */
-        --text-quaternary: #8a7865;
-        /* Warm taupe */
+        /* === READABLE TEXT HIERARCHY === */
+        --text-primary: #1a1a1a;
+        /* Almost black for max readability */
+        --text-secondary: #3f3f3f;
+        /* Dark gray - high contrast */
+        --text-tertiary: #5a5a5a;
+        /* Medium gray - still readable */
+        --text-quaternary: #787878;
+        /* Light gray but visible */
 
-        /* === WARM BORDERS === */
-        --border-subtle: #d4c4b0;
-        /* Warm tan border - visible contrast */
+        /* === STRONGER BORDERS === */
+        --border-subtle: #b8bfc9;
+        /* Thicker, darker border for more weight */
 
-        /* === BOLD BADGES === */
-        --badge-upcoming: #0369a1;
-        /* Deep sky blue */
-        --badge-complete: #15803d;
-        /* Strong green */
+        /* === PROFESSIONAL BADGES === */
+        --badge-upcoming: #3b82f6;
+        /* Professional blue */
+        --badge-complete: #22c55e;
+        /* Success green */
 
-        /* === WARM SHADOWS === */
-        --shadow-subtle: 0 1px 3px rgba(28, 22, 17, 0.15);
-        --shadow-soft: 0 4px 6px rgba(28, 22, 17, 0.1), 0 10px 15px rgba(28, 22, 17, 0.05);
+        /* === MINIMAL SHADOWS === */
+        --shadow-subtle: none;
+        --shadow-soft: none;
 
-        /* === BOLD ACCENT COLORS === */
+        /* === REFINED ACCENT PALETTE === */
         --color-accent: #ea580c;
-        /* Strong orange */
-        --color-accent-alt: #0891b2;
-        /* Bold cyan */
-        --color-success: #16a34a;
-        /* Strong green */
-        --color-purple: #7c3aed;
-        /* Deep purple */
-        --color-warm-yellow: #d97706;
-        /* Bold amber */
-        --color-forest: #047857;
-        /* Deep forest */
-        --color-coral: #dc2626;
-        /* Strong red */
-    }
+        /* Deeper orange for better contrast */
+        --color-accent-alt: #0ea5e9;
+        /* Professional cyan */
+        --color-success: #22c55e;
+        /* Clean green */
+        --color-purple: #a855f7;
+        /* Refined purple */
+        --color-warm-yellow: #eab308;
+        /* Muted gold */
+        --color-forest: #059669;
+        /* Forest green */
+        --color-coral: #ef4444;
+        /* Clean red */
+        
+        /* Light mode special effects */
+        --color-accent-bg: rgba(249, 115, 22, 0.08);
+        
+        /* No card shadows */
+        --shadow-card: none;
 }
+
+/* Light mode specific styles */
+[data-theme="light"] body {
+    background-color: #fafbfc;
+}
+
+[data-theme="light"] main,
+[data-theme="light"] .page-content,
+[data-theme="light"] .container {
+    background-color: #fafbfc;
+}
+
+[data-theme="light"] .navbar {
+    background: #f7f8fa;
+    border-bottom: 1px solid #dde1e6;
+}
+
+[data-theme="light"] .home-page {
+    background: #fafbfc;
+}
+
+[data-theme="light"] .home-hero {
+    background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
+}
+
+[data-theme="light"] .current-jam-banner {
+    background: #ffffff;
+    border: 1px solid var(--border-subtle);
+}
+
+[data-theme="light"] .featured-game {
+    background: #ffffff;
+    border: 1px solid var(--border-subtle);
+}
+
+[data-theme="light"] .featured-game:hover {
+    border-color: var(--color-accent);
+}
+
+[data-theme="light"] .nav-card {
+    background: #f8f9fa;
+    border: 1px solid var(--border-subtle);
+}
+
+[data-theme="light"] .nav-card:hover {
+    border-color: var(--color-accent);
+    background: #ffffff;
+}
+
+[data-theme="light"] .footer {
+    background: #d4d6db;
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 0;
+}
+
 
 /* ===== RESET & BASE ===== */
 *,
@@ -164,7 +223,7 @@ html {
 }
 
 body {
-    font-family: "Inter", "Segoe UI", sans-serif;
+    font-family: "Plus Jakarta Sans", "Inter", "Segoe UI", sans-serif;
     background-color: var(--bg-primary);
     color: var(--text-secondary);
     line-height: 1.6;

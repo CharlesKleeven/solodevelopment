@@ -28,6 +28,8 @@ import UserProfile from './pages/UserProfile';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
+import { ParticleProvider } from './context/ParticleContext';
 
 function AppContent() {
   const location = useLocation();
@@ -71,11 +73,15 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <ParticleProvider>
+          <Router>
+            <AppContent />
+          </Router>
+        </ParticleProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

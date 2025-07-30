@@ -1,0 +1,44 @@
+/* ===== THEME TOGGLE STYLES ===== */
+.theme-toggle {
+    background: transparent;
+    border: none;
+    padding: var(--space-2);
+    cursor: pointer;
+    transition: all var(--transition);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+}
+
+.theme-toggle:hover {
+    color: var(--text-primary);
+}
+
+.theme-icon {
+    width: 20px;
+    height: 20px;
+    transition: transform var(--transition);
+}
+
+.theme-toggle:hover .theme-icon {
+    transform: scale(1.1);
+}
+
+.theme-toggle:active .theme-icon {
+    transform: scale(0.95);
+}
+
+/* Add subtle rotation on hover only */
+.theme-toggle:hover .theme-icon.sun {
+    transform: rotate(90deg) scale(1.1);
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .theme-toggle:hover .theme-icon {
+        transform: scale(1.1);
+    }
+}
