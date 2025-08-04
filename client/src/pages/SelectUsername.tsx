@@ -24,7 +24,7 @@ const SelectUsername: React.FC = () => {
     // Fetch OAuth user data
     const fetchOAuthData = async () => {
       try {
-        const response = await api.get('/auth/oauth/user-data');
+        const response = await api.get('/api/auth/oauth/user-data');
 
         const data = response.data;
         setOauthData(data);
@@ -48,7 +48,7 @@ const SelectUsername: React.FC = () => {
     const timeoutId = setTimeout(async () => {
       setIsCheckingAvailability(true);
       try {
-        const response = await api.post('/auth/oauth/check-username', { username });
+        const response = await api.post('/api/auth/oauth/check-username', { username });
         const data = response.data;
         if (data.available) {
           setUsernameStatus('available');
@@ -80,7 +80,7 @@ const SelectUsername: React.FC = () => {
     setMessage('');
 
     try {
-      const response = await api.post('/auth/oauth/complete', { username });
+      const response = await api.post('/api/auth/oauth/complete', { username });
       
       setMessage('Registration completed! Redirecting...');
       
