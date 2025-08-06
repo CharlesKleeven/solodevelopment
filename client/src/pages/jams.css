@@ -53,41 +53,42 @@
     font-family: monospace;
 }
 
-.jam-timer-bar {
+.jam-timer {
     display: flex;
-    align-items: center;
     justify-content: center;
-    gap: var(--space-3);
-    font-family: monospace;
-    padding: var(--space-4) 0;
-    border-top: 1px solid var(--border-subtle);
-    border-bottom: 1px solid var(--border-subtle);
+    gap: var(--space-4);
+    margin-top: var(--space-4);
 }
 
-.timer-segment {
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-1);
+.timer-unit {
+    text-align: center;
+    padding: var(--space-6);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius-lg);
+    min-width: 100px;
 }
 
-.timer-value {
-    font-size: var(--text-2xl);
+.timer-number {
+    font-size: var(--text-3xl);
     font-weight: 600;
     color: var(--text-primary);
     line-height: 1;
+    margin-bottom: var(--space-1);
     font-variant-numeric: tabular-nums;
 }
 
-.timer-unit-label {
+.timer-label {
     font-size: var(--text-sm);
     color: var(--text-secondary);
+    font-weight: 500;
 }
 
-.timer-separator {
-    font-size: var(--text-xl);
+.timer-participants {
+    margin-top: var(--space-4);
+    font-size: var(--text-sm);
     color: var(--text-tertiary);
-    margin: 0;
-    opacity: 0.3;
+    font-family: monospace;
 }
 
 /* ===== BOTTOM SECTION ===== */
@@ -252,12 +253,17 @@
         font-size: var(--text-3xl);
     }
 
-    .jam-timer-section {
-        padding: var(--space-3) var(--space-4);
+    .jam-timer {
+        gap: var(--space-3);
     }
 
-    .timer-value {
-        font-size: var(--text-xl);
+    .timer-unit {
+        padding: var(--space-3);
+        min-width: 70px;
+    }
+
+    .timer-number {
+        font-size: var(--text-2xl);
     }
 
     .jam-actions {
@@ -289,17 +295,17 @@
         font-size: var(--text-2xl);
     }
 
-    .jam-timer-bar {
+    .jam-timer {
         gap: var(--space-2);
-        padding: var(--space-3) 0;
     }
 
-    .timer-value {
+    .timer-unit {
+        padding: var(--space-2);
+        min-width: 60px;
+    }
+
+    .timer-number {
         font-size: var(--text-lg);
-    }
-
-    .timer-unit-label {
-        font-size: var(--text-xs);
     }
 }
 

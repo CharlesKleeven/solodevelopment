@@ -112,23 +112,24 @@ const Jams = () => {
 
               <div className="jam-timer-section">
                 <div className="timer-label-main">
-                  {jamData.status === 'upcoming' ? 'starts in' : 'ends in'} • {jamData.participants} joined
+                  {jamData.status === 'upcoming' ? 'starts in' : 'ends in'}
                 </div>
-                <div className="jam-timer-bar">
-                  <div className="timer-segment">
-                    <span className="timer-value">{timeLeft.days}</span>
-                    <span className="timer-unit-label">days</span>
+                <div className="jam-timer">
+                  <div className="timer-unit">
+                    <div className="timer-number">{timeLeft.days}</div>
+                    <div className="timer-label">Days</div>
                   </div>
-                  <div className="timer-separator">:</div>
-                  <div className="timer-segment">
-                    <span className="timer-value">{timeLeft.hours}</span>
-                    <span className="timer-unit-label">hours</span>
+                  <div className="timer-unit">
+                    <div className="timer-number">{timeLeft.hours}</div>
+                    <div className="timer-label">Hours</div>
                   </div>
-                  <div className="timer-separator">:</div>
-                  <div className="timer-segment">
-                    <span className="timer-value">{timeLeft.minutes}</span>
-                    <span className="timer-unit-label">min</span>
+                  <div className="timer-unit">
+                    <div className="timer-number">{timeLeft.minutes}</div>
+                    <div className="timer-label">Minutes</div>
                   </div>
+                </div>
+                <div className="timer-participants">
+                  {jamData.participants} joined
                 </div>
               </div>
 
@@ -162,20 +163,18 @@ const Jams = () => {
 
               <div className="jam-timer-section">
                 <div className="timer-label-main">starts in</div>
-                <div className="jam-timer-bar">
-                  <div className="timer-segment">
-                    <span className="timer-value">{timeLeft.days}</span>
-                    <span className="timer-unit-label">days</span>
+                <div className="jam-timer">
+                  <div className="timer-unit">
+                    <div className="timer-number">{timeLeft.days}</div>
+                    <div className="timer-label">Days</div>
                   </div>
-                  <div className="timer-separator">:</div>
-                  <div className="timer-segment">
-                    <span className="timer-value">{timeLeft.hours}</span>
-                    <span className="timer-unit-label">hours</span>
+                  <div className="timer-unit">
+                    <div className="timer-number">{timeLeft.hours}</div>
+                    <div className="timer-label">Hours</div>
                   </div>
-                  <div className="timer-separator">:</div>
-                  <div className="timer-segment">
-                    <span className="timer-value">{timeLeft.minutes}</span>
-                    <span className="timer-unit-label">min</span>
+                  <div className="timer-unit">
+                    <div className="timer-number">{timeLeft.minutes}</div>
+                    <div className="timer-label">Minutes</div>
                   </div>
                 </div>
               </div>
