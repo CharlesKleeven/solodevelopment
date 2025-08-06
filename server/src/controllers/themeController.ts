@@ -51,17 +51,59 @@ export const getThemes = async (req: Request, res: Response) => {
             }
         }
 
+        // Get vote counts for admin users
+        let voteCounts: { [themeId: string]: { upvotes: number; downvotes: number; total: number } } = {};
+        
+        if (userId && req.query.includeVoteCounts === 'true') {
+            // Check if user is admin
+            const user = await User.findById(userId);
+            
+            if (user && user.isAdmin) {
+                // Get all votes for these themes
+                const themeIds = themes.map(t => (t._id as any).toString());
+                const allVotes = await ThemeVote.find({ 
+                    themeId: { $in: themeIds }
+                });
+                
+                // Count votes by theme - initialize all themes with 0 votes first
+                themeIds.forEach(themeId => {
+                    voteCounts[themeId] = {
+                        upvotes: 0,
+                        downvotes: 0,
+                        total: 0
+                    };
+                });
+                
+                // Now count actual votes
+                allVotes.forEach(vote => {
+                    if (vote.vote === 1) {
+                        voteCounts[vote.themeId].upvotes++;
+                    } else if (vote.vote === -1) {
+                        voteCounts[vote.themeId].downvotes++;
+                    }
+                    voteCounts[vote.themeId].total++;
+                });
+            }
+        }
+
         // Combine themes with user votes
         const themesWithVotes = themes.map(theme => {
             const themeId = (theme._id as any).toString();
             const userVote = userVotes[themeId] !== undefined ? userVotes[themeId] : 0;
             
-            return {
+            const result: any = {
                 id: themeId,
                 name: theme.name,
                 score: theme.score,
                 userVote: userVote
             };
+            
+            // Add vote counts if available (admin only)
+            if (voteCounts[themeId]) {
+                result.voteCounts = voteCounts[themeId];
+            }
+            
+            return result;
         });
 
         res.json({ themes: themesWithVotes });

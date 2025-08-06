@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { jamAPI, themeAPI, backupAPI } from '../services/api';
+import api from '../services/api';
 import './admin.css';
 
 interface Jam {
@@ -12,7 +13,7 @@ interface Jam {
     url: string;
     startDate: string;
     endDate: string;
-    status?: 'upcoming' | 'active' | 'ended'; // Optional, calculated on frontend
+    status?: 'upcoming' | 'active' | 'ended';
     participants: number;
     submissions: number;
     isCurrent: boolean;
@@ -24,6 +25,11 @@ interface Theme {
     name: string;
     score: number;
     userVote?: -1 | 0 | 1;
+    voteCounts?: {
+        upvotes: number;
+        downvotes: number;
+        total: number;
+    };
 }
 
 interface Backup {
@@ -135,7 +141,8 @@ const AdminJams: React.FC = () => {
         setShowThemeForm(false);
         
         try {
-            const response = await themeAPI.getThemes(currentJam.id);
+            // Pass includeVoteCounts query param for admin users
+            const response = await api.get(`/api/themes/jam/${currentJam.id}?includeVoteCounts=true`);
             if (response.data?.themes) {
                 // Sort by score descending
                 const sortedThemes = [...response.data.themes].sort((a, b) => b.score - a.score);
@@ -480,14 +487,16 @@ const AdminJams: React.FC = () => {
                                                 </span>
                                             </td>
                                             <td>
-                                                <div className="vote-bar">
-                                                    <div 
-                                                        className="vote-bar-fill" 
-                                                        style={{ 
-                                                            width: `${Math.abs(theme.score) * 2}px`,
-                                                            backgroundColor: theme.score > 0 ? '#4ade80' : theme.score < 0 ? '#f87171' : '#6b7280'
-                                                        }}
-                                                    />
+                                                <div className="vote-counts">
+                                                    {theme.voteCounts ? (
+                                                        <>
+                                                            <span className="upvotes">↑ {theme.voteCounts.upvotes}</span>
+                                                            <span className="downvotes">↓ {theme.voteCounts.downvotes}</span>
+                                                            <span className="total-votes">Total: {theme.voteCounts.total}</span>
+                                                        </>
+                                                    ) : (
+                                                        <span className="no-votes">No votes yet</span>
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>

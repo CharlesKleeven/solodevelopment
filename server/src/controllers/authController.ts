@@ -6,6 +6,7 @@ import crypto from 'crypto';
 import User from '../models/User';
 import { sendPasswordResetEmail } from '../services/emailService';
 import { validateLink } from '../utils/linkValidator';
+import { normalizeGmailAddress } from '../utils/emailUtils';
 // Use Express Request type with user property added via type declaration
 
 export const loginValidation = [
@@ -82,13 +83,25 @@ export const login = async (req: Request, res: Response) => {
 
     const { emailOrUsername, password } = req.body;
 
-    // Find user by email OR username
-    const user = await User.findOne({
-      $or: [
-        { email: emailOrUsername },
-        { username: emailOrUsername }
-      ]
-    });
+    // Build search conditions
+    const searchConditions: any[] = [{ username: emailOrUsername }];
+    
+    // If it looks like an email, add email search conditions
+    if (emailOrUsername.includes('@')) {
+      const normalizedEmail = normalizeGmailAddress(emailOrUsername);
+      // Only add both if they're different (for Gmail addresses with dots)
+      if (normalizedEmail !== emailOrUsername.toLowerCase()) {
+        searchConditions.push(
+          { email: emailOrUsername.toLowerCase() },
+          { email: normalizedEmail }
+        );
+      } else {
+        searchConditions.push({ email: normalizedEmail });
+      }
+    }
+
+    // Find user by email (both normalized and original) OR username
+    const user = await User.findOne({ $or: searchConditions });
 
     if (!user) {
       return res.status(400).json({ error: 'Invalid credentials' });

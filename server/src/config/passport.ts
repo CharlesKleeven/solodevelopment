@@ -3,26 +3,10 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as DiscordStrategy } from 'passport-discord';
 import User from '../models/User';
 import dotenv from 'dotenv';
+import { normalizeGmailAddress } from '../utils/emailUtils';
 
 // Load environment variables
 dotenv.config();
-
-// Helper function to normalize Gmail addresses
-function normalizeGmailAddress(email: string): string {
-  if (!email) return email;
-  
-  const [localPart, domain] = email.toLowerCase().split('@');
-  
-  // Only normalize Gmail addresses
-  if (domain === 'gmail.com') {
-    // Remove dots from local part and ignore everything after +
-    const normalizedLocal = localPart.replace(/\./g, '').split('+')[0];
-    return `${normalizedLocal}@${domain}`;
-  }
-  
-  // For non-Gmail addresses, just lowercase
-  return email.toLowerCase();
-}
 
 // Serialize user for session storage
 passport.serializeUser((user: any, done) => {
@@ -119,9 +103,6 @@ passport.use(new DiscordStrategy({
   scope: ['identify', 'email']
 }, async (accessToken, refreshToken, profile, done) => {
   try {
-    // Log profile to see what fields are available
-    console.log('Discord profile object:', JSON.stringify(profile, null, 2));
-    
     // Check if user already exists with this Discord ID
     let existingUser = await User.findOne({ discordId: profile.id });
     
