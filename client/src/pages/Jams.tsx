@@ -90,86 +90,100 @@ const Jams = () => {
         </div>
       </section>
 
+
       <section className="jam-featured" data-fade data-delay="2">
         <div className="container">
           {jamLoading ? (
             <div className="jam-featured-card">
-              <div className="jam-status">
-                <div className="status-dot"></div>
-                <span className="status-text">Loading...</span>
+              <div className="jam-header">
+                <h2 className="jam-title">Loading jam data...</h2>
               </div>
-              <h2 className="jam-title">Loading jam data...</h2>
             </div>
           ) : jamData ? (
             <div className="jam-featured-card">
-              <div className={`jam-status ${jamData.status}`}>
-                <div className="status-dot"></div>
-                <span className="status-text">
-                  {jamData.status === 'upcoming' ? 'Upcoming' :
-                    jamData.status === 'active' ? 'Active' : 'Ended'}
-                </span>
-                <span className="jam-participants">{jamData.participants} participants</span>
-              </div>
-              <h2 className="jam-title">{jamData.title}</h2>
-              <p className="jam-theme">
-                Theme: {jamData.theme !== 'TBD' ? `"${jamData.theme}"` : jamData.theme}
-              </p>
-              <p className="jam-description">{jamData.description}</p>
-
-              <div className="jam-timer">
-                <div className="timer-unit">
-                  <div className="timer-number">{timeLeft.days}</div>
-                  <div className="timer-label">Days</div>
-                </div>
-                <div className="timer-unit">
-                  <div className="timer-number">{timeLeft.hours}</div>
-                  <div className="timer-label">Hours</div>
-                </div>
-                <div className="timer-unit">
-                  <div className="timer-number">{timeLeft.minutes}</div>
-                  <div className="timer-label">Minutes</div>
-                </div>
+              <div className="jam-header">
+                <h2 className="jam-title">{jamData.title}</h2>
+                <p className="jam-theme">
+                  {jamData.theme !== 'TBD' ? 
+                    `theme: "${jamData.theme}"` : 
+                    'theme: TBD'}
+                </p>
               </div>
 
-              <div className="jam-actions">
-                <a href={jamData.url} className="btn btn-primary" target="_blank" rel="noopener noreferrer nofollow">
-                  {jamData.status === 'upcoming' ? 'Learn More' :
-                    jamData.status === 'active' ? 'Join Jam' : 'View Results'}
-                </a>
-                {(jamData.status === 'active' || jamData.status === 'ended') && (
-                  <a href={jamData.url} className="btn btn-secondary" target="_blank" rel="noopener noreferrer nofollow">View Submissions</a>
+              <div className="jam-timer-section">
+                <div className="timer-label-main">
+                  {jamData.status === 'upcoming' ? 'starts in' : 'ends in'} • {jamData.participants} joined
+                </div>
+                <div className="jam-timer-bar">
+                  <div className="timer-segment">
+                    <span className="timer-value">{timeLeft.days}</span>
+                    <span className="timer-unit-label">days</span>
+                  </div>
+                  <div className="timer-separator">:</div>
+                  <div className="timer-segment">
+                    <span className="timer-value">{timeLeft.hours}</span>
+                    <span className="timer-unit-label">hours</span>
+                  </div>
+                  <div className="timer-separator">:</div>
+                  <div className="timer-segment">
+                    <span className="timer-value">{timeLeft.minutes}</span>
+                    <span className="timer-unit-label">min</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="jam-bottom-section">
+                <div className="jam-actions">
+                  <a href={jamData.url} className="btn btn-primary" target="_blank" rel="noopener noreferrer nofollow">
+                    {jamData.status === 'upcoming' ? 'itch.io page' :
+                      jamData.status === 'active' ? 'Join Jam' : 'View Results'}
+                  </a>
+                  {(jamData.status === 'active' || jamData.status === 'ended') && (
+                    <a href={jamData.url} className="btn btn-ghost" target="_blank" rel="noopener noreferrer nofollow">View Submissions</a>
+                  )}
+                </div>
+                
+                {jamData.isVotingOpen && (
+                  <div className="voting-flow">
+                    <div className="voting-hint">
+                      <span>↓ vote on themes below</span>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
           ) : (
             // Fallback if API fails - matches current jam config
             <div className="jam-featured-card">
-              <div className="jam-status upcoming">
-                <div className="status-dot"></div>
-                <span className="status-text">Upcoming</span>
-                <span className="jam-participants">0 participants</span>
-              </div>
-              <h2 className="jam-title">Summer Jam</h2>
-              <p className="jam-theme">Theme: TBD</p>
-              <p className="jam-description">3-day jam with theme to be announced</p>
-
-              <div className="jam-timer">
-                <div className="timer-unit">
-                  <div className="timer-number">{timeLeft.days}</div>
-                  <div className="timer-label">Days</div>
-                </div>
-                <div className="timer-unit">
-                  <div className="timer-number">{timeLeft.hours}</div>
-                  <div className="timer-label">Hours</div>
-                </div>
-                <div className="timer-unit">
-                  <div className="timer-number">{timeLeft.minutes}</div>
-                  <div className="timer-label">Minutes</div>
-                </div>
+              <div className="jam-header">
+                <h2 className="jam-title">Summer Jam</h2>
+                <p className="jam-theme">theme: TBD</p>
               </div>
 
-              <div className="jam-actions">
-                <a href="https://itch.io/jam/solodevelopment-summer-jam" className="btn btn-primary" target="_blank" rel="noopener noreferrer nofollow">Learn More</a>
+              <div className="jam-timer-section">
+                <div className="timer-label-main">starts in</div>
+                <div className="jam-timer-bar">
+                  <div className="timer-segment">
+                    <span className="timer-value">{timeLeft.days}</span>
+                    <span className="timer-unit-label">days</span>
+                  </div>
+                  <div className="timer-separator">:</div>
+                  <div className="timer-segment">
+                    <span className="timer-value">{timeLeft.hours}</span>
+                    <span className="timer-unit-label">hours</span>
+                  </div>
+                  <div className="timer-separator">:</div>
+                  <div className="timer-segment">
+                    <span className="timer-value">{timeLeft.minutes}</span>
+                    <span className="timer-unit-label">min</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="jam-bottom-section">
+                <div className="jam-actions">
+                  <a href="https://itch.io/jam/solodevelopment-summer-jam" className="btn btn-primary" target="_blank" rel="noopener noreferrer nofollow">itch.io page</a>
+                </div>
               </div>
             </div>
           )}

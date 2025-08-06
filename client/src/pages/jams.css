@@ -6,124 +6,112 @@
 
 /* ===== FEATURED JAM - CENTERPIECE ===== */
 .jam-featured {
-    padding: var(--space-2) 0;
+    padding: var(--space-8) 0;
     margin-bottom: var(--space-4);
 }
 
 .jam-featured-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--border-radius-lg);
-    padding: var(--space-12);
-    text-align: center;
-    max-width: 48rem;
+    max-width: 36rem;
     margin: 0 auto;
     position: relative;
-    overflow: hidden;
 }
 
 
-.jam-status {
+/* Header Section */
+.jam-header {
+    margin-bottom: var(--space-6);
+    text-align: center;
+}
+
+.jam-title {
+    font-size: var(--text-4xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+
+.jam-theme {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    font-weight: 400;
+    margin-bottom: 0;
+    font-family: monospace;
+}
+
+/* ===== TIMER SECTION ===== */
+.jam-timer-section {
+    margin-bottom: var(--space-8);
+    text-align: center;
+}
+
+.timer-label-main {
+    font-size: var(--text-sm);
+    color: var(--text-tertiary);
+    margin-bottom: var(--space-2);
+    font-family: monospace;
+}
+
+.jam-timer-bar {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: var(--space-3);
-    margin-bottom: var(--space-6);
-    font-size: var(--text-sm);
+    font-family: monospace;
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--border-subtle);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
-.status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--color-success);
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.6;
-    }
-}
-
-.status-text {
-    font-weight: 600;
-}
-
-.jam-participants {
-    color: var(--text-tertiary);
-}
-
-.jam-title {
-    font-size: var(--text-3xl);
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: var(--space-3);
-    letter-spacing: -0.025em;
-}
-
-.jam-theme {
-    font-size: var(--text-lg);
-    color: var(--color-accent);
-    font-weight: 500;
-    margin-bottom: var(--space-4);
-    font-style: italic;
-}
-
-.jam-description {
-    font-size: var(--text-lg);
-    color: var(--text-secondary);
-    line-height: 1.6;
-    margin-bottom: var(--space-8);
-    max-width: 32rem;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* ===== PROMINENT TIMER ===== */
-.jam-timer {
+.timer-segment {
     display: flex;
-    justify-content: center;
-    gap: var(--space-4);
-    margin-bottom: var(--space-8);
+    align-items: baseline;
+    gap: var(--space-1);
 }
 
-.timer-unit {
-    text-align: center;
-    padding: var(--space-6);
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--border-radius-lg);
-    min-width: 100px;
-    position: relative;
-}
-
-
-.timer-number {
-    font-size: var(--text-3xl);
+.timer-value {
+    font-size: var(--text-2xl);
     font-weight: 600;
     color: var(--text-primary);
     line-height: 1;
-    margin-bottom: var(--space-1);
+    font-variant-numeric: tabular-nums;
 }
 
-.timer-label {
+.timer-unit-label {
     font-size: var(--text-sm);
     color: var(--text-secondary);
-    font-weight: 500;
 }
 
-/* ===== JAM ACTIONS ===== */
+.timer-separator {
+    font-size: var(--text-xl);
+    color: var(--text-tertiary);
+    margin: 0;
+    opacity: 0.3;
+}
+
+/* ===== BOTTOM SECTION ===== */
+.jam-bottom-section {
+    text-align: center;
+    position: relative;
+}
+
 .jam-actions {
     display: flex;
     justify-content: center;
     gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+/* Voting Flow */
+.voting-flow {
+    margin-top: var(--space-4);
+}
+
+.voting-hint {
+    font-size: var(--text-sm);
+    color: var(--text-tertiary);
+    font-family: monospace;
 }
 
 /* ===== INFO SECTION ===== */
@@ -241,49 +229,6 @@
 }
 
 
-/* Better spacing and hierarchy for jam featured card */
-.jam-featured-card {
-    text-align: center;
-}
-
-.jam-featured-card .jam-title {
-    font-size: var(--text-3xl);
-    font-weight: 600;
-    margin-bottom: var(--space-2);
-    line-height: 1.1;
-}
-
-.jam-featured-card .jam-theme {
-    font-size: var(--text-xl);
-    color: var(--color-accent);
-    font-style: italic;
-    margin-bottom: var(--space-3);
-    font-weight: 500;
-}
-
-.jam-featured-card .jam-description {
-    font-size: var(--text-base);
-    color: var(--text-secondary);
-    margin-bottom: var(--space-8);
-    max-width: 42rem;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* Cleaner timer styling */
-.jam-timer {
-    margin-bottom: var(--space-8);
-}
-
-/* Better status line */
-.jam-status {
-    margin-bottom: var(--space-6);
-}
-
-.jam-participants {
-    font-size: var(--text-sm);
-    color: var(--text-secondary);
-}
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
@@ -300,25 +245,19 @@
     }
 
     .jam-featured-card {
-        padding: var(--space-6);
         margin: 0 var(--space-4);
     }
 
     .jam-title {
-        font-size: var(--text-2xl);
+        font-size: var(--text-3xl);
     }
 
-    .jam-timer {
-        gap: var(--space-3);
+    .jam-timer-section {
+        padding: var(--space-3) var(--space-4);
     }
 
-    .timer-unit {
-        padding: var(--space-3);
-        min-width: 70px;
-    }
-
-    .timer-number {
-        font-size: var(--text-2xl);
+    .timer-value {
+        font-size: var(--text-xl);
     }
 
     .jam-actions {
@@ -342,30 +281,29 @@
 }
 
 @media (max-width: 480px) {
-    .jam-timer {
-        gap: var(--space-2);
-    }
-
-    .timer-unit {
-        padding: var(--space-2);
-        min-width: 60px;
-    }
-
-    .timer-number {
-        font-size: var(--text-xl);
-    }
-
-    .timer-label {
-        font-size: var(--text-xs);
-    }
-
     .jam-featured-card {
         margin: 0 var(--space-3);
-        padding: var(--space-4);
+    }
+
+    .jam-title {
+        font-size: var(--text-2xl);
+    }
+
+    .jam-timer-bar {
+        gap: var(--space-2);
+        padding: var(--space-3) 0;
+    }
+
+    .timer-value {
+        font-size: var(--text-lg);
+    }
+
+    .timer-unit-label {
+        font-size: var(--text-xs);
     }
 }
 
 /* Theme Voting Section */
 .theme-voting-section {
-    padding: var(--space-4) 0;
+    padding: 0 0 var(--space-4) 0;
 }

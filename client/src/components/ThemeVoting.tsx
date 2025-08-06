@@ -150,7 +150,7 @@ const ThemeVoting: React.FC<ThemeVotingProps> = ({ jamId, votingDeadline, isVoti
                 <div className="container">
                     <div className="theme-voting">
                         <div className="voting-header">
-                            <h3>// theme voting</h3>
+                            <h3>// themes</h3>
                         </div>
                         <div className="verify-prompt">
                             <span className="verify-icon">[!]</span>
@@ -170,7 +170,7 @@ const ThemeVoting: React.FC<ThemeVotingProps> = ({ jamId, votingDeadline, isVoti
                 <div className="container">
                     <div className="theme-voting">
                         <div className="voting-header">
-                            <h3>// theme voting</h3>
+                            <h3>// themes</h3>
                         </div>
                         <div className="verify-prompt">
                             <span className="verify-icon">[!]</span>
@@ -188,7 +188,7 @@ const ThemeVoting: React.FC<ThemeVotingProps> = ({ jamId, votingDeadline, isVoti
             <div className="container">
                 <div className="theme-voting">
             <div className="voting-header">
-                <h3>// theme voting</h3>
+                <h3>// themes</h3>
                 {votingDeadline && (
                     <span className="voting-deadline">{getTimeLeft()}</span>
                 )}

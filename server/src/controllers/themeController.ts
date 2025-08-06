@@ -74,14 +74,16 @@ export const getThemes = async (req: Request, res: Response) => {
                     };
                 });
                 
-                // Now count actual votes
+                // Now count actual votes (excluding neutral votes)
                 allVotes.forEach(vote => {
                     if (vote.vote === 1) {
                         voteCounts[vote.themeId].upvotes++;
+                        voteCounts[vote.themeId].total++;
                     } else if (vote.vote === -1) {
                         voteCounts[vote.themeId].downvotes++;
+                        voteCounts[vote.themeId].total++;
                     }
-                    voteCounts[vote.themeId].total++;
+                    // Note: vote === 0 (neutral) is not counted in total
                 });
             }
         }
