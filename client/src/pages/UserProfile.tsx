@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { userSearchAPI } from '../services/api';
+import { userSearchAPI, gameAPI } from '../services/api';
 import { parseStoredLink, getLinkInfo } from '../utils/linkUtils';
 import './user-profile.css';
 
@@ -33,9 +33,20 @@ interface UserStats {
 const UserProfile: React.FC = () => {
     const { username } = useParams<{ username: string }>();
     const [userStats, setUserStats] = useState<UserStats | null>(null);
+    const [allGames, setAllGames] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [gamesLoading, setGamesLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [expandedTags, setExpandedTags] = useState<Set<number>>(new Set());
+    const [expandedDescriptions, setExpandedDescriptions] = useState<Set<number>>(new Set());
+    const [allDescriptionsExpanded, setAllDescriptionsExpanded] = useState(true);
+    const [showAllGames, setShowAllGames] = useState(false);
+    const [gamesPagination, setGamesPagination] = useState({
+        page: 1,
+        limit: 12,
+        total: 0,
+        pages: 0
+    });
 
     const toggleTags = (gameIndex: number) => {
         const newExpanded = new Set(expandedTags);
@@ -45,6 +56,23 @@ const UserProfile: React.FC = () => {
             newExpanded.add(gameIndex);
         }
         setExpandedTags(newExpanded);
+    };
+
+    const toggleDescription = (gameIndex: number) => {
+        if (allDescriptionsExpanded) {
+            // If all are expanded, collapse all and keep this one collapsed
+            setAllDescriptionsExpanded(false);
+            setExpandedDescriptions(new Set());
+        } else {
+            // Toggle individual description
+            const newExpanded = new Set(expandedDescriptions);
+            if (newExpanded.has(gameIndex)) {
+                newExpanded.delete(gameIndex);
+            } else {
+                newExpanded.add(gameIndex);
+            }
+            setExpandedDescriptions(newExpanded);
+        }
     };
 
     useEffect(() => {
@@ -70,6 +98,38 @@ const UserProfile: React.FC = () => {
         fetchUserStats();
     }, [username]);
 
+    const loadAllGames = async (page: number) => {
+        if (!username) return;
+        
+        try {
+            setGamesLoading(true);
+            const response = await gameAPI.getUserGames(username, page, 12);
+            
+            if (page === 1) {
+                setAllGames(response.games);
+            } else {
+                setAllGames(prev => [...prev, ...response.games]);
+            }
+            
+            setGamesPagination({
+                page: response.pagination.page,
+                limit: response.pagination.limit,
+                total: response.pagination.total,
+                pages: response.pagination.pages
+            });
+        } catch (error: any) {
+            console.error('Failed to load games:', error);
+        } finally {
+            setGamesLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (showAllGames && username) {
+            loadAllGames(1);
+        }
+    }, [showAllGames, username]);
+
     if (loading) {
         return (
             <div className="user-profile-page">
@@ -93,18 +153,76 @@ const UserProfile: React.FC = () => {
         );
     }
 
-    const { user, recentGames } = userStats;
+    const { user, recentGames, stats } = userStats;
 
-    // Format join date
-    const joinDate = new Date(user.joinedAt).toLocaleDateString('en-US', {
-        month: 'long',
-        year: 'numeric'
-    });
+    // Game card component
+    const GameCard: React.FC<{ game: any; index: number }> = ({ game, index }) => (
+        <div className="portfolio-item">
+            <div className="portfolio-thumbnail">
+                {game.thumbnailUrl ? (
+                    <img src={game.thumbnailUrl} alt={game.title} />
+                ) : (
+                    <div className="portfolio-placeholder">No Image</div>
+                )}
+            </div>
+            <div className="portfolio-info">
+                <h4 className="portfolio-title">{game.title}</h4>
+                {game.description && (
+                    <div className="portfolio-description-wrapper">
+                        <p className={`portfolio-description ${allDescriptionsExpanded || expandedDescriptions.has(index) ? 'expanded' : ''}`}>
+                            {game.description}
+                        </p>
+                        {game.description.length > 150 && (
+                            <button 
+                                className="description-toggle"
+                                onClick={() => toggleDescription(index)}
+                                type="button"
+                            >
+                                {allDescriptionsExpanded || expandedDescriptions.has(index) ? 'Show less' : 'Show more'}
+                            </button>
+                        )}
+                    </div>
+                )}
+                {game.tags && game.tags.length > 0 && (
+                    <div className="portfolio-tags">
+                        {(expandedTags.has(index) ? game.tags : game.tags.slice(0, 3)).map((tag: string, tagIndex: number) => (
+                            <span key={tagIndex} className="portfolio-tag">{tag}</span>
+                        ))}
+                        {game.tags.length > 3 && (
+                            <button 
+                                className="portfolio-tag-more" 
+                                onClick={() => toggleTags(index)}
+                                type="button"
+                            >
+                                {expandedTags.has(index) 
+                                    ? 'Show less' 
+                                    : `+${game.tags.length - 3} more`
+                                }
+                            </button>
+                        )}
+                    </div>
+                )}
+                <div className="portfolio-actions">
+                    {game.playUrl ? (
+                        <a 
+                            href={game.playUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer nofollow" 
+                            className="btn btn-primary btn-sm"
+                        >
+                            Play Game
+                        </a>
+                    ) : (
+                        <span className="btn-placeholder">No link available</span>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
 
     return (
         <div className="user-profile-page">
             <Helmet>
-                <title>{user.displayName} (@{username}) - SoloDevelopment</title>
                 <meta name="robots" content="noindex, nofollow" />
                 <meta name="description" content={`View ${user.displayName}'s profile and games on SoloDevelopment`} />
             </Helmet>
@@ -149,58 +267,73 @@ const UserProfile: React.FC = () => {
                     </div>
                 ) : (
                     <>
-                        {recentGames.length > 0 && (
-                            <div className="portfolio-grid">
+                        {/* Games Section */}
+                        {!showAllGames && recentGames.length > 0 && (
+                            <>
+                                <div className="portfolio-section-header">
+                                    <h3>Recent Games</h3>
+                                    {stats.gameCount > 3 && (
+                                        <button 
+                                            className="view-all-button"
+                                            onClick={() => setShowAllGames(true)}
+                                        >
+                                            View All Games ({stats.gameCount})
+                                        </button>
+                                    )}
+                                </div>
+                                <div className="portfolio-grid">
                                     {recentGames.map((game, index) => (
-                                        <div key={index} className="portfolio-item">
-                                            <div className="portfolio-thumbnail">
-                                                {game.thumbnailUrl ? (
-                                                    <img src={game.thumbnailUrl} alt={game.title} />
-                                                ) : (
-                                                    <div className="portfolio-placeholder">No Image</div>
-                                                )}
-                                            </div>
-                                            <div className="portfolio-info">
-                                                <h4 className="portfolio-title">{game.title}</h4>
-                                                {game.description && (
-                                                    <p className="portfolio-description">{game.description}</p>
-                                                )}
-                                                {game.tags && game.tags.length > 0 && (
-                                                    <div className="portfolio-tags">
-                                                        {(expandedTags.has(index) ? game.tags : game.tags.slice(0, 3)).map((tag: string, tagIndex: number) => (
-                                                            <span key={tagIndex} className="portfolio-tag">{tag}</span>
-                                                        ))}
-                                                        {game.tags.length > 3 && (
-                                                            <button 
-                                                                className="portfolio-tag-more" 
-                                                                onClick={() => toggleTags(index)}
-                                                                type="button"
-                                                            >
-                                                                {expandedTags.has(index) 
-                                                                    ? 'Show less' 
-                                                                    : `+${game.tags.length - 3} more`
-                                                                }
-                                                            </button>
-                                                        )}
-                                                    </div>
-                                                )}
-                                                <div className="portfolio-actions">
-                                                    {game.playUrl ? (
-                                                        <a 
-                                                            href={game.playUrl} 
-                                                            target="_blank" 
-                                                            rel="noopener noreferrer nofollow" 
-                                                            className="btn btn-primary btn-sm"
-                                                        >
-                                                            Play Game
-                                                        </a>
-                                                    ) : (
-                                                        <span className="btn-placeholder">No link available</span>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <GameCard key={game.slug || index} game={game} index={index} />
                                     ))}
+                                </div>
+                            </>
+                        )}
+
+                        {showAllGames && (
+                            <>
+                                <div className="portfolio-section-header">
+                                    <h3>All Games ({stats.gameCount})</h3>
+                                    <button 
+                                        className="view-all-button"
+                                        onClick={() => setShowAllGames(false)}
+                                    >
+                                        Show Recent Only
+                                    </button>
+                                </div>
+                                {gamesLoading && allGames.length === 0 ? (
+                                    <div className="loading-state">Loading games...</div>
+                                ) : (
+                                    <>
+                                        <div className="portfolio-grid">
+                                            {allGames.map((game, index) => (
+                                                <GameCard key={game.slug || index} game={game} index={index} />
+                                            ))}
+                                        </div>
+                                        
+                                        {/* Load More */}
+                                        {gamesPagination.page < gamesPagination.pages && (
+                                            <div className="load-more-container">
+                                                <button 
+                                                    onClick={() => loadAllGames(gamesPagination.page + 1)}
+                                                    disabled={gamesLoading}
+                                                    className="btn btn-secondary load-more-button"
+                                                >
+                                                    {gamesLoading ? 'Loading...' : 'Load More Games'}
+                                                </button>
+                                                <p className="pagination-info">
+                                                    Showing {allGames.length} of {gamesPagination.total} games
+                                                </p>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                            </>
+                        )}
+
+                        {/* No games message */}
+                        {!showAllGames && recentGames.length === 0 && (
+                            <div className="empty-state">
+                                <p>No games published yet.</p>
                             </div>
                         )}
                     </>

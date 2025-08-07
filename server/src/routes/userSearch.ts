@@ -160,6 +160,97 @@ router.get('/featured',
   }
 );
 
+// Get all users with pagination
+router.get('/all',
+  query('page')
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage('Invalid page number'),
+  query('limit')
+    .optional()
+    .isInt({ min: 1, max: 50 })
+    .withMessage('Invalid limit'),
+  query('hasGames')
+    .optional()
+    .isBoolean()
+    .withMessage('Invalid hasGames value'),
+  handleValidationErrors,
+  async (req: Request, res: Response) => {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 20;
+      const hasGames = req.query.hasGames === 'true' ? true : req.query.hasGames === 'false' ? false : undefined;
+      const skip = (page - 1) * limit;
+
+      // Build query - only public profiles
+      const query: any = { profileVisibility: 'public' };
+
+      // Get all users first to determine which have games
+      let allUsers = await User.find(query)
+        .select('_id username displayName bio createdAt')
+        .lean();
+
+      // Get game counts for filtering
+      if (hasGames !== undefined) {
+        const usersWithGameCounts = await Promise.all(
+          allUsers.map(async (user) => {
+            const gameCount = await Game.countDocuments({ 
+              user: user._id, 
+              visibility: 'public' 
+            });
+            return { ...user, gameCount };
+          })
+        );
+
+        // Filter based on hasGames parameter
+        allUsers = usersWithGameCounts.filter(user => 
+          hasGames ? user.gameCount > 0 : user.gameCount === 0
+        );
+      }
+
+      // Sort by creation date (newest first)
+      allUsers.sort((a, b) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
+      // Apply pagination
+      const total = allUsers.length;
+      const paginatedUsers = allUsers.slice(skip, skip + limit);
+
+      // Get game counts for final results
+      const usersWithGameCounts = await Promise.all(
+        paginatedUsers.map(async (user) => {
+          const gameCount = await Game.countDocuments({ 
+            user: user._id, 
+            visibility: 'public' 
+          });
+          
+          return {
+            username: user.username,
+            displayName: user.displayName,
+            bio: user.bio,
+            gameCount,
+            joinedAt: user.createdAt
+          };
+        })
+      );
+
+      res.json({
+        users: usersWithGameCounts,
+        pagination: {
+          page,
+          limit,
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching all users:', error);
+      res.status(500).json({ error: 'Failed to fetch users' });
+    }
+  }
+);
+
 // Get user stats (public profile info)
 router.get('/:username/stats',
   async (req: Request, res: Response) => {

@@ -185,7 +185,6 @@ const Profile: React.FC = () => {
     return (
         <div className="profile-page">
             <Helmet>
-                <title>My Profile - SoloDevelopment</title>
                 <meta name="robots" content="noindex, nofollow" />
             </Helmet>
             <div className="profile-container">

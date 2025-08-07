@@ -28,23 +28,39 @@ const Community: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [users, setUsers] = useState<CommunityMember[]>([]);
     const [featuredUsers, setFeaturedUsers] = useState<CommunityMember[]>([]);
+    const [allUsers, setAllUsers] = useState<CommunityMember[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isSearching, setIsSearching] = useState(false);
+    const [viewMode, setViewMode] = useState<'featured' | 'all'>('featured');
+    const [showOnlyWithGames, setShowOnlyWithGames] = useState(false);
     const [pagination, setPagination] = useState({
         page: 1,
         limit: 12,
         total: 0,
         pages: 0
     });
+    const [allUsersPagination, setAllUsersPagination] = useState({
+        page: 1,
+        limit: 20,
+        total: 0,
+        pages: 0
+    });
 
     // Initialize fade-in animations
-    useFadeInOnScroll([featuredUsers, users, loading]);
+    useFadeInOnScroll([featuredUsers, users, allUsers, loading]);
 
     // Load featured users on mount
     useEffect(() => {
         loadFeaturedUsers();
     }, []);
+
+    // Load all users when view mode changes or filter changes
+    useEffect(() => {
+        if (viewMode === 'all') {
+            loadAllUsers(1);
+        }
+    }, [viewMode, showOnlyWithGames]);
 
     const loadFeaturedUsers = async () => {
         try {
@@ -54,6 +70,32 @@ const Community: React.FC = () => {
         } catch (error: any) {
             console.error('Failed to load featured users:', error);
             setError('Failed to load featured users.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const loadAllUsers = async (page: number) => {
+        try {
+            setLoading(true);
+            setError(null);
+            
+            const response = await userSearchAPI.getAllUsers({
+                page,
+                limit: 20,
+                hasGames: showOnlyWithGames ? true : undefined
+            });
+            
+            if (page === 1) {
+                setAllUsers(response.users);
+            } else {
+                setAllUsers(prev => [...prev, ...response.users]);
+            }
+            
+            setAllUsersPagination(response.pagination);
+        } catch (error: any) {
+            console.error('Failed to load all users:', error);
+            setError('Failed to load users.');
         } finally {
             setLoading(false);
         }
@@ -92,20 +134,35 @@ const Community: React.FC = () => {
         handleSearch(searchQuery);
     };
 
+    // Add debounce timer ref
+    const searchTimerRef = React.useRef<NodeJS.Timeout>();
+
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setSearchQuery(value);
         
+        // Clear previous timer
+        if (searchTimerRef.current) {
+            clearTimeout(searchTimerRef.current);
+        }
+        
         // Auto-search after 500ms delay
         if (value.trim().length >= 2) {
-            setTimeout(() => {
-                if (searchQuery === value) {
-                    handleSearch(value);
-                }
+            searchTimerRef.current = setTimeout(() => {
+                handleSearch(value);
             }, 500);
         } else if (value.trim().length === 0) {
             setIsSearching(false);
             setUsers([]);
+        }
+    };
+
+    const clearSearch = () => {
+        setSearchQuery('');
+        setIsSearching(false);
+        setUsers([]);
+        if (searchTimerRef.current) {
+            clearTimeout(searchTimerRef.current);
         }
     };
 
@@ -141,7 +198,6 @@ const Community: React.FC = () => {
     return (
         <div className="community-page">
             <Helmet>
-                <title>Community - SoloDevelopment</title>
                 <meta name="robots" content="noindex, follow" />
                 <meta name="description" content="Find fellow solo game developers and discover their projects" />
             </Helmet>
@@ -165,12 +221,58 @@ const Community: React.FC = () => {
                                 placeholder="Search community members by username or name..."
                                 className="search-input"
                             />
+                            {searchQuery && (
+                                <button 
+                                    type="button" 
+                                    onClick={clearSearch}
+                                    className="clear-search-button"
+                                    aria-label="Clear search"
+                                >
+                                    ×
+                                </button>
+                            )}
                             <button type="submit" className="search-button" disabled={loading}>
                                 Search
                             </button>
                         </div>
                     </form>
                 </section>
+
+                {/* View Mode Toggle and Filter - Only show when not searching */}
+                {!isSearching && (
+                    <section className="view-controls" data-fade data-delay="2">
+                        <div className="view-mode-toggle">
+                            <button 
+                                className={`toggle-button ${viewMode === 'featured' ? 'active' : ''}`}
+                                onClick={() => setViewMode('featured')}
+                            >
+                                Featured
+                            </button>
+                            <button 
+                                className={`toggle-button ${viewMode === 'all' ? 'active' : ''}`}
+                                onClick={() => setViewMode('all')}
+                            >
+                                All Members
+                            </button>
+                        </div>
+                        
+                        {viewMode === 'all' && (
+                            <div className="filter-options">
+                                <label className="filter-checkbox">
+                                    <input
+                                        type="checkbox"
+                                        checked={showOnlyWithGames}
+                                        onChange={(e) => {
+                                            setShowOnlyWithGames(e.target.checked);
+                                            setAllUsersPagination(prev => ({ ...prev, page: 1 }));
+                                        }}
+                                    />
+                                    <span>Show members with games</span>
+                                </label>
+                            </div>
+                        )}
+                    </section>
+                )}
 
                 {/* Error Display */}
                 {error && (
@@ -227,9 +329,9 @@ const Community: React.FC = () => {
                                 </>
                             )}
                         </div>
-                    ) : (
+                    ) : viewMode === 'featured' ? (
                         <div className="featured-section">
-                            <h2>Community Members</h2>
+                            <h2>Featured Members</h2>
                             <p>Discover fellow game developers in our community</p>
                             
                             {loading ? (
@@ -244,6 +346,48 @@ const Community: React.FC = () => {
                                 <div className="empty-state">
                                     <p>No community members yet.</p>
                                     <p>Be the first to add your games and join the community!</p>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="all-members-section">
+                            <h2>All Members</h2>
+                            <p>{showOnlyWithGames ? 'Members who have published games' : 'All community members'}</p>
+                            
+                            {loading && allUsers.length === 0 ? (
+                                <div className="loading-state">Loading members...</div>
+                            ) : allUsers.length > 0 ? (
+                                <>
+                                    <div className="community-grid">
+                                        {allUsers.map((member) => (
+                                            <CommunityMemberCard key={member.username} member={member} />
+                                        ))}
+                                    </div>
+
+                                    {/* Load More */}
+                                    {allUsersPagination.page < allUsersPagination.pages && (
+                                        <div className="load-more-container">
+                                            <button 
+                                                onClick={() => loadAllUsers(allUsersPagination.page + 1)}
+                                                disabled={loading}
+                                                className="btn btn-secondary load-more-button"
+                                            >
+                                                {loading ? 'Loading...' : 'Load More'}
+                                            </button>
+                                            <p className="pagination-info">
+                                                Showing {allUsers.length} of {allUsersPagination.total} members
+                                            </p>
+                                        </div>
+                                    )}
+                                </>
+                            ) : (
+                                <div className="empty-state">
+                                    <p>{showOnlyWithGames 
+                                        ? 'No members with published games yet.' 
+                                        : 'No community members found.'}</p>
+                                    {showOnlyWithGames && (
+                                        <p>Try unchecking the filter to see all members.</p>
+                                    )}
                                 </div>
                             )}
                         </div>

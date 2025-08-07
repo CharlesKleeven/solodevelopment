@@ -200,6 +200,22 @@ export const userSearchAPI = {
         const response = await api.get(`/api/users/featured?limit=${limit}`);
         return response.data;
     },
+    
+    // Get all users with pagination
+    getAllUsers: async (params: {
+        page?: number;
+        limit?: number;
+        hasGames?: boolean;
+    }) => {
+        const queryParams = new URLSearchParams();
+        
+        if (params.page) queryParams.append('page', params.page.toString());
+        if (params.limit) queryParams.append('limit', params.limit.toString());
+        if (params.hasGames !== undefined) queryParams.append('hasGames', params.hasGames.toString());
+        
+        const response = await api.get(`/api/users/all?${queryParams.toString()}`);
+        return response.data;
+    },
 
     // Get user stats/profile
     getUserStats: async (username: string) => {
