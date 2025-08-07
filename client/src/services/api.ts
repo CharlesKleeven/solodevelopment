@@ -175,6 +175,30 @@ export const gameAPI = {
         const response = await api.get(`/api/games/featured/list?limit=${limit}`);
         return response.data;
     },
+    
+    // Report a game
+    reportGame: async (gameId: string) => {
+        const response = await api.post(`/api/games/${gameId}/report`);
+        return response.data;
+    },
+    
+    // Get reported games (admin only)
+    getReportedGames: async () => {
+        const response = await api.get('/api/games/reported/list');
+        return response.data;
+    },
+    
+    // Clear reports for a game (admin only)
+    clearReports: async (gameId: string) => {
+        const response = await api.put(`/api/games/${gameId}/clear-reports`);
+        return response.data;
+    },
+    
+    // Remove thumbnail (admin only)
+    removeThumbnail: async (gameId: string) => {
+        const response = await api.put(`/api/games/${gameId}/remove-thumbnail`);
+        return response.data;
+    },
 };
 
 // User search API endpoints

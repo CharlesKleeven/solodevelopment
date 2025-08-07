@@ -4,7 +4,6 @@
     padding: 2rem 0;
 }
 
-
 .form-header {
     text-align: center;
     margin-bottom: 2rem;
@@ -12,14 +11,14 @@
 
 .form-header h1 {
     color: var(--text-primary);
-    font-size: 1.8rem;
-    font-weight: 600;
+    font-size: 2rem;
+    font-weight: 700;
     margin-bottom: 0.5rem;
 }
 
 .form-header p {
     color: var(--text-secondary);
-    font-size: 0.95rem;
+    font-size: 1rem;
 }
 
 .error-message, .success-message {
@@ -27,6 +26,10 @@
     border-radius: 8px;
     margin-bottom: 1rem;
     font-weight: 500;
+    text-align: center;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .error-message {
@@ -41,282 +44,345 @@
     color: var(--color-success);
 }
 
+/* Main form container */
 .game-form {
     background: var(--bg-secondary);
     border: 1px solid var(--border-subtle);
-    border-radius: 8px;
-    padding: 2rem;
-    max-width: 600px;
+    border-radius: 12px;
+    padding: 0;
+    max-width: 720px;
     margin: 0 auto;
+    overflow: hidden;
 }
 
+/* Form sections with numbers */
 .form-section {
-    margin-bottom: 2rem;
+    padding: 2.5rem;
+    border-bottom: 1px solid var(--border-subtle);
+    position: relative;
 }
 
-.form-section:last-of-type {
-    margin-bottom: 0;
+.form-section:last-child {
+    border-bottom: none;
+}
+
+.section-number {
+    position: absolute;
+    top: 2.5rem;
+    left: 2.5rem;
+    width: 32px;
+    height: 32px;
+    background: var(--accent-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
 }
 
 .form-section h2 {
     color: var(--text-primary);
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--accent-color);
-    display: inline-block;
+    padding-left: 48px;
 }
 
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* Form groups */
+.form-group {
     margin-bottom: 1.5rem;
 }
 
-.section-header h2 {
+.form-group:last-child {
     margin-bottom: 0;
-}
-
-.toggle-advanced {
-    background: none;
-    border: none;
-    color: var(--text-tertiary);
-    padding: 0.5rem 0;
-    font-size: 0.85rem;
-    font-weight: 400;
-    cursor: pointer;
-    text-decoration: underline;
-    text-decoration-style: dotted;
-}
-
-.toggle-advanced:hover {
-    color: var(--text-secondary);
-}
-
-.advanced-section {
-    padding-top: 0.75rem;
-    margin-top: 0.75rem;
-}
-
-.form-group {
-    margin-bottom: 1.25rem;
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
 }
 
 .form-group label {
     display: block;
     color: var(--text-primary);
     font-weight: 600;
-    margin-bottom: 0.4rem;
-    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
 }
 
 .required {
-    color: var(--color-danger);
-    font-weight: 600;
+    color: var(--color-coral);
 }
 
 .optional {
     color: var(--text-tertiary);
     font-weight: 400;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
-.form-group input,
+/* Input fields */
+.form-group input[type="text"],
+.form-group input[type="url"],
 .form-group textarea,
 .form-group select {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.875rem 1rem;
     border: 2px solid var(--border-subtle);
-    border-radius: 6px;
+    border-radius: 8px;
     background: var(--bg-primary);
     color: var(--text-primary);
-    font-size: 0.95rem;
+    font-size: 1rem;
     transition: all 0.2s ease;
-    box-sizing: border-box;
+    font-family: inherit;
 }
 
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
     outline: none;
-    border-color: var(--color-accent);
+    border-color: var(--accent-color);
     background: var(--bg-primary);
 }
 
-
 .form-group textarea {
     resize: vertical;
-    min-height: 80px;
-    line-height: 1.4;
+    min-height: 100px;
+    line-height: 1.5;
 }
 
 .form-group small {
     display: block;
     color: var(--text-tertiary);
-    font-size: 0.85rem;
-    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    margin-top: 0.375rem;
+    line-height: 1.4;
+}
+
+.form-group small.success-text {
+    color: var(--color-success);
 }
 
 .char-count {
     text-align: right;
     color: var(--text-tertiary);
-    font-size: 0.85rem;
+    font-size: 0.875rem;
     margin-top: 0.25rem;
 }
 
-.screenshot-input {
+/* Tag buttons */
+.tag-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
     margin-bottom: 0.5rem;
 }
 
-.screenshot-input:last-child {
-    margin-bottom: 0;
-}
-
-/* Tag and Platform Grids */
-.tag-grid, .platform-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-}
-
-.tag-option, .platform-option {
-    display: flex;
-    align-items: center;
-    background: var(--bg-secondary);
-    border: 2px solid var(--border-color);
-    border-radius: 6px;
-    padding: 0.5rem;
+.tag-button {
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--border-subtle);
+    border-radius: 20px;
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 0.9rem;
+    transition: all 0.15s ease;
 }
 
-.tag-option:hover, .platform-option:hover {
+.tag-button:hover:not(:disabled) {
     border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+.tag-button.selected {
     background: var(--accent-color);
+    border-color: var(--accent-color);
     color: white;
 }
 
-.tag-option input, .platform-option input {
-    width: auto;
-    margin-right: 0.5rem;
-    cursor: pointer;
-}
-
-.tag-option input:checked + span,
-.platform-option input:checked + span {
-    font-weight: 600;
-}
-
-.tag-option:has(input:checked),
-.platform-option:has(input:checked) {
-    background: var(--accent-color);
-    color: white;
-    border-color: var(--accent-color);
-}
-
-.tag-option:has(input:disabled),
-.platform-option:has(input:disabled) {
+.tag-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
+.tag-counter {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* Platform buttons */
+.platform-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+}
+
+.platform-button {
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--border-subtle);
+    border-radius: 8px;
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.platform-button:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-1px);
+}
+
+.platform-button.selected {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+}
+
+.platform-icon {
+    font-size: 1.1rem;
+}
+
+/* Image preview */
+.image-preview-container {
+    position: relative;
+    margin-top: 1rem;
+}
+
+.image-preview {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    border-radius: 8px;
+    border: 2px solid var(--border-subtle);
+}
+
+.image-preview-container .btn-ghost {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    border: none;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.image-preview-container .btn-ghost:hover {
+    background: rgba(0,0,0,0.9);
+}
+
+/* Form row */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* Checkbox */
 .checkbox-label {
     display: flex;
     align-items: center;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-weight: 400;
     cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 6px;
-    transition: background-color 0.2s ease;
-}
-
-.checkbox-label:hover {
-    background: var(--bg-secondary);
+    user-select: none;
 }
 
 .checkbox-label input[type="checkbox"] {
     width: auto;
-    margin-right: 0.5rem;
+    margin-right: 0.625rem;
     cursor: pointer;
 }
 
-.jam-details {
-    margin-top: 1rem;
+.adult-checkbox {
+    background: var(--bg-tertiary);
     padding: 1rem;
-    background: var(--bg-secondary);
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    border: 2px solid var(--border-subtle);
 }
 
+.adult-checkbox:has(input:checked) {
+    border-color: var(--color-coral);
+    background: var(--color-coral-bg);
+}
+
+/* Collapsible section */
+.collapsible .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.collapsible-content {
+    margin-top: 1.5rem;
+}
+
+/* Form actions */
 .form-actions {
     display: flex;
     gap: 1rem;
-    justify-content: flex-end;
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border-color);
+    justify-content: center;
+    padding: 2rem;
+    background: var(--bg-tertiary);
+    border-top: 1px solid var(--border-subtle);
 }
 
 .game-form .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.75rem 1.5rem;
+    padding: 0.875rem 2rem;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 600;
     text-decoration: none;
     cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    min-width: 120px;
+    transition: all 0.15s ease;
+    min-width: 140px;
 }
 
 .game-form .btn-primary {
     background: var(--accent-color);
     color: white;
-    border: 2px solid var(--accent-color);
 }
 
 .game-form .btn-primary:hover:not(:disabled) {
     background: var(--accent-hover);
-    border-color: var(--accent-hover);
+    transform: translateY(-1px);
 }
 
 .game-form .btn-secondary {
-    background: transparent;
+    background: var(--bg-secondary);
     color: var(--text-primary);
-    border: 2px solid var(--border-color);
+    border: 2px solid var(--border-subtle);
 }
 
 .game-form .btn-secondary:hover:not(:disabled) {
-    background: var(--border-color);
+    border-color: var(--text-secondary);
 }
 
 .game-form .btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: none;
 }
 
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    min-width: auto;
+}
+
+/* Loading state */
 .form-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
     border-radius: 12px;
-    padding: 2rem;
+    padding: 3rem;
     text-align: center;
-    box-shadow: var(--shadow-sm);
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .form-card h1 {
@@ -327,41 +393,43 @@
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
-        padding: 0 0.5rem;
+        padding: 0 1rem;
     }
 
     .game-form {
-        padding: 1.5rem;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
     }
-
-    .form-header h1 {
-        font-size: 2rem;
+    
+    .form-section {
+        padding: 2rem 1.5rem;
     }
-
+    
+    .section-number {
+        top: 2rem;
+        left: 1.5rem;
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
+    }
+    
     .form-section h2 {
         font-size: 1.25rem;
+        padding-left: 40px;
     }
 
     .form-row {
         grid-template-columns: 1fr;
     }
 
-    .tag-grid, .platform-grid {
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    .platform-grid {
+        grid-template-columns: 1fr 1fr;
     }
-
-    .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-
-    .section-header h2 {
-        margin-bottom: 0;
-    }
-
+    
     .form-actions {
         flex-direction: column-reverse;
+        padding: 1.5rem;
     }
 
     .game-form .btn {
@@ -371,75 +439,88 @@
 
 @media (max-width: 480px) {
     .game-form-page {
-        padding: 1rem 0;
+        padding: 0;
+    }
+
+    .form-header {
+        padding: 1.5rem 1rem 1rem;
     }
 
     .form-header h1 {
         font-size: 1.75rem;
     }
-
-    .game-form {
-        padding: 1rem;
-    }
-
+    
     .form-section {
-        margin-bottom: 1.5rem;
+        padding: 1.5rem 1rem;
     }
 
-    .tag-grid, .platform-grid {
+    .tag-grid {
+        gap: 0.5rem;
+    }
+    
+    .tag-button {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.8125rem;
+    }
+
+    .platform-grid {
         grid-template-columns: 1fr;
     }
+    
+    .platform-button {
+        padding: 0.75rem;
+    }
 }
 
-/* Additional form improvements */
-.form-actions {
-    margin-top: 2rem;
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
+/* Dark theme adjustments */
+[data-theme="dark"] .game-form {
+    background: var(--bg-secondary);
 }
 
-.form-actions .btn {
-    min-width: 120px;
+[data-theme="dark"] .form-section {
+    border-bottom-color: var(--border-subtle);
 }
 
-.tags-grid, .platforms-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-}
-
-/* Clean input placeholders */
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-    color: var(--text-quaternary);
-    opacity: 0.8;
-}
-
-/* Reduce visual noise */
-.form-header {
-    margin-bottom: 1.5rem;
-}
-
-.form-header h1 {
-    margin-bottom: 0.25rem;
-}
-
-.form-header p {
-    margin: 0;
-}
-
-/* Coming soon field styling */
-.form-group input.coming-soon {
+[data-theme="dark"] .tag-button,
+[data-theme="dark"] .platform-button {
     background: var(--bg-tertiary);
-    color: var(--text-tertiary);
-    cursor: not-allowed;
-    opacity: 0.7;
-    border-style: dashed;
 }
 
-.form-group input.coming-soon::placeholder {
-    color: var(--text-tertiary);
-    font-style: italic;
+[data-theme="dark"] .adult-checkbox {
+    background: var(--bg-tertiary);
+}
+
+/* Light theme adjustments */
+[data-theme="light"] .game-form {
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+[data-theme="light"] .form-actions {
+    background: var(--bg-primary);
+}
+
+[data-theme="light"] .tag-button,
+[data-theme="light"] .platform-button {
+    background: white;
+    border-color: #e5e7eb;
+}
+
+[data-theme="light"] .tag-button:hover:not(:disabled),
+[data-theme="light"] .platform-button:hover {
+    border-color: var(--accent-color);
+}
+
+[data-theme="light"] .form-group input,
+[data-theme="light"] .form-group textarea,
+[data-theme="light"] .form-group select {
+    background: white;
+    border-color: #e5e7eb;
+}
+
+[data-theme="light"] .form-group input:focus,
+[data-theme="light"] .form-group textarea:focus,
+[data-theme="light"] .form-group select:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
 }

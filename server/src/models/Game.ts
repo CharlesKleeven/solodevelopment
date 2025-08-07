@@ -21,6 +21,9 @@ export interface IGame extends Document {
   user: mongoose.Types.ObjectId;
   visibility: 'public' | 'unlisted' | 'private' | 'pending';
   views: number;
+  isAdult?: boolean;
+  reported?: boolean;
+  reportCount?: number;
   createdAt: Date;
   updatedAt: Date;
   canModify(userId: string): boolean;
@@ -54,6 +57,14 @@ const GameSchema = new Schema<IGame>({
     validate: {
       validator: function(v: string) {
         if (!v) return true;
+        // Allow Firebase Storage URLs or existing HTTPS URLs
+        if (v.startsWith('https://firebasestorage.googleapis.com/')) {
+          return true;
+        }
+        // Allow relative paths for legacy data
+        if (v.startsWith('/images/')) {
+          return true;
+        }
         try {
           const url = new URL(v);
           return url.protocol === 'https:';
@@ -61,7 +72,7 @@ const GameSchema = new Schema<IGame>({
           return false;
         }
       },
-      message: 'Thumbnail URL must be a valid HTTPS URL'
+      message: 'Thumbnail URL must be a valid HTTPS URL or Firebase Storage URL'
     }
   },
   screenshots: [{
@@ -185,6 +196,18 @@ const GameSchema = new Schema<IGame>({
     default: 'public'
   },
   views: {
+    type: Number,
+    default: 0
+  },
+  isAdult: {
+    type: Boolean,
+    default: false
+  },
+  reported: {
+    type: Boolean,
+    default: false
+  },
+  reportCount: {
     type: Number,
     default: 0
   }

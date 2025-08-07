@@ -139,10 +139,11 @@
 }
 
 .user-profile-page .portfolio-item {
+    position: relative;
     background: var(--bg-secondary);
     border: 1px solid var(--border-subtle);
     border-radius: 12px;
-    overflow: hidden;
+    overflow: visible; /* Changed from hidden to visible for report button */
     transition: all 0.3s ease;
     cursor: pointer;
     box-shadow: var(--shadow-sm);
@@ -511,4 +512,46 @@
         width: 100%;
         text-align: center;
     }
+}
+
+/* Adult Badge */
+.adult-badge {
+    color: var(--color-coral);
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+/* Report Button - Subtle flag icon */
+.report-button {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    font-size: 0.9rem;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    opacity: 0.3;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.portfolio-item:hover .report-button {
+    opacity: 0.7;
+}
+
+.report-button:hover {
+    opacity: 1;
+    color: var(--color-coral);
+}
+
+.report-button:disabled {
+    cursor: not-allowed;
+}
+
+.flag-icon {
+    display: inline-block;
+    transform: rotate(15deg);
 }

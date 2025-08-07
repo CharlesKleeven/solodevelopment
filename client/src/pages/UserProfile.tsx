@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { userSearchAPI, gameAPI } from '../services/api';
 import { parseStoredLink, getLinkInfo } from '../utils/linkUtils';
+import { useAuth } from '../context/AuthContext';
 import './user-profile.css';
 
 interface UserStats {
@@ -32,6 +33,7 @@ interface UserStats {
 
 const UserProfile: React.FC = () => {
     const { username } = useParams<{ username: string }>();
+    const { user: currentUser } = useAuth();
     const [userStats, setUserStats] = useState<UserStats | null>(null);
     const [allGames, setAllGames] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -41,6 +43,7 @@ const UserProfile: React.FC = () => {
     const [expandedDescriptions, setExpandedDescriptions] = useState<Set<number>>(new Set());
     const [allDescriptionsExpanded, setAllDescriptionsExpanded] = useState(true);
     const [showAllGames, setShowAllGames] = useState(false);
+    const [reportingGame, setReportingGame] = useState<string | null>(null);
     const [gamesPagination, setGamesPagination] = useState({
         page: 1,
         limit: 12,
@@ -130,6 +133,29 @@ const UserProfile: React.FC = () => {
         }
     }, [showAllGames, username]);
 
+    const handleReportGame = async (gameId: string) => {
+        if (!currentUser) {
+            alert('Please log in to report content');
+            return;
+        }
+        
+        if (!gameId) {
+            console.error('No game ID provided for reporting');
+            return;
+        }
+        
+        try {
+            setReportingGame(gameId);
+            await gameAPI.reportGame(gameId);
+            alert('Thank you for your report. We will review this content.');
+        } catch (error: any) {
+            console.error('Failed to report game:', error);
+            alert(error.response?.data?.error || 'Failed to report game');
+        } finally {
+            setReportingGame(null);
+        }
+    };
+
     if (loading) {
         return (
             <div className="user-profile-page">
@@ -156,7 +182,8 @@ const UserProfile: React.FC = () => {
     const { user, recentGames, stats } = userStats;
 
     // Game card component
-    const GameCard: React.FC<{ game: any; index: number }> = ({ game, index }) => (
+    const GameCard: React.FC<{ game: any; index: number }> = ({ game, index }) => {
+        return (
         <div className="portfolio-item">
             <div className="portfolio-thumbnail">
                 {game.thumbnailUrl ? (
@@ -166,7 +193,10 @@ const UserProfile: React.FC = () => {
                 )}
             </div>
             <div className="portfolio-info">
-                <h4 className="portfolio-title">{game.title}</h4>
+                <h4 className="portfolio-title">
+                    {game.title}
+                    {game.isAdult && <span className="adult-badge"> 18+</span>}
+                </h4>
                 {game.description && (
                     <div className="portfolio-description-wrapper">
                         <p className={`portfolio-description ${allDescriptionsExpanded || expandedDescriptions.has(index) ? 'expanded' : ''}`}>
@@ -216,9 +246,26 @@ const UserProfile: React.FC = () => {
                         <span className="btn-placeholder">No link available</span>
                     )}
                 </div>
+                {currentUser && currentUser.username !== username && (
+                    <button
+                        className="report-button"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            handleReportGame(game._id || game.slug);
+                        }}
+                        disabled={reportingGame === (game._id || game.slug)}
+                        title="Report inappropriate content"
+                        aria-label="Report game"
+                        type="button"
+                    >
+                        <span className="flag-icon">⚑</span>
+                    </button>
+                )}
             </div>
         </div>
-    );
+        );
+    };
 
     return (
         <div className="user-profile-page">

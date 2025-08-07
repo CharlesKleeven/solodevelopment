@@ -618,3 +618,86 @@
     background: var(--color-warning-bg);
     color: var(--color-warning);
 }
+
+/* Reported Games Section */
+.admin-section {
+    margin-bottom: 3rem;
+}
+
+.admin-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+.reported-games-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.reported-game-item {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.reported-game-info {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex: 1;
+}
+
+.reported-game-thumbnail {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--border-subtle);
+}
+
+.reported-game-details h3 {
+    margin: 0 0 0.5rem;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+}
+
+.reported-game-details p {
+    margin: 0.25rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.report-count {
+    color: var(--color-coral);
+    font-weight: 600;
+}
+
+.reported-game-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .reported-game-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .reported-game-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .reported-game-actions .btn {
+        flex: 1;
+        min-width: 0;
+    }
+}

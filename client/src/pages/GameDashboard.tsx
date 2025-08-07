@@ -24,6 +24,9 @@ interface Game {
     createdAt: string;
     updatedAt: string;
     slug: string;
+    isAdult?: boolean;
+    reported?: boolean;
+    reportCount?: number;
 }
 
 interface GamesResponse {
@@ -167,9 +170,6 @@ const GameDashboard: React.FC = () => {
                             <div className="empty-icon">Game Portfolio</div>
                             <h2>No games yet</h2>
                             <p>Start building your game portfolio by adding your first game!</p>
-                            <a href="/games/new" className="btn btn-primary">
-                                Add Your First Game
-                            </a>
                         </div>
                     ) : (
                         <>
@@ -196,7 +196,10 @@ const GameDashboard: React.FC = () => {
 
                                         {/* Game Info */}
                                         <div className="game-info">
-                                            <h3 className="game-title">{game.title}</h3>
+                                            <h3 className="game-title">
+                                                {game.title}
+                                                {game.isAdult && <span className="adult-badge"> 18+</span>}
+                                            </h3>
                                             <p className="game-description">
                                                 {game.description.substring(0, 100)}
                                                 {game.description.length > 100 && '...'}

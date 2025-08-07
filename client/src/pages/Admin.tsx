@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import AdminJams from './AdminJams';
+import AdminReportedGames from '../components/AdminReportedGames';
 import './admin.css';
 
 const Admin: React.FC = () => {
@@ -17,6 +18,7 @@ const Admin: React.FC = () => {
                 </div>
 
                 <div className="admin-content">
+                    <AdminReportedGames />
                     <AdminJams />
                 </div>
             </div>

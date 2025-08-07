@@ -529,4 +529,130 @@ router.get('/my/games',
   }
 );
 
+// Report a game
+router.post('/:id/report',
+  authenticate,
+  async (req: Request, res: Response) => {
+    try {
+      const gameId = req.params.id;
+      
+      // Find the game
+      const game = await Game.findById(gameId);
+      if (!game) {
+        return res.status(404).json({ error: 'Game not found' });
+      }
+      
+      // Don't allow users to report their own games
+      if (game.user.toString() === (req.user as any).userId) {
+        return res.status(400).json({ error: 'You cannot report your own game' });
+      }
+      
+      // Update report fields
+      game.reported = true;
+      game.reportCount = (game.reportCount || 0) + 1;
+      await game.save();
+      
+      res.json({ 
+        message: 'Thank you for your report. We will review this content.',
+        reported: true 
+      });
+    } catch (error) {
+      console.error('Error reporting game:', error);
+      res.status(500).json({ error: 'Failed to report game' });
+    }
+  }
+);
+
+// Admin middleware - copied from backup.ts
+const requireAdmin = async (req: any, res: Response, next: NextFunction) => {
+  const userId = req.user?.userId;
+  if (!userId) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+
+  const user = await User.findById(userId);
+  if (!user || !user.isAdmin) {
+    return res.status(403).json({ error: 'Admin access required' });
+  }
+
+  next();
+};
+
+// Get reported games (admin only)
+router.get('/reported/list',
+  authenticate,
+  requireAdmin,
+  async (req: Request, res: Response) => {
+    try {
+      // Get all games with reports
+      const reportedGames = await Game.find({ 
+        reportCount: { $gt: 0 } 
+      })
+      .populate('user', 'username displayName')
+      .sort({ reportCount: -1 })
+      .select('title thumbnailUrl user reportCount isAdult createdAt');
+      
+      res.json({
+        games: reportedGames,
+        total: reportedGames.length
+      });
+    } catch (error) {
+      console.error('Error fetching reported games:', error);
+      res.status(500).json({ error: 'Failed to fetch reported games' });
+    }
+  }
+);
+
+// Clear reports for a game (admin only)
+router.put('/:id/clear-reports',
+  authenticate,
+  requireAdmin,
+  async (req: Request, res: Response) => {
+    try {
+      const game = await Game.findById(req.params.id);
+      if (!game) {
+        return res.status(404).json({ error: 'Game not found' });
+      }
+      
+      game.reported = false;
+      game.reportCount = 0;
+      await game.save();
+      
+      res.json({ 
+        message: 'Reports cleared successfully',
+        game: game 
+      });
+    } catch (error) {
+      console.error('Error clearing reports:', error);
+      res.status(500).json({ error: 'Failed to clear reports' });
+    }
+  }
+);
+
+// Remove thumbnail (admin only)
+router.put('/:id/remove-thumbnail',
+  authenticate,
+  requireAdmin,
+  async (req: Request, res: Response) => {
+    try {
+      const game = await Game.findById(req.params.id);
+      if (!game) {
+        return res.status(404).json({ error: 'Game not found' });
+      }
+      
+      game.thumbnailUrl = undefined;
+      game.markModified('thumbnailUrl');
+      await game.save();
+      
+      res.json({ 
+        message: 'Thumbnail removed successfully',
+        game: game 
+      });
+    } catch (error) {
+      console.error('Error removing thumbnail:', error);
+      res.status(500).json({ error: 'Failed to remove thumbnail' });
+    }
+  }
+);
+
 export default router;

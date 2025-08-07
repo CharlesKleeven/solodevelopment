@@ -177,6 +177,13 @@
     -webkit-box-orient: vertical;
 }
 
+.adult-badge {
+    color: var(--color-coral);
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
 .game-description {
     margin: 0 0 1rem;
     color: var(--text-secondary);
