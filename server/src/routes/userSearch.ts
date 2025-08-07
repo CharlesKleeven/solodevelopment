@@ -63,20 +63,31 @@ router.get('/search',
         User.countDocuments(query)
       ]);
 
-      // Get game counts for each user
+      // Get game counts and latest game thumbnail for each user
       const usersWithGameCounts = await Promise.all(
         users.map(async (user) => {
-          const gameCount = await Game.countDocuments({ 
-            user: user._id, 
-            visibility: 'public' 
-          });
+          const [gameCount, latestGame] = await Promise.all([
+            Game.countDocuments({ 
+              user: user._id, 
+              visibility: 'public' 
+            }),
+            Game.findOne({ 
+              user: user._id, 
+              visibility: 'public',
+              thumbnailUrl: { $exists: true, $ne: '' }
+            })
+            .select('thumbnailUrl')
+            .sort({ createdAt: -1 })
+            .lean()
+          ]);
           
           return {
             username: user.username,
             displayName: user.displayName,
             bio: user.bio,
             gameCount,
-            joinedAt: user.createdAt
+            joinedAt: user.createdAt,
+            latestGameThumbnail: latestGame?.thumbnailUrl || null
           };
         })
       );
@@ -118,20 +129,31 @@ router.get('/featured',
         .limit(limit * 3)
         .lean();
 
-      // Get game counts for each user
+      // Get game counts and latest game thumbnail for each user
       const communityUsers = await Promise.all(
         allUsers.map(async (user) => {
-          const gameCount = await Game.countDocuments({ 
-            user: user._id, 
-            visibility: 'public' 
-          });
+          const [gameCount, latestGame] = await Promise.all([
+            Game.countDocuments({ 
+              user: user._id, 
+              visibility: 'public' 
+            }),
+            Game.findOne({ 
+              user: user._id, 
+              visibility: 'public',
+              thumbnailUrl: { $exists: true, $ne: '' }
+            })
+            .select('thumbnailUrl')
+            .sort({ createdAt: -1 })
+            .lean()
+          ]);
           
           return {
             username: user.username,
             displayName: user.displayName,
             bio: user.bio,
             gameCount,
-            joinedAt: user.createdAt
+            joinedAt: user.createdAt,
+            latestGameThumbnail: latestGame?.thumbnailUrl || null
           };
         })
       );
@@ -174,12 +196,22 @@ router.get('/all',
     .optional()
     .isBoolean()
     .withMessage('Invalid hasGames value'),
+  query('engine')
+    .optional()
+    .isIn(['unity', 'unreal', 'godot', 'gamemaker', 'construct', 'phaser', 'love2d', 'pygame', 'custom', 'other'])
+    .withMessage('Invalid engine'),
+  query('tag')
+    .optional()
+    .matches(/^[a-z0-9\-]+$/)
+    .withMessage('Invalid tag format'),
   handleValidationErrors,
   async (req: Request, res: Response) => {
     try {
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 20;
       const hasGames = req.query.hasGames === 'true' ? true : req.query.hasGames === 'false' ? false : undefined;
+      const engineFilter = req.query.engine as string | undefined;
+      const tagFilter = req.query.tag as string | undefined;
       const skip = (page - 1) * limit;
 
       // Build query - only public profiles
@@ -190,22 +222,36 @@ router.get('/all',
         .select('_id username displayName bio createdAt')
         .lean();
 
-      // Get game counts for filtering
-      if (hasGames !== undefined) {
-        const usersWithGameCounts = await Promise.all(
+      // Filter users based on game criteria
+      if (hasGames !== undefined || engineFilter || tagFilter) {
+        const usersWithGameInfo = await Promise.all(
           allUsers.map(async (user) => {
-            const gameCount = await Game.countDocuments({ 
+            // Build game query
+            const gameQuery: any = { 
               user: user._id, 
               visibility: 'public' 
-            });
+            };
+            
+            if (engineFilter) {
+              gameQuery.engine = engineFilter;
+            }
+            
+            if (tagFilter) {
+              gameQuery.tags = tagFilter;
+            }
+            
+            const gameCount = await Game.countDocuments(gameQuery);
             return { ...user, gameCount };
           })
         );
 
-        // Filter based on hasGames parameter
-        allUsers = usersWithGameCounts.filter(user => 
-          hasGames ? user.gameCount > 0 : user.gameCount === 0
-        );
+        // Filter based on criteria
+        allUsers = usersWithGameInfo.filter(user => {
+          if (hasGames === true && user.gameCount === 0) return false;
+          if (hasGames === false && user.gameCount > 0) return false;
+          if ((engineFilter || tagFilter) && user.gameCount === 0) return false;
+          return true;
+        });
       }
 
       // Sort by creation date (newest first)
@@ -217,20 +263,31 @@ router.get('/all',
       const total = allUsers.length;
       const paginatedUsers = allUsers.slice(skip, skip + limit);
 
-      // Get game counts for final results
+      // Get game counts and latest game thumbnail for final results
       const usersWithGameCounts = await Promise.all(
         paginatedUsers.map(async (user) => {
-          const gameCount = await Game.countDocuments({ 
-            user: user._id, 
-            visibility: 'public' 
-          });
+          const [gameCount, latestGame] = await Promise.all([
+            Game.countDocuments({ 
+              user: user._id, 
+              visibility: 'public' 
+            }),
+            Game.findOne({ 
+              user: user._id, 
+              visibility: 'public',
+              thumbnailUrl: { $exists: true, $ne: '' }
+            })
+            .select('thumbnailUrl')
+            .sort({ createdAt: -1 })
+            .lean()
+          ]);
           
           return {
             username: user.username,
             displayName: user.displayName,
             bio: user.bio,
             gameCount,
-            joinedAt: user.createdAt
+            joinedAt: user.createdAt,
+            latestGameThumbnail: latestGame?.thumbnailUrl || null
           };
         })
       );

@@ -287,12 +287,6 @@
     padding-top: 1rem;
 }
 
-.user-profile-page .btn-placeholder {
-    color: var(--text-tertiary);
-    font-size: 0.85rem;
-    font-style: italic;
-}
-
 /* Portfolio Section Header */
 .portfolio-section-header {
     display: flex;

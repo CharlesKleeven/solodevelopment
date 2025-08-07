@@ -143,6 +143,11 @@ const UserProfile: React.FC = () => {
             console.error('No game ID provided for reporting');
             return;
         }
+
+        // Add confirmation dialog
+        if (!window.confirm('Are you sure you want to report this content for inappropriate material?')) {
+            return;
+        }
         
         try {
             setReportingGame(gameId);
@@ -233,17 +238,15 @@ const UserProfile: React.FC = () => {
                     </div>
                 )}
                 <div className="portfolio-actions">
-                    {game.playUrl ? (
+                    {game.playUrl && (
                         <a 
                             href={game.playUrl} 
                             target="_blank" 
                             rel="noopener noreferrer nofollow" 
                             className="btn btn-primary btn-sm"
                         >
-                            Play Game
+                            View Game
                         </a>
-                    ) : (
-                        <span className="btn-placeholder">No link available</span>
                     )}
                 </div>
                 {currentUser && currentUser.username !== username && (

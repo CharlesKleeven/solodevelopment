@@ -257,6 +257,144 @@ router.post('/',
   }
 );
 
+// Get community games (public)
+router.get('/community',
+  query('page').optional().isInt({ min: 1 }).withMessage('Invalid page number'),
+  query('limit').optional().isInt({ min: 1, max: 50 }).withMessage('Invalid limit'),
+  query('engine').optional().isIn(['unity', 'unreal', 'godot', 'gamemaker', 'construct', 'phaser', 'love2d', 'pygame', 'custom', 'other']).withMessage('Invalid engine'),
+  query('tag').optional().matches(/^[a-z0-9\-]+$/).withMessage('Invalid tag format'),
+  query('sort').optional().isIn(['newest', 'random', 'updated']).withMessage('Invalid sort option'),
+  query('search').optional().trim().isLength({ max: 100 }).withMessage('Search query too long'),
+  handleValidationErrors,
+  async (req: any, res: Response) => {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 12;
+      const skip = (page - 1) * limit;
+      const engineFilter = req.query.engine as string | undefined;
+      const tagFilter = req.query.tag as string | undefined;
+      const sortOption = req.query.sort as string || 'newest';
+      const searchQuery = req.query.search as string | undefined;
+      
+      // Build query
+      const query: any = { 
+        visibility: 'public',
+        ...(engineFilter && { engine: engineFilter }),
+        ...(tagFilter && { tags: tagFilter })
+      };
+      
+      // Build sort
+      const sortMap: Record<string, any> = {
+        'updated': { updatedAt: -1 },
+        'newest': { createdAt: -1 }
+      };
+      const sort = sortMap[sortOption] || sortMap.newest;
+      
+      // Get games with user info
+      let games;
+      let total;
+      
+      // Use aggregation if we need to search by developer name or random sort
+      if (searchQuery || sortOption === 'random') {
+        const pipeline: any[] = [];
+        
+        // First match basic query conditions
+        const matchStage: any = { visibility: 'public' };
+        if (engineFilter) matchStage.engine = engineFilter;
+        if (tagFilter) matchStage.tags = tagFilter;
+        
+        pipeline.push({ $match: matchStage });
+        
+        // Join with users collection
+        pipeline.push({
+          $lookup: {
+            from: 'users',
+            localField: 'user',
+            foreignField: '_id',
+            as: 'userInfo'
+          }
+        });
+        pipeline.push({ $unwind: '$userInfo' });
+        
+        // Apply search filter after join if searching
+        if (searchQuery) {
+          pipeline.push({
+            $match: {
+              $or: [
+                { title: { $regex: searchQuery, $options: 'i' } },
+                { description: { $regex: searchQuery, $options: 'i' } },
+                { 'userInfo.username': { $regex: searchQuery, $options: 'i' } },
+                { 'userInfo.displayName': { $regex: searchQuery, $options: 'i' } }
+              ]
+            }
+          });
+        }
+        
+        // Count total before pagination
+        const countPipeline = [...pipeline, { $count: 'total' }];
+        const countResult = await Game.aggregate(countPipeline);
+        total = countResult[0]?.total || 0;
+        
+        // Apply sorting
+        if (sortOption === 'random') {
+          pipeline.push({ $sample: { size: limit } });
+        } else {
+          pipeline.push({ $sort: sort });
+          pipeline.push({ $skip: skip });
+          pipeline.push({ $limit: limit });
+        }
+        
+        // Project final shape
+        pipeline.push({
+          $project: {
+            title: 1,
+            slug: 1,
+            description: 1,
+            thumbnailUrl: 1,
+            tags: 1,
+            engine: 1,
+            platforms: 1,
+            playUrl: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            user: {
+              _id: '$userInfo._id',
+              username: '$userInfo.username',
+              displayName: '$userInfo.displayName'
+            }
+          }
+        });
+        
+        games = await Game.aggregate(pipeline);
+      } else {
+        // Regular query with populate (no search)
+        [games, total] = await Promise.all([
+          Game.find(query)
+            .sort(sort)
+            .skip(skip)
+            .limit(limit)
+            .populate('user', 'username displayName')
+            .select('title slug description thumbnailUrl tags engine platforms playUrl createdAt updatedAt user'),
+          Game.countDocuments(query)
+        ]);
+      }
+      
+      res.json({
+        games,
+        pagination: {
+          page,
+          limit,
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching community games:', error);
+      res.status(500).json({ error: 'Failed to fetch community games' });
+    }
+  }
+);
+
 // Get a single game (public)
 router.get('/:id',
   param('id').isMongoId().withMessage('Invalid game ID'),

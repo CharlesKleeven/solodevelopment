@@ -199,6 +199,28 @@ export const gameAPI = {
         const response = await api.put(`/api/games/${gameId}/remove-thumbnail`);
         return response.data;
     },
+    
+    // Get community games
+    getCommunityGames: async (params: {
+        page?: number;
+        limit?: number;
+        engine?: string;
+        tag?: string;
+        sort?: 'newest' | 'random' | 'updated';
+        search?: string;
+    } = {}) => {
+        const queryParams = new URLSearchParams();
+        
+        if (params.page) queryParams.append('page', params.page.toString());
+        if (params.limit) queryParams.append('limit', params.limit.toString());
+        if (params.engine) queryParams.append('engine', params.engine);
+        if (params.tag) queryParams.append('tag', params.tag);
+        if (params.sort) queryParams.append('sort', params.sort);
+        if (params.search) queryParams.append('search', params.search);
+        
+        const response = await api.get(`/api/games/community?${queryParams.toString()}`);
+        return response.data;
+    },
 };
 
 // User search API endpoints

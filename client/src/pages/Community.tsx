@@ -1,201 +1,244 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { userSearchAPI } from '../services/api';
+import { gameAPI } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import useFadeInOnScroll from '../hooks/useFadeInOnScroll';
 import './community.css';
 
-interface CommunityMember {
-    username: string;
-    displayName: string;
-    bio?: string;
-    gameCount: number;
-    joinedAt: string;
+interface CommunityGame {
+    _id: string;
+    title: string;
+    slug: string;
+    description?: string;
+    thumbnailUrl?: string;
+    tags?: string[];
+    engine?: string;
+    platforms?: string[];
+    playUrl?: string;
+    createdAt: string;
+    updatedAt: string;
+    user: {
+        _id: string;
+        username: string;
+        displayName: string;
+    };
 }
 
-interface SearchResponse {
-    users: CommunityMember[];
+interface GamesResponse {
+    games: CommunityGame[];
     pagination: {
         page: number;
         limit: number;
         total: number;
         pages: number;
     };
-    searchQuery: string;
 }
 
+const ENGINES = [
+    { value: '', label: 'All Engines' },
+    { value: 'unity', label: 'Unity' },
+    { value: 'unreal', label: 'Unreal' },
+    { value: 'godot', label: 'Godot' },
+    { value: 'gamemaker', label: 'GameMaker' },
+    { value: 'construct', label: 'Construct' },
+    { value: 'phaser', label: 'Phaser' },
+    { value: 'love2d', label: 'Love2D' },
+    { value: 'pygame', label: 'Pygame' },
+    { value: 'custom', label: 'Custom' },
+    { value: 'other', label: 'Other' }
+];
+
+const TAGS = [
+    { value: '', label: 'All Genres' },
+    { value: 'action', label: 'Action' },
+    { value: 'adventure', label: 'Adventure' },
+    { value: 'puzzle', label: 'Puzzle' },
+    { value: 'platformer', label: 'Platformer' },
+    { value: 'rpg', label: 'RPG' },
+    { value: 'strategy', label: 'Strategy' },
+    { value: 'arcade', label: 'Arcade' },
+    { value: '2d', label: '2D' },
+    { value: '3d', label: '3D' },
+    { value: 'pixel-art', label: 'Pixel Art' },
+    { value: 'jam-game', label: 'Jam Game' }
+];
+
 const Community: React.FC = () => {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [users, setUsers] = useState<CommunityMember[]>([]);
-    const [featuredUsers, setFeaturedUsers] = useState<CommunityMember[]>([]);
-    const [allUsers, setAllUsers] = useState<CommunityMember[]>([]);
+    const { user } = useAuth();
+    const [games, setGames] = useState<CommunityGame[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [isSearching, setIsSearching] = useState(false);
-    const [viewMode, setViewMode] = useState<'featured' | 'all'>('featured');
-    const [showOnlyWithGames, setShowOnlyWithGames] = useState(false);
+    const [selectedEngine, setSelectedEngine] = useState<string>('');
+    const [selectedTag, setSelectedTag] = useState<string>('');
+    const [sortOption, setSortOption] = useState<'newest' | 'random' | 'updated'>('newest');
+    const [searchQuery, setSearchQuery] = useState<string>('');
+    const [reportingGame, setReportingGame] = useState<string | null>(null);
     const [pagination, setPagination] = useState({
         page: 1,
         limit: 12,
         total: 0,
         pages: 0
     });
-    const [allUsersPagination, setAllUsersPagination] = useState({
-        page: 1,
-        limit: 20,
-        total: 0,
-        pages: 0
-    });
 
-    // Initialize fade-in animations
-    useFadeInOnScroll([featuredUsers, users, allUsers, loading]);
+    useFadeInOnScroll([games, loading]);
 
-    // Load featured users on mount
+    // Load games on mount and when filters change
     useEffect(() => {
-        loadFeaturedUsers();
-    }, []);
+        const delaySearch = setTimeout(() => {
+            loadGames(1);
+        }, searchQuery ? 300 : 0); // Debounce search input
+        
+        return () => clearTimeout(delaySearch);
+    }, [selectedEngine, selectedTag, sortOption, searchQuery]);
 
-    // Load all users when view mode changes or filter changes
-    useEffect(() => {
-        if (viewMode === 'all') {
-            loadAllUsers(1);
-        }
-    }, [viewMode, showOnlyWithGames]);
-
-    const loadFeaturedUsers = async () => {
-        try {
-            setLoading(true);
-            const response = await userSearchAPI.getFeaturedCommunityMembers(12);
-            setFeaturedUsers(response);
-        } catch (error: any) {
-            console.error('Failed to load featured users:', error);
-            setError('Failed to load featured users.');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const loadAllUsers = async (page: number) => {
+    const loadGames = async (page: number) => {
         try {
             setLoading(true);
             setError(null);
             
-            const response = await userSearchAPI.getAllUsers({
+            const params = {
                 page,
-                limit: 20,
-                hasGames: showOnlyWithGames ? true : undefined
-            });
+                limit: 12,
+                sort: sortOption,
+                ...(selectedEngine && { engine: selectedEngine }),
+                ...(selectedTag && { tag: selectedTag }),
+                ...(searchQuery.trim() && { search: searchQuery.trim() })
+            };
+            
+            const response: GamesResponse = await gameAPI.getCommunityGames(params);
             
             if (page === 1) {
-                setAllUsers(response.users);
+                setGames(response.games);
             } else {
-                setAllUsers(prev => [...prev, ...response.users]);
+                setGames(prev => [...prev, ...response.games]);
             }
             
-            setAllUsersPagination(response.pagination);
-        } catch (error: any) {
-            console.error('Failed to load all users:', error);
-            setError('Failed to load users.');
+            setPagination(response.pagination);
+        } catch (error) {
+            console.error('Failed to load games:', error);
+            setError('Failed to load games.');
         } finally {
             setLoading(false);
         }
     };
 
-    const handleSearch = async (query: string, page = 1) => {
-        if (!query.trim()) {
-            setIsSearching(false);
-            setUsers([]);
+    const handleReportGame = async (gameId: string) => {
+        if (!user) {
+            alert('Please log in to report content');
+            return;
+        }
+        
+        if (!gameId) {
+            console.error('No game ID provided for reporting');
             return;
         }
 
+        // Add confirmation dialog
+        if (!window.confirm('Are you sure you want to report this content for inappropriate material?')) {
+            return;
+        }
+        
         try {
-            setLoading(true);
-            setError(null);
-            setIsSearching(true);
-            
-            const response: SearchResponse = await userSearchAPI.searchUsers({
-                q: query.trim(),
-                page,
-                limit: 12
-            });
-            
-            setUsers(response.users);
-            setPagination(response.pagination);
+            setReportingGame(gameId);
+            await gameAPI.reportGame(gameId);
+            alert('Thank you for your report. We will review this content.');
         } catch (error: any) {
-            console.error('Search failed:', error);
-            setError('Search failed. Please try again.');
+            console.error('Failed to report game:', error);
+            alert(error.response?.data?.error || 'Failed to report game');
         } finally {
-            setLoading(false);
+            setReportingGame(null);
         }
     };
 
-    const handleSearchSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        handleSearch(searchQuery);
-    };
-
-    // Add debounce timer ref
-    const searchTimerRef = React.useRef<NodeJS.Timeout>();
-
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setSearchQuery(value);
+    const GameCard: React.FC<{ game: CommunityGame }> = ({ game }) => {
+        const [expanded, setExpanded] = useState(false);
+        const isOwner = user && user.id === game.user._id;
         
-        // Clear previous timer
-        if (searchTimerRef.current) {
-            clearTimeout(searchTimerRef.current);
-        }
-        
-        // Auto-search after 500ms delay
-        if (value.trim().length >= 2) {
-            searchTimerRef.current = setTimeout(() => {
-                handleSearch(value);
-            }, 500);
-        } else if (value.trim().length === 0) {
-            setIsSearching(false);
-            setUsers([]);
-        }
-    };
-
-    const clearSearch = () => {
-        setSearchQuery('');
-        setIsSearching(false);
-        setUsers([]);
-        if (searchTimerRef.current) {
-            clearTimeout(searchTimerRef.current);
-        }
-    };
-
-    const CommunityMemberCard: React.FC<{ member: CommunityMember }> = ({ member }) => (
-        <div className="community-card">
-            <div className="community-info">
-                <div className="community-header">
-                    <h3 className="community-name">{member.displayName}</h3>
-                    {member.gameCount > 0 && (
-                        <span className="game-badge" title={`${member.gameCount} published game${member.gameCount === 1 ? '' : 's'}`}>
-                            {member.gameCount} game{member.gameCount === 1 ? '' : 's'}
-                        </span>
+        return (
+        <div className="community-game-card">
+            {game.thumbnailUrl && (
+                <div className="game-thumbnail">
+                    <img src={game.thumbnailUrl} alt={game.title} />
+                </div>
+            )}
+            <div className="game-info">
+                <div className="game-header">
+                    <h3 className="game-title">{game.title}</h3>
+                    {user && !isOwner && (
+                        <button
+                            className="report-flag-btn"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                handleReportGame(game._id);
+                            }}
+                            disabled={reportingGame === game._id}
+                            title="Report inappropriate content"
+                            aria-label="Report game"
+                            type="button"
+                        >
+                            <span className="flag-icon">⚑</span>
+                        </button>
                     )}
                 </div>
-                <p className="community-username">@{member.username}</p>
+                <p className="game-developer">
+                    by <Link to={`/users/${game.user.username}`} className="developer-link">
+                        {game.user.displayName}
+                    </Link>
+                </p>
                 
-                {member.bio && (
-                    <p className="community-bio">{member.bio}</p>
+                {game.description && (
+                    <div className="game-description-wrapper">
+                        <p className={`game-description ${expanded ? 'expanded' : ''}`}>
+                            {game.description}
+                        </p>
+                        {game.description.length > 120 && (
+                            <button 
+                                type="button"
+                                className="show-more-btn"
+                                onClick={() => setExpanded(!expanded)}
+                            >
+                                {expanded ? 'Show less' : 'Show more'}
+                            </button>
+                        )}
+                    </div>
                 )}
-            </div>
-
-            <div className="community-actions">
-                <Link 
-                    to={`/users/${member.username}`} 
-                    className="btn btn-secondary"
-                >
-                    View Profile
-                </Link>
+                
+                {game.tags && game.tags.length > 0 && (
+                    <div className="game-tags">
+                        {game.tags.slice(0, 3).map((tag, index) => (
+                            <span key={index} className="game-tag">{tag}</span>
+                        ))}
+                    </div>
+                )}
+                
+                <div className="game-actions">
+                    {game.playUrl ? (
+                        <a 
+                            href={game.playUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer nofollow"
+                            className="btn btn-primary"
+                        >
+                            View Game
+                        </a>
+                    ) : (
+                        <div className="coming-soon-badge">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                            <span>In Development</span>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
-    );
+        );
+    };
 
     return (
+        <>
         <div className="community-page">
             <Helmet>
                 <meta name="robots" content="noindex, follow" />
@@ -204,75 +247,60 @@ const Community: React.FC = () => {
             <section className="page-header" data-fade data-delay="1">
                 <div className="container">
                     <h1>Community</h1>
-                    <p>Find fellow game developers and discover their projects</p>
+                    <p>Games from our developer community</p>
                 </div>
             </section>
             
             <section className="section-compact" data-fade data-delay="2">
                 <div className="container">
-                {/* Search */}
-                <section className="search-section" data-fade data-delay="2">
-                    <form onSubmit={handleSearchSubmit} className="search-form">
-                        <div className="search-input-group">
-                            <input
-                                type="text"
-                                value={searchQuery}
-                                onChange={handleSearchChange}
-                                placeholder="Search community members by username or name..."
-                                className="search-input"
-                            />
-                            {searchQuery && (
-                                <button 
-                                    type="button" 
-                                    onClick={clearSearch}
-                                    className="clear-search-button"
-                                    aria-label="Clear search"
-                                >
-                                    ×
-                                </button>
-                            )}
-                            <button type="submit" className="search-button" disabled={loading}>
-                                Search
-                            </button>
-                        </div>
-                    </form>
-                </section>
 
-                {/* View Mode Toggle and Filter - Only show when not searching */}
-                {!isSearching && (
-                    <section className="view-controls" data-fade data-delay="2">
-                        <div className="view-mode-toggle">
-                            <button 
-                                className={`toggle-button ${viewMode === 'featured' ? 'active' : ''}`}
-                                onClick={() => setViewMode('featured')}
-                            >
-                                Featured
-                            </button>
-                            <button 
-                                className={`toggle-button ${viewMode === 'all' ? 'active' : ''}`}
-                                onClick={() => setViewMode('all')}
-                            >
-                                All Members
-                            </button>
-                        </div>
+                {/* Filters and Sort */}
+                <section className="view-controls" data-fade data-delay="2">
+                    <div className="search-and-filters">
+                        <input
+                            type="text"
+                            placeholder="Search games, developers..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="search-input"
+                        />
+                    </div>
+                    <div className="filter-options">
+                        <select 
+                            value={sortOption}
+                            onChange={(e) => setSortOption(e.target.value as 'newest' | 'random' | 'updated')}
+                            className="filter-select"
+                        >
+                            <option value="newest">Newest First</option>
+                            <option value="random">Random</option>
+                            <option value="updated">Recently Updated</option>
+                        </select>
                         
-                        {viewMode === 'all' && (
-                            <div className="filter-options">
-                                <label className="filter-checkbox">
-                                    <input
-                                        type="checkbox"
-                                        checked={showOnlyWithGames}
-                                        onChange={(e) => {
-                                            setShowOnlyWithGames(e.target.checked);
-                                            setAllUsersPagination(prev => ({ ...prev, page: 1 }));
-                                        }}
-                                    />
-                                    <span>Show members with games</span>
-                                </label>
-                            </div>
-                        )}
-                    </section>
-                )}
+                        <select 
+                            value={selectedEngine}
+                            onChange={(e) => setSelectedEngine(e.target.value)}
+                            className="filter-select"
+                        >
+                            {ENGINES.map(engine => (
+                                <option key={engine.value} value={engine.value}>
+                                    {engine.label}
+                                </option>
+                            ))}
+                        </select>
+                        
+                        <select 
+                            value={selectedTag}
+                            onChange={(e) => setSelectedTag(e.target.value)}
+                            className="filter-select"
+                        >
+                            {TAGS.map(tag => (
+                                <option key={tag.value} value={tag.value}>
+                                    {tag.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </section>
 
                 {/* Error Display */}
                 {error && (
@@ -283,119 +311,51 @@ const Community: React.FC = () => {
 
                 {/* Results */}
                 <section className="community-content" data-fade data-delay="3">
-                    {isSearching ? (
-                        <div className="search-results">
-                            <h2>
-                                {loading ? 'Searching...' : `Search Results for "${searchQuery}"`}
-                            </h2>
-                            
-                            {!loading && users.length === 0 && (
-                                <div className="no-results">
-                                    <p>No community members found matching "{searchQuery}"</p>
-                                    <p>Try searching for different terms or browse the community below.</p>
-                                </div>
-                            )}
-
-                            {users.length > 0 && (
-                                <>
-                                    <div className="community-grid">
-                                        {users.map((member) => (
-                                            <CommunityMemberCard key={member.username} member={member} />
-                                        ))}
-                                    </div>
-
-                                    {/* Pagination */}
-                                    {pagination.pages > 1 && (
-                                        <div className="pagination">
-                                            <button 
-                                                onClick={() => handleSearch(searchQuery, pagination.page - 1)}
-                                                disabled={pagination.page === 1 || loading}
-                                                className="btn btn-secondary"
-                                            >
-                                                Previous
-                                            </button>
-                                            <span className="pagination-info">
-                                                Page {pagination.page} of {pagination.pages}
-                                            </span>
-                                            <button 
-                                                onClick={() => handleSearch(searchQuery, pagination.page + 1)}
-                                                disabled={pagination.page === pagination.pages || loading}
-                                                className="btn btn-secondary"
-                                            >
-                                                Next
-                                            </button>
-                                        </div>
-                                    )}
-                                </>
-                            )}
-                        </div>
-                    ) : viewMode === 'featured' ? (
-                        <div className="featured-section">
-                            <h2>Featured Members</h2>
-                            <p>Discover fellow game developers in our community</p>
-                            
-                            {loading ? (
-                                <div className="loading-state">Loading community members...</div>
-                            ) : featuredUsers.length > 0 ? (
-                                <div className="community-grid">
-                                    {featuredUsers.map((member) => (
-                                        <CommunityMemberCard key={member.username} member={member} />
+                    {loading && games.length === 0 ? (
+                        <div className="loading-state">Loading games...</div>
+                    ) : games.length > 0 ? (
+                        <>
+                            <div className="games-grid">
+                                {games
+                                    .sort((a, b) => {
+                                        // Games with thumbnails come first
+                                        if (a.thumbnailUrl && !b.thumbnailUrl) return -1;
+                                        if (!a.thumbnailUrl && b.thumbnailUrl) return 1;
+                                        return 0;
+                                    })
+                                    .map((game) => (
+                                        <GameCard key={game._id} game={game} />
                                     ))}
-                                </div>
-                            ) : (
-                                <div className="empty-state">
-                                    <p>No community members yet.</p>
-                                    <p>Be the first to add your games and join the community!</p>
-                                </div>
-                            )}
-                        </div>
-                    ) : (
-                        <div className="all-members-section">
-                            <h2>All Members</h2>
-                            <p>{showOnlyWithGames ? 'Members who have published games' : 'All community members'}</p>
-                            
-                            {loading && allUsers.length === 0 ? (
-                                <div className="loading-state">Loading members...</div>
-                            ) : allUsers.length > 0 ? (
-                                <>
-                                    <div className="community-grid">
-                                        {allUsers.map((member) => (
-                                            <CommunityMemberCard key={member.username} member={member} />
-                                        ))}
-                                    </div>
+                            </div>
 
-                                    {/* Load More */}
-                                    {allUsersPagination.page < allUsersPagination.pages && (
-                                        <div className="load-more-container">
-                                            <button 
-                                                onClick={() => loadAllUsers(allUsersPagination.page + 1)}
-                                                disabled={loading}
-                                                className="btn btn-secondary load-more-button"
-                                            >
-                                                {loading ? 'Loading...' : 'Load More'}
-                                            </button>
-                                            <p className="pagination-info">
-                                                Showing {allUsers.length} of {allUsersPagination.total} members
-                                            </p>
-                                        </div>
-                                    )}
-                                </>
-                            ) : (
-                                <div className="empty-state">
-                                    <p>{showOnlyWithGames 
-                                        ? 'No members with published games yet.' 
-                                        : 'No community members found.'}</p>
-                                    {showOnlyWithGames && (
-                                        <p>Try unchecking the filter to see all members.</p>
-                                    )}
+                            {/* Load More */}
+                            {pagination.page < pagination.pages && (
+                                <div className="load-more-container">
+                                    <button 
+                                        onClick={() => loadGames(pagination.page + 1)}
+                                        disabled={loading}
+                                        className="btn btn-secondary load-more-button"
+                                    >
+                                        {loading ? 'Loading...' : 'Load More Games'}
+                                    </button>
+                                    <p className="pagination-info">
+                                        Showing {games.length} of {pagination.total} games
+                                    </p>
                                 </div>
                             )}
+                        </>
+                    ) : (
+                        <div className="empty-state">
+                            <p>No games found.</p>
+                            <p>Be the first to share your game with the community!</p>
                         </div>
                     )}
                 </section>
                 </div>
             </section>
         </div>
+
+        </>
     );
 };
 
