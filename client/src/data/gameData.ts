@@ -245,6 +245,45 @@ export const gameData: Game[] = [
         placement: 3,
         thumb: "M",
         image: "/images/games/modular-mayhem.jpg"
+    },
+    {
+        id: 20,
+        title: "Entropy",
+        author: "@supermuttgames",
+        url: "https://supermuttgames.itch.io/entropy",
+        jamName: "Summer Jam #8",
+        jamUrl: "https://itch.io/jam/solodevelopment-summer-jam",
+        jamType: "themed",
+        jamTheme: "Chaos",
+        placement: 1,
+        thumb: "E",
+        image: "/images/games/entropy.gif"
+    },
+    {
+        id: 21,
+        title: "Routine Mayhem",
+        author: "@xlanders",
+        url: "https://xlanders.itch.io/routine-mayhem",
+        jamName: "Summer Jam #8",
+        jamUrl: "https://itch.io/jam/solodevelopment-summer-jam",
+        jamType: "themed",
+        jamTheme: "Chaos",
+        placement: 2,
+        thumb: "R",
+        image: "/images/games/routine-mayhem.png"
+    },
+    {
+        id: 22,
+        title: "Me when I fight the primordial hypergod of chaos:",
+        author: "@deltav0_",
+        url: "https://deltav0.itch.io/me-when-i-fight-the-primordial-hypergod-of-chaos",
+        jamName: "Summer Jam #8",
+        jamUrl: "https://itch.io/jam/solodevelopment-summer-jam",
+        jamType: "themed",
+        jamTheme: "Chaos",
+        placement: 3,
+        thumb: "M",
+        image: "/images/games/primordial-hypergod.png"
     }
 ];
 
