@@ -254,18 +254,18 @@ const AdminJams: React.FC = () => {
                                 </div>
                             </div>
                             <div className="jam-actions">
-                                <button 
+                                <button
                                     onClick={handleEdit}
                                     className={`btn btn-sm ${showForm ? 'btn-primary' : 'btn-secondary'}`}
                                 >
                                     Edit Jam
                                 </button>
-                                <button 
+                                <button
                                     onClick={() => {
                                         // Close other sections
                                         setShowForm(false);
                                         setShowVotingResults(false);
-                                        
+
                                         setShowThemeForm(true);
                                         // Load existing themes
                                         themeAPI.getThemes(currentJam.id).then(response => {
@@ -283,19 +283,19 @@ const AdminJams: React.FC = () => {
                                 >
                                     Manage Themes
                                 </button>
-                                <button 
+                                <button
                                     onClick={fetchVotingResults}
                                     className={`btn btn-sm ${showVotingResults ? 'btn-primary' : 'btn-secondary'}`}
                                 >
                                     View Voting Results
                                 </button>
-                                <button 
+                                <button
                                     onClick={async () => {
                                         // Close other sections
                                         setShowForm(false);
                                         setShowThemeForm(false);
                                         setShowVotingResults(false);
-                                        
+
                                         if (!showBackups) {
                                             try {
                                                 const response = await backupAPI.getBackups(currentJam.id);
@@ -311,6 +311,23 @@ const AdminJams: React.FC = () => {
                                     className={`btn btn-sm ${showBackups ? 'btn-primary' : 'btn-secondary'}`}
                                 >
                                     Manage Backups
+                                </button>
+                                <button
+                                    onClick={async () => {
+                                        if (window.confirm('Are you sure you want to delete this jam? This action cannot be undone.')) {
+                                            try {
+                                                await jamAPI.deleteJam(currentJam.id);
+                                                setMessage('Jam deleted successfully!');
+                                                setCurrentJam(null);
+                                                fetchCurrentJam();
+                                            } catch (error: any) {
+                                                setMessage(`Error: ${error.response?.data?.error || error.message}`);
+                                            }
+                                        }
+                                    }}
+                                    className="btn btn-sm btn-danger"
+                                >
+                                    Delete Jam
                                 </button>
                             </div>
                         </div>

@@ -1,4 +1,10 @@
 {
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm start",
+    "install-all": "npm install && cd server && npm install && cd ../client && npm install"
+  },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "concurrently": "^9.2.0"
