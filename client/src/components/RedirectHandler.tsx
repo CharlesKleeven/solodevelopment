@@ -17,7 +17,7 @@ const RedirectHandler = () => {
                 // For production, we need to call the API endpoint
                 if (window.location.hostname !== 'localhost') {
                     // In production, call the API to get redirect URL
-                    const response = await fetch(`/api/redirect/${slug}`);
+                    const response = await fetch(`/api/redirects/${slug}`);
                     const data = await response.json();
 
                     if (data.url) {
