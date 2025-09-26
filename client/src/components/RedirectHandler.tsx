@@ -11,25 +11,26 @@ const RedirectHandler = () => {
 
             // Use environment variable for API URL, fallback to production URL
             const apiUrl = process.env.REACT_APP_API_URL ||
-                          (window.location.hostname === 'localhost' ? 'http://localhost:3001' : '');
+                          (window.location.hostname === 'localhost' ? 'http://localhost:3001' : '/api/redirect');
 
             try {
-                // Call the backend redirect endpoint directly
-                const response = await fetch(`${apiUrl}/${slug}`, {
-                    method: 'GET',
-                    redirect: 'manual' // Don't follow redirects automatically
-                });
+                // For production, we need to call the API endpoint
+                if (window.location.hostname !== 'localhost') {
+                    // In production, call the API to get redirect URL
+                    const response = await fetch(`/api/redirect/${slug}`);
+                    const data = await response.json();
 
-                // Check if it's a redirect or CORS blocked response
-                if (response.type === 'opaqueredirect' || response.status === 301 || response.status === 302 || response.status === 0) {
-                    // Navigate directly to backend URL which will handle the redirect
-                    window.location.href = `${apiUrl}/${slug}`;
-                } else if (response.status === 404) {
-                    setError(true);
+                    if (data.url) {
+                        window.location.href = data.url;
+                    } else {
+                        setError(true);
+                    }
+                } else {
+                    // In development, use the backend redirect
+                    window.location.href = `http://localhost:3001/${slug}`;
                 }
             } catch (err) {
-                // If fetch fails (CORS), try direct navigation
-                window.location.href = `${apiUrl}/${slug}`;
+                setError(true);
             }
         };
 

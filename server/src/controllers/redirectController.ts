@@ -173,3 +173,29 @@ export const handleRedirect = async (req: Request, res: Response) => {
         res.status(500).send('Internal server error');
     }
 };
+
+// Get redirect URL as JSON (for frontend in production)
+export const getRedirectUrl = async (req: Request, res: Response) => {
+    try {
+        const { slug } = req.params;
+
+        const redirect = await Redirect.findOne({
+            slug: slug.toLowerCase(),
+            isActive: true
+        });
+
+        if (!redirect) {
+            return res.status(404).json({ error: 'Redirect not found' });
+        }
+
+        // Increment click count
+        redirect.clickCount++;
+        await redirect.save();
+
+        // Return URL as JSON
+        res.json({ url: redirect.destination });
+    } catch (error) {
+        console.error('Error getting redirect URL:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
