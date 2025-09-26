@@ -327,12 +327,14 @@
 
 /* Simplify nested admin sections */
 .admin-jams,
-.admin-themes {
+.admin-themes,
+.admin-redirects {
     max-width: 100%;
 }
 
 .admin-jams h2,
-.admin-themes h2 {
+.admin-themes h2,
+.admin-redirects h2 {
     font-size: var(--text-lg);
     margin-bottom: var(--space-3);
     color: var(--text-primary);
@@ -700,4 +702,141 @@
         flex: 1;
         min-width: 0;
     }
+}
+
+/* Redirect Admin Styles */
+.redirect-form {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius);
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.redirect-form h3 {
+    margin-bottom: var(--space-4);
+    color: var(--text-primary);
+}
+
+.input-with-prefix {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.input-prefix {
+    padding: var(--space-2) var(--space-3);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    white-space: nowrap;
+}
+
+.input-with-prefix input {
+    flex: 1;
+    border: none;
+    padding: var(--space-2);
+    background: transparent;
+}
+
+.redirects-table {
+    margin-top: var(--space-4);
+}
+
+.redirects-table h3 {
+    margin-bottom: var(--space-3);
+    color: var(--text-primary);
+}
+
+.redirects-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.redirects-table th {
+    text-align: left;
+    padding: var(--space-2);
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: var(--text-sm);
+}
+
+.redirects-table td {
+    padding: var(--space-2);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.redirects-table code {
+    background: var(--bg-tertiary);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: var(--text-sm);
+}
+
+.btn-icon {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    margin-left: var(--space-1);
+    opacity: 0.6;
+    transition: opacity var(--transition);
+}
+
+.btn-icon:hover {
+    opacity: 1;
+}
+
+.destination-cell {
+    max-width: 300px;
+}
+
+.destination-cell a {
+    color: var(--color-accent);
+    text-decoration: none;
+}
+
+.destination-cell a:hover {
+    text-decoration: underline;
+}
+
+.status-toggle {
+    padding: 4px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-secondary);
+    cursor: pointer;
+    font-size: var(--text-xs);
+    transition: all var(--transition);
+}
+
+.status-toggle.active {
+    background: var(--color-success);
+    color: white;
+    border-color: var(--color-success);
+}
+
+.status-toggle.inactive {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* Light mode adjustments for redirects */
+[data-theme="light"] .redirect-form {
+    background: white;
+}
+
+[data-theme="light"] .input-prefix {
+    background: var(--bg-secondary);
+}
+
+[data-theme="light"] .redirects-table code {
+    background: var(--bg-secondary);
 }

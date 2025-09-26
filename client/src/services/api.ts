@@ -363,4 +363,31 @@ export const jamAPI = {
     },
 };
 
+// Redirect management API
+export const redirectAPI = {
+    // Get all redirects (admin only)
+    getAllRedirects: async () => {
+        const response = await api.get('/api/redirects/all');
+        return response;
+    },
+
+    // Create a new redirect (admin only)
+    createRedirect: async (data: { slug: string; destination: string; description?: string }) => {
+        const response = await api.post('/api/redirects/create', data);
+        return response;
+    },
+
+    // Update a redirect (admin only)
+    updateRedirect: async (slug: string, data: any) => {
+        const response = await api.put(`/api/redirects/${slug}`, data);
+        return response;
+    },
+
+    // Delete a redirect (admin only)
+    deleteRedirect: async (slug: string) => {
+        const response = await api.delete(`/api/redirects/${slug}`);
+        return response;
+    },
+};
+
 export default api;

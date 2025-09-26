@@ -29,6 +29,7 @@ import Admin from './pages/Admin';
 // Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import RedirectHandler from './components/RedirectHandler';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ParticleProvider } from './context/ParticleContext';
@@ -66,6 +67,8 @@ function AppContent() {
             <Route path="/community" element={<Community />} />
             <Route path="/users/:username" element={<UserProfile />} />
             <Route path="/admin" element={<Admin />} />
+            {/* Catch-all route for redirects */}
+            <Route path="/:slug" element={<RedirectHandler />} />
           </Routes>
         </main>
       )}

@@ -16,6 +16,8 @@ import userSearchRoutes from './routes/userSearch';
 import themeRoutes from './routes/theme';
 import jamManagementRoutes from './routes/jamManagement';
 import backupRoutes from './routes/backup';
+import redirectRoutes from './routes/redirect';
+import { handleRedirect } from './controllers/redirectController';
 import { initializeCronJobs } from './services/cronJobs';
 
 // Load environment variables
@@ -105,6 +107,7 @@ app.use('/api/users', userSearchRoutes);
 app.use('/api/themes', themeRoutes);
 app.use('/api/jam-management', jamManagementRoutes);
 app.use('/api/backup', backupRoutes);
+app.use('/api/redirects', redirectRoutes);
 
 // Connect to MongoDB with longer timeout for Render
 mongoose
@@ -149,6 +152,10 @@ app.get('/api/test', (req, res) => {
         database: 'Connected to MongoDB Atlas',
     });
 });
+
+// Redirect handler - MUST be last route before 404 handler
+// This catches any slug that doesn't match existing routes
+app.get('/:slug', handleRedirect);
 
 // Start server
 const server = app.listen(PORT, () => {
