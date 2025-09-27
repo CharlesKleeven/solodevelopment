@@ -16,8 +16,8 @@ const RedirectHandler = () => {
             try {
                 // For production, we need to call the API endpoint
                 if (window.location.hostname !== 'localhost') {
-                    // In production, call the API to get redirect URL
-                    const response = await fetch(`/api/redirects/${slug}`);
+                    // In production, call the actual backend API
+                    const response = await fetch(`https://api.solodevelopment.org/api/redirects/${slug}`);
                     const data = await response.json();
 
                     if (data.url) {
