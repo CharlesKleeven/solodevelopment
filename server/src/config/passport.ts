@@ -195,4 +195,6 @@ if (process.env.DISCORD_CLIENT_ID && process.env.DISCORD_CLIENT_SECRET &&
   }));
 }
 
+// Note: Itch.io OAuth is handled separately via implicit flow in itchioAuth.ts
+
 export default passport;

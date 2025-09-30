@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import passport from './config/passport';
 import authRoutes from './routes/auth';  // Import auth routes
+import itchioAuthRoutes from './routes/itchioAuth';  // Import itch.io auth routes
 import jamRoutes from './routes/jam';
 import contactRoutes from './routes/contact';
 import gameRoutes from './routes/game';
@@ -102,6 +103,7 @@ app.use(passport.session());
 app.use('/api/jam', jamRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/auth/itchio', itchioAuthRoutes);
 app.use('/api/games', gameRoutes);
 app.use('/api/users', userSearchRoutes);
 app.use('/api/themes', themeRoutes);
