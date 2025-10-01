@@ -34,13 +34,8 @@ const ItchioCallback: React.FC = () => {
           { withCredentials: true }
         );
 
-        if (response.data.token) {
-          // Store token in localStorage
-          localStorage.setItem('token', response.data.token);
-
-          // Store token in cookie for API calls
-          document.cookie = `token=${response.data.token}; path=/; max-age=${7 * 24 * 60 * 60}`;
-
+        if (response.data.user) {
+          // Cookie is set by the backend (httpOnly)
           // Refresh user data in auth context
           await refreshUser();
 
@@ -49,6 +44,8 @@ const ItchioCallback: React.FC = () => {
           setTimeout(() => {
             navigate('/');
           }, 1000);
+        } else {
+          throw new Error('No user data received');
         }
       } catch (err: any) {
         // Log errors only in development

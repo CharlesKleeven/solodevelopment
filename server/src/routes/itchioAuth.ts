@@ -110,9 +110,17 @@ router.post('/callback', oauthLimiter, async (req, res) => {
       { expiresIn: '7d' }
     );
 
-    // Return token and user info
+    // Set cookie like other auth methods do
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    // Return user info (token is in httpOnly cookie)
     res.json({
-      token,
+      message: 'Authentication successful',
       user: {
         id: user._id,
         username: user.username,
