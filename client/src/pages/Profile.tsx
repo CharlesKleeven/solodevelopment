@@ -3,11 +3,17 @@ import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../context/AuthContext';
 import { profileAPI } from '../services/api';
 import { getLinkInfo, isAllowedPlatform } from '../utils/linkUtils';
+import axios from 'axios';
 import './profile.css';
 
 const Profile: React.FC = () => {
     const { user, refreshUser, loading } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
+
+    // API base URL
+    const API_BASE_URL = process.env.NODE_ENV === 'production'
+        ? 'https://api.solodevelopment.org'
+        : 'http://localhost:3001';
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -17,6 +23,13 @@ const Profile: React.FC = () => {
     const [profileVisibility, setProfileVisibility] = useState<'public' | 'private'>('public');
     const [links, setLinks] = useState<string[]>(['', '', '', '']);
     const [linkErrors, setLinkErrors] = useState<string[]>(['', '', '', '']);
+
+    // Email management states
+    const [showEmailChange, setShowEmailChange] = useState(false);
+    const [newEmail, setNewEmail] = useState('');
+    const [emailChangeError, setEmailChangeError] = useState('');
+    const [emailChangeSuccess, setEmailChangeSuccess] = useState('');
+    const [resendingVerification, setResendingVerification] = useState(false);
 
     // Original values for canceling
     const [originalDisplayName, setOriginalDisplayName] = useState('');
@@ -253,6 +266,80 @@ const Profile: React.FC = () => {
                         )}
                     </div>
 
+                    {/* Email Section - Always show */}
+                    <div className="profile-section">
+                        <h3>Email</h3>
+                        <div className="email-info">
+                            {user?.email?.includes('@oauth.local') ? (
+                                <div className="email-placeholder">
+                                    <p className="email-warning">⚠️ Please add an email address to complete your account setup</p>
+                                    <button
+                                        onClick={() => setShowEmailChange(true)}
+                                        className="btn btn-primary btn-sm"
+                                    >
+                                        Add Email Address
+                                    </button>
+                                </div>
+                            ) : (
+                                <>
+                                    <p className="email-address">
+                                        {user?.email}
+                                        {user?.emailVerified === false && (
+                                            <span className="email-status unverified"> (Unverified)</span>
+                                        )}
+                                        {user?.emailVerified && (
+                                            <span className="email-status verified"> ✓ Verified</span>
+                                        )}
+                                    </p>
+                                    {user?.emailVerified === false && (
+                                        <div className="email-actions">
+                                            <button
+                                                onClick={async () => {
+                                                    setResendingVerification(true);
+                                                    setEmailChangeError('');
+                                                    try {
+                                                        const response = await axios.post(`${API_BASE_URL}/api/auth/resend-verification`, {
+                                                            email: user.email
+                                                        }, { withCredentials: true });
+                                                        setEmailChangeSuccess('Verification email sent! Please check your inbox.');
+                                                    } catch (error: any) {
+                                                        setEmailChangeError(error.response?.data?.error || 'Failed to send verification email');
+                                                    } finally {
+                                                        setResendingVerification(false);
+                                                    }
+                                                }}
+                                                disabled={resendingVerification}
+                                                className="btn btn-secondary btn-sm"
+                                            >
+                                                {resendingVerification ? 'Sending...' : 'Resend Verification'}
+                                            </button>
+                                            <button
+                                                onClick={() => setShowEmailChange(true)}
+                                                className="btn btn-secondary btn-sm"
+                                            >
+                                                Change Email
+                                            </button>
+                                        </div>
+                                    )}
+                                    {user?.emailVerified && isEditing && (
+                                        <button
+                                            onClick={() => setShowEmailChange(true)}
+                                            className="btn btn-secondary btn-sm"
+                                        >
+                                            Change Email
+                                        </button>
+                                    )}
+                                </>
+                            )}
+                            {emailChangeSuccess && (
+                                <div className="email-success">{emailChangeSuccess}</div>
+                            )}
+                            {emailChangeError && (
+                                <div className="email-error">{emailChangeError}</div>
+                            )}
+                        </div>
+                    </div>
+
                     {/* Privacy Section - Only when editing */}
                     {isEditing && (
                         <div className="profile-section">
@@ -349,6 +436,105 @@ const Profile: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Email Change Modal */}
+            {showEmailChange && (
+                <div className="modal-overlay" onClick={() => setShowEmailChange(false)}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h3>{user?.email?.includes('@oauth.local') ? 'Add Email Address' : 'Change Email Address'}</h3>
+                            <button
+                                onClick={() => {
+                                    setShowEmailChange(false);
+                                    setNewEmail('');
+                                    setEmailChangeError('');
+                                    setEmailChangeSuccess('');
+                                }}
+                                className="modal-close"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            {user?.email?.includes('@oauth.local') && (
+                                <p className="modal-info">
+                                    Adding an email address will allow you to receive notifications and recover your account if needed.
+                                </p>
+                            )}
+                            {!user?.email?.includes('@oauth.local') && (
+                                <p className="modal-info">
+                                    Enter your new email address. You'll need to verify it before it becomes active.
+                                    Your current email ({user?.email}) will remain active until the new one is verified.
+                                </p>
+                            )}
+                            <input
+                                type="email"
+                                value={newEmail}
+                                onChange={(e) => {
+                                    setNewEmail(e.target.value);
+                                    setEmailChangeError('');
+                                }}
+                                placeholder="Enter new email address"
+                                className="modal-input"
+                                autoFocus
+                            />
+                            {emailChangeError && (
+                                <div className="modal-error">{emailChangeError}</div>
+                            )}
+                            {emailChangeSuccess && (
+                                <div className="modal-success">{emailChangeSuccess}</div>
+                            )}
+                        </div>
+                        <div className="modal-footer">
+                            <button
+                                onClick={async () => {
+                                    if (!newEmail) {
+                                        setEmailChangeError('Please enter an email address');
+                                        return;
+                                    }
+                                    if (!newEmail.includes('@') || !newEmail.includes('.')) {
+                                        setEmailChangeError('Please enter a valid email address');
+                                        return;
+                                    }
+
+                                    try {
+                                        setEmailChangeError('');
+                                        const response = await axios.post(`${API_BASE_URL}/api/auth/change-email`, {
+                                            newEmail
+                                        }, { withCredentials: true });
+
+                                        setEmailChangeSuccess('Verification email sent to your new address. Please check your inbox.');
+                                        setNewEmail('');
+
+                                        // Close modal after 3 seconds
+                                        setTimeout(() => {
+                                            setShowEmailChange(false);
+                                            setEmailChangeSuccess('');
+                                        }, 3000);
+                                    } catch (error: any) {
+                                        setEmailChangeError(error.response?.data?.error || 'Failed to change email');
+                                    }
+                                }}
+                                className="btn btn-primary"
+                                disabled={!newEmail || emailChangeSuccess !== ''}
+                            >
+                                Send Verification
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setShowEmailChange(false);
+                                    setNewEmail('');
+                                    setEmailChangeError('');
+                                    setEmailChangeSuccess('');
+                                }}
+                                className="btn btn-ghost"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

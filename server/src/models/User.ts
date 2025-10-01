@@ -23,6 +23,12 @@ interface IUser {
   
   resetPasswordToken?: string;
   resetPasswordExpires?: Date;
+
+  // Pending email change fields
+  pendingEmail?: string;
+  pendingEmailToken?: string;
+  pendingEmailExpires?: Date;
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -113,6 +119,18 @@ const userSchema = new mongoose.Schema<IUser>(
       type: String,
     },
     resetPasswordExpires: {
+      type: Date,
+    },
+
+    // Pending email change fields
+    pendingEmail: {
+      type: String,
+      lowercase: true,
+    },
+    pendingEmailToken: {
+      type: String,
+    },
+    pendingEmailExpires: {
       type: Date,
     },
   },

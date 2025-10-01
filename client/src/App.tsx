@@ -13,6 +13,7 @@ import ResetPassword from './pages/ResetPassword';
 import SelectUsername from './pages/SelectUsername';
 import OAuthCallback from './pages/OAuthCallback';
 import VerifyEmail from './pages/VerifyEmail';
+import VerifyEmailChange from './pages/VerifyEmailChange';
 import ItchioCallback from './pages/ItchioCallback';
 import Jams from './pages/Jams';
 import Showcase from './pages/Showcase';
@@ -37,7 +38,7 @@ import { ParticleProvider } from './context/ParticleContext';
 
 function AppContent() {
   const location = useLocation();
-  const isAuthPage = ['/login', '/forgot-password', '/reset-password', '/select-username', '/oauth-callback', '/verify-email', '/itchio-callback'].includes(location.pathname);
+  const isAuthPage = ['/login', '/forgot-password', '/reset-password', '/select-username', '/oauth-callback', '/verify-email', '/verify-email-change', '/itchio-callback'].includes(location.pathname);
 
   return (
     <div className="app">
@@ -50,6 +51,7 @@ function AppContent() {
           <Route path="/select-username" element={<SelectUsername />} />
           <Route path="/oauth-callback" element={<OAuthCallback />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/verify-email-change" element={<VerifyEmailChange />} />
           <Route path="/itchio-callback" element={<ItchioCallback />} />
         </Routes>
       ) : (

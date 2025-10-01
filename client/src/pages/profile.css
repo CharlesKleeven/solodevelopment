@@ -225,6 +225,167 @@
     min-height: 24px;
 }
 
+/* Email management styles */
+.email-info {
+    margin-top: var(--space-2);
+}
+
+.email-address {
+    font-size: var(--text-base);
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.email-status {
+    font-size: var(--text-sm);
+    margin-left: var(--space-2);
+}
+
+.email-status.unverified {
+    color: var(--color-warning, #f59e0b);
+}
+
+.email-status.verified {
+    color: var(--color-success, #10b981);
+}
+
+.email-placeholder {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.email-warning {
+    color: var(--color-warning, #f59e0b);
+    font-size: var(--text-sm);
+    margin: 0;
+}
+
+.email-actions {
+    display: flex;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+}
+
+.email-success {
+    color: var(--color-success, #10b981);
+    font-size: var(--text-sm);
+    margin-top: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background: rgba(16, 185, 129, 0.1);
+    border-radius: var(--radius-md);
+}
+
+.email-error {
+    color: var(--color-error, #ef4444);
+    font-size: var(--text-sm);
+    margin-top: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: var(--radius-md);
+}
+
+/* Modal styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4) var(--space-6);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: var(--text-lg);
+    color: var(--text-primary);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: var(--text-xl);
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: var(--space-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: var(--space-6);
+}
+
+.modal-info {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-4);
+}
+
+.modal-input {
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-base);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: border-color 0.2s;
+}
+
+.modal-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.modal-error {
+    color: var(--color-error, #ef4444);
+    font-size: var(--text-sm);
+    margin-top: var(--space-2);
+}
+
+.modal-success {
+    color: var(--color-success, #10b981);
+    font-size: var(--text-sm);
+    margin-top: var(--space-2);
+}
+
+.modal-footer {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: flex-end;
+    padding: var(--space-4) var(--space-6);
+    border-top: 1px solid var(--border-color);
+}
+
 .link-item {
     display: inline-flex;
     align-items: center;

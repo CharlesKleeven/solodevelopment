@@ -232,6 +232,124 @@ router.post('/verify-email', authLimiter, verifyEmailValidation, async (req: exp
     }
 });
 
+// POST /api/auth/change-email: request email change (requires auth)
+router.post('/change-email', authenticateToken, authLimiter, async (req: express.Request, res: express.Response) => {
+    try {
+        const { newEmail } = req.body;
+        const userId = (req as any).user?.userId;
+
+        if (!newEmail) {
+            return res.status(400).json({ error: 'New email is required' });
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(newEmail)) {
+            return res.status(400).json({ error: 'Invalid email format' });
+        }
+
+        // Prevent changing to placeholder emails
+        if (newEmail.toLowerCase().includes('@oauth.local')) {
+            return res.status(400).json({ error: 'Invalid email address' });
+        }
+
+        // Check if email is already in use (silently fail to prevent enumeration)
+        const existingUser = await User.findOne({ email: newEmail.toLowerCase() });
+        if (existingUser) {
+            // Don't reveal that email exists - send success message
+            return res.json({ message: 'Verification email sent to new address' });
+        }
+
+        // Get current user
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Check if trying to change to the same email
+        if (user.email.toLowerCase() === newEmail.toLowerCase()) {
+            return res.status(400).json({ error: 'This is already your current email address' });
+        }
+
+        // Check if user already has a pending email change
+        if (user.pendingEmail && user.pendingEmailExpires && user.pendingEmailExpires > new Date()) {
+            return res.status(400).json({
+                error: 'You already have a pending email change. Please wait for it to expire or complete the verification.'
+            });
+        }
+
+        // Generate verification token for new email
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+        const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+        // Store pending email change in user document
+        user.pendingEmail = newEmail.toLowerCase();
+        user.pendingEmailToken = verificationToken;
+        user.pendingEmailExpires = verificationExpires;
+        await user.save();
+
+        // Send verification email to NEW address
+        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email-change?token=${verificationToken}`;
+
+        try {
+            await sendEmailVerificationEmail({
+                to: newEmail,
+                username: user.username,
+                verificationUrl
+            });
+            res.json({ message: 'Verification email sent to new address' });
+        } catch (emailError) {
+            console.error('Email sending failed:', emailError);
+            // Clear pending email data if sending fails
+            user.pendingEmail = undefined;
+            user.pendingEmailToken = undefined;
+            user.pendingEmailExpires = undefined;
+            await user.save();
+            res.status(500).json({ error: 'Failed to send verification email. Please try again.' });
+        }
+    } catch (error) {
+        console.error('Change email error:', error);
+        res.status(500).json({ error: 'Server error during email change' });
+    }
+});
+
+// POST /api/auth/verify-email-change: verify new email with token
+router.post('/verify-email-change', authLimiter, async (req: express.Request, res: express.Response) => {
+    try {
+        const { token } = req.body;
+
+        if (!token) {
+            return res.status(400).json({ error: 'Verification token is required' });
+        }
+
+        // Find user with valid token
+        const user = await User.findOne({
+            pendingEmailToken: token,
+            pendingEmailExpires: { $gt: new Date() }
+        });
+
+        if (!user) {
+            return res.status(400).json({ error: 'Invalid or expired verification token' });
+        }
+
+        // Update email and clear pending fields
+        user.email = user.pendingEmail!;
+        user.emailVerified = true;
+        user.pendingEmail = undefined;
+        user.pendingEmailToken = undefined;
+        user.pendingEmailExpires = undefined;
+        await user.save();
+
+        res.json({
+            message: 'Email successfully changed and verified',
+            email: user.email
+        });
+    } catch (error) {
+        console.error('Verify email change error:', error);
+        res.status(500).json({ error: 'Server error during email verification' });
+    }
+});
+
 // POST /api/auth/resend-verification: resend verification email
 router.post('/resend-verification', authLimiter, resendVerificationValidation, async (req: express.Request, res: express.Response) => {
     try {
