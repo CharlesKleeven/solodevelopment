@@ -377,6 +377,9 @@ router.get('/discord/callback',
     handleOAuthCallback
 );
 
+// Itch.io OAuth is handled via implicit flow - frontend redirects to itch.io
+// The callback is handled in separate itchioAuth.ts router
+
 // Username selection endpoints for OAuth users
 // GET /api/auth/oauth/user-data: get temporary OAuth user data
 router.get('/oauth/user-data', (req: express.Request, res: express.Response) => {
@@ -432,10 +435,11 @@ router.post('/oauth/complete',
                 email: tempUser.email,
                 displayName: tempUser.displayName,
                 provider: tempUser.provider,
-                // For Discord, use the verified status from Discord; for Google, assume verified
+                // For Discord, use the verified status from Discord; for Google/Itch.io, assume verified
                 emailVerified: tempUser.provider === 'discord' ? (tempUser.emailVerified || false) : true,
                 ...(tempUser.googleId && { googleId: tempUser.googleId }),
-                ...(tempUser.discordId && { discordId: tempUser.discordId })
+                ...(tempUser.discordId && { discordId: tempUser.discordId }),
+                ...(tempUser.itchioId && { itchioId: tempUser.itchioId })
             });
 
             await newUser.save();

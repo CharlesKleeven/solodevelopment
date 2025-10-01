@@ -13,7 +13,8 @@ interface IUser {
   // OAuth fields
   googleId?: string;
   discordId?: string;
-  provider: 'local' | 'google' | 'discord' | 'mixed'; // Track auth method
+  itchioId?: string;
+  provider: 'local' | 'google' | 'discord' | 'itchio' | 'mixed'; // Track auth method
   
   // Email verification fields
   emailVerified: boolean;
@@ -86,9 +87,13 @@ const userSchema = new mongoose.Schema<IUser>(
       type: String,
       sparse: true,
     },
+    itchioId: {
+      type: String,
+      sparse: true,
+    },
     provider: {
       type: String,
-      enum: ['local', 'google', 'discord', 'mixed'],
+      enum: ['local', 'google', 'discord', 'itchio', 'mixed'],
       default: 'local'
     },
     
