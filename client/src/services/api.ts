@@ -295,6 +295,12 @@ export const themeAPI = {
         const response = await api.post(`/api/themes/recalculate/${jamId}`);
         return response;
     },
+
+    // Reset all votes for a jam (admin only)
+    resetVotes: async (jamId: string) => {
+        const response = await api.post(`/api/themes/reset-votes/${jamId}`);
+        return response;
+    },
 };
 
 // Backup API

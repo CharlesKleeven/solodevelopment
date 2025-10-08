@@ -58,6 +58,7 @@ const AdminJams: React.FC = () => {
     const [themes, setThemes] = useState<Theme[]>([]);
     const [showBackups, setShowBackups] = useState(false);
     const [backups, setBackups] = useState<Backup[]>([]);
+    const [isSubmittingThemes, setIsSubmittingThemes] = useState(false);
 
     // Form state
     const [formData, setFormData] = useState<Partial<Jam>>({
@@ -445,7 +446,10 @@ const AdminJams: React.FC = () => {
                         </div>
                         <form onSubmit={async (e) => {
                             e.preventDefault();
+                            if (isSubmittingThemes) return; // Prevent double submission
+
                             setMessage('');
+                            setIsSubmittingThemes(true);
                             try {
                                 const themeList = themeText.split('\n').filter(t => t.trim());
                                 await themeAPI.createThemes(currentJam.id, themeList);
@@ -454,6 +458,8 @@ const AdminJams: React.FC = () => {
                                 setShowThemeForm(false);
                             } catch (error: any) {
                                 setMessage(`Error: ${error.response?.data?.error || error.message}`);
+                            } finally {
+                                setIsSubmittingThemes(false);
                             }
                         }}>
                             <div className="form-group">
@@ -467,8 +473,10 @@ const AdminJams: React.FC = () => {
                                 />
                             </div>
                             <div className="form-actions">
-                                <button type="submit" className="btn btn-secondary">Replace All Themes</button>
-                                <button type="button" onClick={() => setShowThemeForm(false)} className="btn btn-secondary">
+                                <button type="submit" className="btn btn-secondary" disabled={isSubmittingThemes}>
+                                    {isSubmittingThemes ? 'Submitting...' : 'Replace All Themes'}
+                                </button>
+                                <button type="button" onClick={() => setShowThemeForm(false)} className="btn btn-secondary" disabled={isSubmittingThemes}>
                                     Cancel
                                 </button>
                             </div>
@@ -522,8 +530,8 @@ const AdminJams: React.FC = () => {
                             </table>
                         </div>
                         <div className="form-actions">
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 onClick={async () => {
                                     try {
                                         await themeAPI.recalculateScores(currentJam.id);
@@ -536,6 +544,23 @@ const AdminJams: React.FC = () => {
                                 className="btn btn-secondary"
                             >
                                 Recalculate Scores
+                            </button>
+                            <button
+                                type="button"
+                                onClick={async () => {
+                                    if (window.confirm('Are you sure you want to reset ALL votes for this jam? This action cannot be undone. A backup will be created automatically.')) {
+                                        try {
+                                            await themeAPI.resetVotes(currentJam.id);
+                                            setMessage('All votes have been reset successfully');
+                                            fetchVotingResults(); // Refresh the results
+                                        } catch (error: any) {
+                                            setMessage(`Error: ${error.response?.data?.error || error.message}`);
+                                        }
+                                    }
+                                }}
+                                className="btn btn-danger"
+                            >
+                                Reset All Votes
                             </button>
                             <button type="button" onClick={() => setShowVotingResults(false)} className="btn btn-secondary">
                                 Close

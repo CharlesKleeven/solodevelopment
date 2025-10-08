@@ -1,5 +1,5 @@
 import express from 'express';
-import { getThemes, voteOnTheme, createThemes, recalculateScores } from '../controllers/themeController';
+import { getThemes, voteOnTheme, createThemes, recalculateScores, resetVotes } from '../controllers/themeController';
 import { authenticateToken } from '../middleware/auth';
 import { votingRateLimiter } from '../middleware/rateLimiter';
 
@@ -17,5 +17,8 @@ router.post('/create', authenticateToken, createThemes);
 
 // Recalculate scores for a jam (admin only)
 router.post('/recalculate/:jamId', authenticateToken, recalculateScores);
+
+// Reset all votes for a jam (admin only)
+router.post('/reset-votes/:jamId', authenticateToken, resetVotes);
 
 export default router;

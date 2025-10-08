@@ -304,3 +304,49 @@ export const createThemes = async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Failed to create themes' });
     }
 };
+
+// Reset all votes for a jam (admin only)
+export const resetVotes = async (req: Request, res: Response) => {
+    try {
+        const { jamId } = req.params;
+        const userId = (req.user as any)?.userId;
+
+        if (!userId) {
+            return res.status(401).json({ error: 'Authentication required' });
+        }
+
+        // Check if user is admin
+        const user = await User.findById(userId);
+        if (!user || !user.isAdmin) {
+            return res.status(403).json({ error: 'Admin access required' });
+        }
+
+        // Create backup before resetting votes
+        await VoteBackupService.createBackup(
+            jamId,
+            'pre_update',
+            userId,
+            'Backup before resetting votes'
+        );
+
+        // Get all themes for this jam
+        const themes = await Theme.find({ jamId });
+        const themeIds = themes.map(t => t._id);
+
+        // Delete all votes for these themes
+        const deleteResult = await ThemeVote.deleteMany({ themeId: { $in: themeIds } });
+
+        // Reset all theme scores to 0
+        await Theme.updateMany({ jamId }, { score: 0 });
+
+        res.json({
+            success: true,
+            message: `Reset complete: ${deleteResult.deletedCount} votes deleted, ${themes.length} theme scores reset to 0`
+        });
+    } catch (error) {
+        if (process.env.NODE_ENV !== 'production') {
+            console.error('Error resetting votes:', error);
+        }
+        res.status(500).json({ error: 'Failed to reset votes' });
+    }
+};

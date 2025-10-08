@@ -27,7 +27,7 @@ const themeSchema = new Schema<ITheme>({
     }
 });
 
-// Compound index for efficient queries
-themeSchema.index({ jamId: 1, name: 1 });
+// Compound unique index to prevent duplicate themes in the same jam
+themeSchema.index({ jamId: 1, name: 1 }, { unique: true });
 
 export default mongoose.model<ITheme>('Theme', themeSchema);
