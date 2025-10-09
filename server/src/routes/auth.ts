@@ -626,9 +626,9 @@ router.get('/link/itchio', authenticateToken, (req: express.Request, res: expres
     );
 
     // Redirect to itch.io OAuth with state parameter
-    const clientId = process.env.ITCHIO_CLIENT_ID;
+    const clientId = process.env.ITCHIO_CLIENT_ID || 'f6842af5baa31d79729430996467e151';
     const redirectUri = encodeURIComponent(`${process.env.FRONTEND_URL}/itchio-callback`);
-    const itchioAuthUrl = `https://itch.io/user/oauth/authorize?client_id=${clientId}&scope=profile%3Ame&response_type=token&redirect_uri=${redirectUri}&state=${linkingState}`;
+    const itchioAuthUrl = `https://itch.io/user/oauth?client_id=${clientId}&scope=profile%3Ame&response_type=token&redirect_uri=${redirectUri}&state=${linkingState}`;
 
     res.redirect(itchioAuthUrl);
 });
