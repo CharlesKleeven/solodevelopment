@@ -12,6 +12,8 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || (
 const ItchioCallback: React.FC = () => {
   const [message, setMessage] = useState('Authenticating with itch.io...');
   const [error, setError] = useState('');
+  const [conflictInfo, setConflictInfo] = useState<any>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
   const { refreshUser } = useAuth();
 
@@ -60,6 +62,13 @@ const ItchioCallback: React.FC = () => {
           throw new Error('No user data received');
         }
       } catch (err: any) {
+        // Handle account conflict specifically
+        if (err.response?.status === 409 && err.response?.data?.conflictInfo) {
+          setConflictInfo(err.response.data.conflictInfo);
+          setError('');
+          return; // Don't redirect, show conflict UI
+        }
+
         // Log errors only in development
         if (process.env.NODE_ENV === 'development') {
           console.error('Itch.io auth error:', err.message);
@@ -74,13 +83,87 @@ const ItchioCallback: React.FC = () => {
     handleCallback();
   }, [navigate, refreshUser]);
 
+  // Handle deleting conflicting account
+  const handleDeleteConflict = async () => {
+    if (!conflictInfo?.existingAccountId) return;
+
+    setIsDeleting(true);
+    try {
+      // Delete the conflicting account
+      const response = await axios.delete(
+        `${API_BASE_URL}/api/auth/oauth/conflict/${conflictInfo.existingAccountId}`,
+        { withCredentials: true }
+      );
+
+      if (response.data.success) {
+        setMessage('Account deleted. Retrying itch.io linking...');
+        // Retry the linking process
+        setTimeout(() => {
+          window.location.href = `${API_BASE_URL}/api/auth/link/itchio`;
+        }, 1500);
+      }
+    } catch (err: any) {
+      setError('Failed to delete conflicting account');
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="auth-page">
       <div className="auth-container">
         <div className="auth-card">
           <div className="auth-header">
             <h1>Itch.io Authentication</h1>
-            {error ? (
+            {conflictInfo ? (
+              <div className="auth-conflict">
+                <div className="conflict-message">
+                  <h2>Account Conflict Detected</h2>
+                  <p>{conflictInfo.message}</p>
+                  {conflictInfo.isDummyAccount && (
+                    <>
+                      <p style={{ marginTop: '15px' }}>
+                        Username: {conflictInfo.existingUsername}
+                      </p>
+                      <p style={{ marginTop: '10px', fontSize: '14px', color: '#999' }}>
+                        This appears to be an old itch.io-only account.
+                        You can safely delete it to link itch.io to your current account.
+                      </p>
+                      <div className="conflict-actions" style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
+                        <button
+                          onClick={handleDeleteConflict}
+                          disabled={isDeleting}
+                          className="btn btn-primary"
+                          style={{ padding: '8px 16px' }}
+                        >
+                          {isDeleting ? 'Deleting...' : 'Delete Old Account & Link'}
+                        </button>
+                        <button
+                          onClick={() => navigate('/profile')}
+                          className="btn btn-secondary"
+                          style={{ padding: '8px 16px' }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </>
+                  )}
+                  {!conflictInfo.isDummyAccount && (
+                    <>
+                      <p style={{ marginTop: '15px', color: '#ff6b6b' }}>
+                        This itch.io account is already linked to an active account with multiple authentication methods.
+                      </p>
+                      <button
+                        onClick={() => navigate('/profile')}
+                        className="btn btn-secondary"
+                        style={{ marginTop: '20px', padding: '8px 16px' }}
+                      >
+                        Back to Profile
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ) : error ? (
               <div className="auth-message error">
                 {error}
                 <p style={{ marginTop: '10px' }}>Redirecting to login...</p>

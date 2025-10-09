@@ -80,9 +80,25 @@ router.post('/callback', oauthLimiter, async (req, res) => {
       // Check if this itch.io account is already linked to another user
       const itchioUser2 = await User.findOne({ itchioId: itchioUser.id });
       if (itchioUser2 && itchioUser2._id.toString() !== linkingUserId) {
-        return res.status(400).json({
-          error: 'This itch.io account is already linked to another user',
-          redirectUrl: '/profile?error=already_linked'
+        // Check if the conflicting account is a "dummy" account (only itch.io login, minimal usage)
+        const isDummyAccount =
+          itchioUser2.provider === 'itchio' && // Only itch.io login
+          !itchioUser2.password && // No password set
+          !itchioUser2.googleId && // No other OAuth
+          !itchioUser2.discordId;
+
+        // Store conflict info in session for handling
+        return res.status(409).json({
+          error: 'This itch.io account is already linked to another account',
+          conflictInfo: {
+            existingAccountId: itchioUser2._id,
+            existingUsername: itchioUser2.username,
+            isDummyAccount,
+            message: isDummyAccount
+              ? 'You have an old itch.io login account. Would you like to delete it and link itch.io to your current account instead?'
+              : 'This itch.io account is already linked to another active user account.'
+          },
+          redirectUrl: '/profile?error=account_conflict'
         });
       }
 
