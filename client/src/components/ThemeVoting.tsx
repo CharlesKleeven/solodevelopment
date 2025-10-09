@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { themeAPI } from '../services/api';
 import './themeVoting.css';
 
@@ -19,11 +20,14 @@ interface ThemeVotingProps {
 
 const ThemeVoting: React.FC<ThemeVotingProps> = ({ jamId, votingDeadline, isVotingOpen, votingRoundName }) => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [themes, setThemes] = useState<Theme[]>([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [lastSaved, setLastSaved] = useState<Date | null>(null);
     const [votedCount, setVotedCount] = useState(0);
+    const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+    const [showVerifyPrompt, setShowVerifyPrompt] = useState(false);
     const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     // Fetch themes
@@ -56,7 +60,27 @@ const ThemeVoting: React.FC<ThemeVotingProps> = ({ jamId, votingDeadline, isVoti
 
     // Handle vote
     const handleVote = useCallback(async (themeId: string, vote: -1 | 0 | 1) => {
-        if (!user || !isVotingOpen) return;
+        // Check if voting is open
+        if (!isVotingOpen) return;
+
+        // Check if user is logged in
+        if (!user) {
+            setShowLoginPrompt(true);
+            setTimeout(() => {
+                setShowLoginPrompt(false);
+                navigate('/login');
+            }, 2000);
+            return;
+        }
+
+        // Check if user is email verified
+        if (!user.emailVerified) {
+            setShowVerifyPrompt(true);
+            setTimeout(() => {
+                setShowVerifyPrompt(false);
+            }, 3000);
+            return;
+        }
 
         // Get current vote for this theme
         const theme = themes.find(t => t.id === themeId);
@@ -111,7 +135,7 @@ const ThemeVoting: React.FC<ThemeVotingProps> = ({ jamId, votingDeadline, isVoti
                 setSaving(false);
             }
         }, 500); // 500ms debounce
-    }, [user, isVotingOpen, jamId, themes]);
+    }, [user, isVotingOpen, jamId, themes, navigate]);
 
 
     // Calculate time left
@@ -145,44 +169,8 @@ const ThemeVoting: React.FC<ThemeVotingProps> = ({ jamId, votingDeadline, isVoti
         return null;
     }
 
-    if (!user) {
-        return (
-            <section className="theme-voting-section">
-                <div className="container">
-                    <div className="theme-voting">
-                        <div className="voting-header">
-                            <h3>// themes {votingRoundName && <span className="voting-round">({votingRoundName})</span>}</h3>
-                        </div>
-                        <div className="verify-prompt">
-                            <span className="verify-icon">[!]</span>
-                            <span>sign in to participate in theme voting</span>
-                            <a href="/login" className="verify-link">→ sign in</a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        );
-    }
-
-    // Check if user is verified
-    if (!user.emailVerified) {
-        return (
-            <section className="theme-voting-section">
-                <div className="container">
-                    <div className="theme-voting">
-                        <div className="voting-header">
-                            <h3>// themes {votingRoundName && <span className="voting-round">({votingRoundName})</span>}</h3>
-                        </div>
-                        <div className="verify-prompt">
-                            <span className="verify-icon">[!]</span>
-                            <span>verify your email to participate in theme voting</span>
-                            <a href="/verify-email" className="verify-link">→ verify email</a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        );
-    }
+    // Determine if user can vote
+    const canVote = user && user.emailVerified;
 
     return (
         <section className="theme-voting-section">
@@ -198,6 +186,27 @@ const ThemeVoting: React.FC<ThemeVotingProps> = ({ jamId, votingDeadline, isVoti
             {!isVotingOpen && (
                 <div className="voting-closed">
                     voting has ended for this jam
+                </div>
+            )}
+
+            {showLoginPrompt && (
+                <div className="auth-prompt">
+                    <span className="prompt-icon">[!]</span>
+                    <span>Sign in to vote on themes - redirecting...</span>
+                </div>
+            )}
+
+            {showVerifyPrompt && (
+                <div className="auth-prompt">
+                    <span className="prompt-icon">[!]</span>
+                    <span>Verify your email to participate in voting</span>
+                    <a href="/verify-email" className="prompt-link">→ verify email</a>
+                </div>
+            )}
+
+            {!user && !showLoginPrompt && (
+                <div className="auth-hint">
+                    <a href="/login" className="hint-link">Sign in to vote</a>
                 </div>
             )}
 
