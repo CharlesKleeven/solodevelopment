@@ -296,83 +296,75 @@
     border-radius: var(--radius-md);
 }
 
-/* Connected Accounts */
-.connected-accounts {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
+/* Connected Accounts - Compact */
+.compact-accounts {
+    margin-bottom: var(--space-4);
 }
 
-.account-item {
+.compact-accounts h3 {
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-2);
+    color: var(--text-tertiary);
+}
+
+.accounts-row {
     display: flex;
-    justify-content: space-between;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.account-badge {
+    display: inline-flex;
     align-items: center;
-    padding: var(--space-3) var(--space-4);
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
     background: var(--bg-secondary);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
     transition: all var(--transition);
 }
 
-.account-item.connected {
-    background: var(--bg-secondary);
+.account-badge.connected {
     border-color: var(--primary-alpha);
+    background: var(--bg-secondary);
 }
 
-.account-info {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
+.account-badge .provider-name {
+    color: var(--text-secondary);
 }
 
-.provider-icon {
-    font-size: 1.25rem;
-    display: flex;
+.account-badge.connected .provider-name {
+    color: var(--primary);
+}
+
+.unlink-btn, .connect-link {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-}
-
-.provider-name {
-    font-weight: 500;
-    color: var(--text-primary);
-}
-
-.connection-status {
-    font-size: var(--text-sm);
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    margin: 0;
+    background: none;
+    border: none;
     color: var(--text-tertiary);
-    margin-left: var(--space-2);
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color var(--transition);
 }
 
-.connection-status.connected {
-    color: var(--primary);
-    font-weight: 500;
-}
-
-.account-action {
-    display: flex;
-    align-items: center;
-}
-
-.account-action .btn {
-    padding: var(--space-1) var(--space-3);
-    font-size: var(--text-sm);
-}
-
-.account-action .btn-danger {
-    background: transparent;
+.unlink-btn:hover:not(:disabled) {
     color: var(--color-error, #ef4444);
-    border: 1px solid var(--color-error, #ef4444);
 }
 
-.account-action .btn-danger:hover:not(:disabled) {
-    background: var(--color-error, #ef4444);
-    color: white;
+.connect-link:hover {
+    color: var(--primary);
 }
 
-.account-action .btn-danger:disabled {
-    opacity: 0.5;
+.unlink-btn:disabled {
+    opacity: 0.3;
     cursor: not-allowed;
 }
 

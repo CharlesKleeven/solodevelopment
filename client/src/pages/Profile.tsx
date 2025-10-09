@@ -280,6 +280,98 @@ const Profile: React.FC = () => {
                         </div>
                     )}
 
+                    {/* Connected Accounts Section - Compact and at top */}
+                    {isEditing && (
+                        <div className="profile-section compact-accounts">
+                            <h3>Connected Accounts</h3>
+                            <div className="accounts-row">
+                                <div className={`account-badge ${user?.connectedProviders?.google ? 'connected' : ''}`}>
+                                    <span className="provider-name">Google</span>
+                                    {user?.connectedProviders?.google ? (
+                                        <button
+                                            onClick={async () => {
+                                                if (window.confirm('Unlink Google account?')) {
+                                                    try {
+                                                        setError(null);
+                                                        await profileAPI.unlinkProvider('google');
+                                                        await refreshUser();
+                                                    } catch (error: any) {
+                                                        setError(error.response?.data?.error || 'Failed to unlink');
+                                                    }
+                                                }
+                                            }}
+                                            className="unlink-btn"
+                                            disabled={user?.provider === 'google' && !user?.connectedProviders?.discord && !user?.connectedProviders?.itchio}
+                                            title={user?.provider === 'google' && !user?.connectedProviders?.discord && !user?.connectedProviders?.itchio ? 'Cannot unlink your only login method' : ''}
+                                        >
+                                            ✕
+                                        </button>
+                                    ) : (
+                                        <a href={`${API_BASE_URL}/api/auth/link/google`} className="connect-link">
+                                            +
+                                        </a>
+                                    )}
+                                </div>
+
+                                <div className={`account-badge ${user?.connectedProviders?.discord ? 'connected' : ''}`}>
+                                    <span className="provider-name">Discord</span>
+                                    {user?.connectedProviders?.discord ? (
+                                        <button
+                                            onClick={async () => {
+                                                if (window.confirm('Unlink Discord account?')) {
+                                                    try {
+                                                        setError(null);
+                                                        await profileAPI.unlinkProvider('discord');
+                                                        await refreshUser();
+                                                    } catch (error: any) {
+                                                        setError(error.response?.data?.error || 'Failed to unlink');
+                                                    }
+                                                }
+                                            }}
+                                            className="unlink-btn"
+                                            disabled={user?.provider === 'discord' && !user?.connectedProviders?.google && !user?.connectedProviders?.itchio}
+                                            title={user?.provider === 'discord' && !user?.connectedProviders?.google && !user?.connectedProviders?.itchio ? 'Cannot unlink your only login method' : ''}
+                                        >
+                                            ✕
+                                        </button>
+                                    ) : (
+                                        <a href={`${API_BASE_URL}/api/auth/link/discord`} className="connect-link">
+                                            +
+                                        </a>
+                                    )}
+                                </div>
+
+                                <div className={`account-badge ${user?.connectedProviders?.itchio ? 'connected' : ''}`}>
+                                    <span className="provider-name">itch.io</span>
+                                    {user?.connectedProviders?.itchio ? (
+                                        <button
+                                            onClick={async () => {
+                                                if (window.confirm('Unlink itch.io account?')) {
+                                                    try {
+                                                        setError(null);
+                                                        await profileAPI.unlinkProvider('itchio');
+                                                        await refreshUser();
+                                                    } catch (error: any) {
+                                                        setError(error.response?.data?.error || 'Failed to unlink');
+                                                    }
+                                                }
+                                            }}
+                                            className="unlink-btn"
+                                            disabled={user?.provider === 'itchio' && !user?.connectedProviders?.google && !user?.connectedProviders?.discord}
+                                            title={user?.provider === 'itchio' && !user?.connectedProviders?.google && !user?.connectedProviders?.discord ? 'Cannot unlink your only login method' : ''}
+                                        >
+                                            ✕
+                                        </button>
+                                    ) : (
+                                        <a href={`${API_BASE_URL}/api/auth/link/itchio`} className="connect-link">
+                                            +
+                                        </a>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Bio Section - Always show */}
                     <div className="profile-section">
                         <h3>About</h3>
@@ -301,144 +393,6 @@ const Profile: React.FC = () => {
                                 {bio || 'No bio added yet.'}
                             </p>
                         )}
-                    </div>
-
-                    {/* Connected Accounts Section */}
-                    <div className="profile-section">
-                        <h3>Connected Accounts</h3>
-                        <div className="connected-accounts">
-                            <div className={`account-item ${user?.connectedProviders?.google ? 'connected' : 'not-connected'}`}>
-                                <div className="account-info">
-                                    <span className="provider-icon">🔵</span>
-                                    <span className="provider-name">Google</span>
-                                    {user?.connectedProviders?.google ? (
-                                        <span className="connection-status connected">✓ Connected</span>
-                                    ) : (
-                                        <span className="connection-status">Not connected</span>
-                                    )}
-                                </div>
-                                {isEditing && (
-                                    <div className="account-action">
-                                        {user?.connectedProviders?.google ? (
-                                            <button
-                                                onClick={async () => {
-                                                    if (window.confirm('Are you sure you want to unlink your Google account?')) {
-                                                        try {
-                                                            setError(null);
-                                                            const response = await profileAPI.unlinkProvider('google');
-                                                            await refreshUser();
-                                                            setError(null);
-                                                        } catch (error: any) {
-                                                            setError(error.response?.data?.error || 'Failed to unlink Google account');
-                                                        }
-                                                    }
-                                                }}
-                                                className="btn btn-sm btn-danger"
-                                                disabled={user?.provider === 'google' && !user?.connectedProviders?.discord && !user?.connectedProviders?.itchio}
-                                                title={user?.provider === 'google' && !user?.connectedProviders?.discord && !user?.connectedProviders?.itchio ? 'Cannot unlink your only login method' : 'Unlink Google account'}
-                                            >
-                                                Unlink
-                                            </button>
-                                        ) : (
-                                            <a
-                                                href={`${API_BASE_URL}/api/auth/link/google`}
-                                                className="btn btn-sm btn-secondary"
-                                            >
-                                                Connect
-                                            </a>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className={`account-item ${user?.connectedProviders?.discord ? 'connected' : 'not-connected'}`}>
-                                <div className="account-info">
-                                    <span className="provider-icon">💜</span>
-                                    <span className="provider-name">Discord</span>
-                                    {user?.connectedProviders?.discord ? (
-                                        <span className="connection-status connected">✓ Connected</span>
-                                    ) : (
-                                        <span className="connection-status">Not connected</span>
-                                    )}
-                                </div>
-                                {isEditing && (
-                                    <div className="account-action">
-                                        {user?.connectedProviders?.discord ? (
-                                            <button
-                                                onClick={async () => {
-                                                    if (window.confirm('Are you sure you want to unlink your Discord account?')) {
-                                                        try {
-                                                            setError(null);
-                                                            const response = await profileAPI.unlinkProvider('discord');
-                                                            await refreshUser();
-                                                            setError(null);
-                                                        } catch (error: any) {
-                                                            setError(error.response?.data?.error || 'Failed to unlink Discord account');
-                                                        }
-                                                    }
-                                                }}
-                                                className="btn btn-sm btn-danger"
-                                                disabled={user?.provider === 'discord' && !user?.connectedProviders?.google && !user?.connectedProviders?.itchio}
-                                                title={user?.provider === 'discord' && !user?.connectedProviders?.google && !user?.connectedProviders?.itchio ? 'Cannot unlink your only login method' : 'Unlink Discord account'}
-                                            >
-                                                Unlink
-                                            </button>
-                                        ) : (
-                                            <a
-                                                href={`${API_BASE_URL}/api/auth/link/discord`}
-                                                className="btn btn-sm btn-secondary"
-                                            >
-                                                Connect
-                                            </a>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className={`account-item ${user?.connectedProviders?.itchio ? 'connected' : 'not-connected'}`}>
-                                <div className="account-info">
-                                    <span className="provider-icon">🎮</span>
-                                    <span className="provider-name">itch.io</span>
-                                    {user?.connectedProviders?.itchio ? (
-                                        <span className="connection-status connected">✓ Connected</span>
-                                    ) : (
-                                        <span className="connection-status">Not connected</span>
-                                    )}
-                                </div>
-                                {isEditing && (
-                                    <div className="account-action">
-                                        {user?.connectedProviders?.itchio ? (
-                                            <button
-                                                onClick={async () => {
-                                                    if (window.confirm('Are you sure you want to unlink your itch.io account?')) {
-                                                        try {
-                                                            setError(null);
-                                                            const response = await profileAPI.unlinkProvider('itchio');
-                                                            await refreshUser();
-                                                            setError(null);
-                                                        } catch (error: any) {
-                                                            setError(error.response?.data?.error || 'Failed to unlink itch.io account');
-                                                        }
-                                                    }
-                                                }}
-                                                className="btn btn-sm btn-danger"
-                                                disabled={user?.provider === 'itchio' && !user?.connectedProviders?.google && !user?.connectedProviders?.discord}
-                                                title={user?.provider === 'itchio' && !user?.connectedProviders?.google && !user?.connectedProviders?.discord ? 'Cannot unlink your only login method' : 'Unlink itch.io account'}
-                                            >
-                                                Unlink
-                                            </button>
-                                        ) : (
-                                            <a
-                                                href={`${API_BASE_URL}/api/auth/link/itchio`}
-                                                className="btn btn-sm btn-secondary"
-                                            >
-                                                Connect
-                                            </a>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
                     </div>
 
                     {/* Email Section - Always show */}
