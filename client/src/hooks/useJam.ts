@@ -15,6 +15,7 @@ interface JamData {
     timeLeft: string;
     status: 'active' | 'ended' | 'upcoming';
     isVotingOpen?: boolean;
+    votingRoundName?: string;
 }
 
 export const useJam = () => {

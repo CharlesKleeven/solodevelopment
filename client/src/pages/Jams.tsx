@@ -191,10 +191,11 @@ const Jams = () => {
 
       {/* Theme Voting Section - Component handles its own rendering */}
       {jamData && jamData.status === 'upcoming' && (
-        <ThemeVoting 
-          jamId={jamData.id || 'summer-jam-2025'} 
+        <ThemeVoting
+          jamId={jamData.id || 'summer-jam-2025'}
           votingDeadline={new Date(jamData.startDate)}
           isVotingOpen={jamData.isVotingOpen ?? true}
+          votingRoundName={jamData.votingRoundName}
         />
       )}
 

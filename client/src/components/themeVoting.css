@@ -30,6 +30,12 @@
     font-family: monospace;
 }
 
+.voting-round {
+    color: var(--primary);
+    font-weight: 600;
+    margin-left: var(--space-2);
+}
+
 .voting-deadline {
     font-size: var(--text-sm);
     color: var(--text-tertiary);

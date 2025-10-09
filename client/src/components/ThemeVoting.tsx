@@ -14,9 +14,10 @@ interface ThemeVotingProps {
     jamId: string;
     votingDeadline?: Date;
     isVotingOpen: boolean;
+    votingRoundName?: string;
 }
 
-const ThemeVoting: React.FC<ThemeVotingProps> = ({ jamId, votingDeadline, isVotingOpen }) => {
+const ThemeVoting: React.FC<ThemeVotingProps> = ({ jamId, votingDeadline, isVotingOpen, votingRoundName }) => {
     const { user } = useAuth();
     const [themes, setThemes] = useState<Theme[]>([]);
     const [loading, setLoading] = useState(true);
@@ -150,7 +151,7 @@ const ThemeVoting: React.FC<ThemeVotingProps> = ({ jamId, votingDeadline, isVoti
                 <div className="container">
                     <div className="theme-voting">
                         <div className="voting-header">
-                            <h3>// themes</h3>
+                            <h3>// themes {votingRoundName && <span className="voting-round">({votingRoundName})</span>}</h3>
                         </div>
                         <div className="verify-prompt">
                             <span className="verify-icon">[!]</span>
@@ -170,7 +171,7 @@ const ThemeVoting: React.FC<ThemeVotingProps> = ({ jamId, votingDeadline, isVoti
                 <div className="container">
                     <div className="theme-voting">
                         <div className="voting-header">
-                            <h3>// themes</h3>
+                            <h3>// themes {votingRoundName && <span className="voting-round">({votingRoundName})</span>}</h3>
                         </div>
                         <div className="verify-prompt">
                             <span className="verify-icon">[!]</span>
@@ -188,7 +189,7 @@ const ThemeVoting: React.FC<ThemeVotingProps> = ({ jamId, votingDeadline, isVoti
             <div className="container">
                 <div className="theme-voting">
             <div className="voting-header">
-                <h3>// themes</h3>
+                <h3>// themes {votingRoundName && <span className="voting-round">({votingRoundName})</span>}</h3>
                 {votingDeadline && (
                     <span className="voting-deadline">{getTimeLeft()}</span>
                 )}

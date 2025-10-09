@@ -81,7 +81,8 @@ export const getCurrentJamFromDB = async (req: Request, res: Response) => {
             submissions: jam.submissions,
             timeLeft,
             status: autoStatus,
-            isVotingOpen: jam.isVotingOpen
+            isVotingOpen: jam.isVotingOpen,
+            votingRoundName: jam.votingRoundName
         };
 
         res.json(jamData);

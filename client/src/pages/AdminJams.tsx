@@ -18,6 +18,7 @@ interface Jam {
     submissions: number;
     isCurrent: boolean;
     isVotingOpen?: boolean;
+    votingRoundName?: string;
 }
 
 interface Theme {
@@ -59,6 +60,8 @@ const AdminJams: React.FC = () => {
     const [showBackups, setShowBackups] = useState(false);
     const [backups, setBackups] = useState<Backup[]>([]);
     const [isSubmittingThemes, setIsSubmittingThemes] = useState(false);
+    const [votingRoundName, setVotingRoundName] = useState('');
+    const [isEditingRoundName, setIsEditingRoundName] = useState(false);
 
     // Form state
     const [formData, setFormData] = useState<Partial<Jam>>({
@@ -84,6 +87,7 @@ const AdminJams: React.FC = () => {
             if (current) {
                 setCurrentJam(current);
                 setIsVotingOpen(current.isVotingOpen ?? false);
+                setVotingRoundName(current.votingRoundName || '');
             }
         } catch (error) {
             if (process.env.NODE_ENV === 'development') {
@@ -117,18 +121,31 @@ const AdminJams: React.FC = () => {
     };
 
     const handleToggleVoting = async () => {
-        const confirmMessage = isVotingOpen 
+        const confirmMessage = isVotingOpen
             ? 'Are you sure you want to close voting? Users will no longer be able to vote on themes.'
             : 'Are you sure you want to open voting? Users will be able to vote on themes.';
-            
+
         if (!window.confirm(confirmMessage)) {
             return;
         }
-        
+
         try {
             const response = await jamAPI.toggleVoting();
             setIsVotingOpen(response.data.isVotingOpen);
             setMessage(response.data.message);
+        } catch (error: any) {
+            setMessage(`Error: ${error.response?.data?.error || error.message}`);
+        }
+    };
+
+    const handleSaveVotingRoundName = async () => {
+        if (!currentJam) return;
+
+        try {
+            await jamAPI.updateJam(currentJam.id, { votingRoundName });
+            setMessage('Voting round name updated successfully');
+            setIsEditingRoundName(false);
+            fetchCurrentJam(); // Refresh the jam data
         } catch (error: any) {
             setMessage(`Error: ${error.response?.data?.error || error.message}`);
         }
@@ -245,13 +262,53 @@ const AdminJams: React.FC = () => {
                                 <p><strong>Participants:</strong> {currentJam.participants}</p>
                                 <div className="voting-status-row">
                                     <p><strong>Voting:</strong> <span className={`status-badge ${isVotingOpen ? 'open' : 'closed'}`}>{isVotingOpen ? 'Open' : 'Closed'}</span></p>
-                                    <button 
+                                    <button
                                         onClick={handleToggleVoting}
                                         className={`btn btn-sm ${isVotingOpen ? 'btn-danger' : 'btn-success'}`}
                                         title={isVotingOpen ? 'Close voting' : 'Open voting'}
                                     >
                                         {isVotingOpen ? 'Close Voting' : 'Open Voting'}
                                     </button>
+                                </div>
+                                <div className="voting-round-row">
+                                    <p><strong>Voting Round:</strong> {!isEditingRoundName ? (
+                                        <>
+                                            <span>{votingRoundName || 'Not set'}</span>
+                                            <button
+                                                onClick={() => setIsEditingRoundName(true)}
+                                                className="btn btn-sm btn-link"
+                                                style={{ marginLeft: '10px' }}
+                                            >
+                                                Edit
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <input
+                                                type="text"
+                                                value={votingRoundName}
+                                                onChange={(e) => setVotingRoundName(e.target.value)}
+                                                placeholder="e.g., Round 2, Final Round"
+                                                style={{ marginLeft: '10px', marginRight: '10px' }}
+                                            />
+                                            <button
+                                                onClick={handleSaveVotingRoundName}
+                                                className="btn btn-sm btn-success"
+                                            >
+                                                Save
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setIsEditingRoundName(false);
+                                                    setVotingRoundName(currentJam?.votingRoundName || '');
+                                                }}
+                                                className="btn btn-sm btn-secondary"
+                                                style={{ marginLeft: '5px' }}
+                                            >
+                                                Cancel
+                                            </button>
+                                        </>
+                                    )}</p>
                                 </div>
                             </div>
                             <div className="jam-actions">
