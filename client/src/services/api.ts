@@ -89,6 +89,11 @@ export const profileAPI = {
         const response = await api.put('/api/auth/profile', data);
         return response.data;
     },
+
+    unlinkProvider: async (provider: 'google' | 'discord' | 'itchio') => {
+        const response = await api.delete(`/api/auth/provider/${provider}`);
+        return response.data;
+    },
 };
 
 // Game API endpoints

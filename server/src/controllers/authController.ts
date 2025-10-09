@@ -182,7 +182,13 @@ export const me = async (req: Request, res: Response) => {
         profileVisibility: user.profileVisibility,
         createdAt: user.createdAt,
         isAdmin: user.isAdmin || false,
-        emailVerified: user.emailVerified || false
+        emailVerified: user.emailVerified || false,
+        connectedProviders: {
+          google: !!user.googleId,
+          discord: !!user.discordId,
+          itchio: !!user.itchioId
+        },
+        provider: user.provider
       }
     });
   } catch (error) {
@@ -211,7 +217,13 @@ export const getProfile = async (req: Request, res: Response) => {
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
         isAdmin: user.isAdmin || false,
-        emailVerified: user.emailVerified || false
+        emailVerified: user.emailVerified || false,
+        connectedProviders: {
+          google: !!user.googleId,
+          discord: !!user.discordId,
+          itchio: !!user.itchioId
+        },
+        provider: user.provider
       }
     });
   } catch (error) {
@@ -287,7 +299,13 @@ export const updateProfile = async (req: Request, res: Response) => {
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
         isAdmin: user.isAdmin || false,
-        emailVerified: user.emailVerified || false
+        emailVerified: user.emailVerified || false,
+        connectedProviders: {
+          google: !!user.googleId,
+          discord: !!user.discordId,
+          itchio: !!user.itchioId
+        },
+        provider: user.provider
       }
     });
 
@@ -403,5 +421,98 @@ export const resetPassword = async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Reset password error:', error);
     res.status(500).json({ error: 'Server error during password reset' });
+  }
+}
+
+// Unlink OAuth provider
+export const unlinkProvider = async (req: Request, res: Response) => {
+  try {
+    const userId = (req.user as any)?.userId;
+    const { provider } = req.params;
+
+    if (!['google', 'discord', 'itchio'].includes(provider)) {
+      return res.status(400).json({ error: 'Invalid provider' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Count connected providers
+    const connectedCount = [
+      !!user.googleId,
+      !!user.discordId,
+      !!user.itchioId,
+      !!user.password // Local auth counts as a provider
+    ].filter(Boolean).length;
+
+    // Don't allow unlinking if it's the only auth method
+    if (connectedCount <= 1) {
+      return res.status(400).json({
+        error: 'Cannot unlink your only authentication method. Connect another provider first.'
+      });
+    }
+
+    // Check if this is the provider they're trying to unlink
+    const providerField = `${provider}Id` as keyof typeof user;
+    if (!user[providerField]) {
+      return res.status(400).json({ error: `${provider} account is not connected` });
+    }
+
+    // Unlink the provider
+    switch (provider) {
+      case 'google':
+        user.googleId = undefined;
+        break;
+      case 'discord':
+        user.discordId = undefined;
+        break;
+      case 'itchio':
+        user.itchioId = undefined;
+        break;
+    }
+
+    // Update provider field if needed
+    const remainingProviders = [];
+    if (user.googleId) remainingProviders.push('google');
+    if (user.discordId) remainingProviders.push('discord');
+    if (user.itchioId) remainingProviders.push('itchio');
+    if (user.password) remainingProviders.push('local');
+
+    if (remainingProviders.length === 1) {
+      user.provider = remainingProviders[0] as any;
+    } else if (remainingProviders.length > 1) {
+      user.provider = 'mixed';
+    }
+
+    await user.save();
+
+    res.json({
+      message: `${provider} account unlinked successfully`,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        displayName: user.displayName,
+        bio: user.bio || '',
+        links: user.links || [],
+        profileVisibility: user.profileVisibility,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        isAdmin: user.isAdmin || false,
+        emailVerified: user.emailVerified || false,
+        connectedProviders: {
+          google: !!user.googleId,
+          discord: !!user.discordId,
+          itchio: !!user.itchioId
+        },
+        provider: user.provider
+      }
+    });
+
+  } catch (error) {
+    console.error('Unlink provider error:', error);
+    res.status(500).json({ error: 'Server error during provider unlinking' });
   }
 };

@@ -13,6 +13,12 @@ interface User {
   role?: string;
   isAdmin?: boolean;
   emailVerified?: boolean;
+  connectedProviders?: {
+    google: boolean;
+    discord: boolean;
+    itchio: boolean;
+  };
+  provider?: 'local' | 'google' | 'discord' | 'itchio' | 'mixed';
 }
 
 interface AuthContextType {

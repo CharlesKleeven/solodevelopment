@@ -1,7 +1,7 @@
 import express from 'express';
 import rateLimit from 'express-rate-limit';
 import passport from '../config/passport';
-import { login, logout, loginValidation, me, getProfile, updateProfile, updateProfileValidation, forgotPassword, resetPassword, forgotPasswordValidation, resetPasswordValidation } from '../controllers/authController';
+import { login, logout, loginValidation, me, getProfile, updateProfile, updateProfileValidation, forgotPassword, resetPassword, forgotPasswordValidation, resetPasswordValidation, unlinkProvider } from '../controllers/authController';
 // Use Express Request type with user property added via type declaration
 import { authenticateToken } from '../middleware/auth';
 import jwt from 'jsonwebtoken';
@@ -427,11 +427,77 @@ router.post('/resend-verification', authLimiter, resendVerificationValidation, a
 });
 
 // OAuth helper function to handle JWT generation and redirection
-const handleOAuthCallback = (req: express.Request, res: express.Response) => {
+const handleOAuthCallback = async (req: express.Request, res: express.Response) => {
     try {
         const user = req.user as any;
+        const session = (req as any).session;
+
         if (!user) {
             return res.redirect(`${process.env.FRONTEND_URL}/login?error=auth_failed`);
+        }
+
+        // Check if this is an account linking operation
+        if (session?.linkingAccount && session?.linkingUserId) {
+            const linkingProvider = session.linkingProvider;
+            const linkingUserId = session.linkingUserId;
+
+            // Clear the session flags
+            delete session.linkingAccount;
+            delete session.linkingProvider;
+            delete session.linkingUserId;
+
+            // Find the logged-in user who initiated the linking
+            const currentUser = await User.findById(linkingUserId);
+            if (!currentUser) {
+                return res.redirect(`${process.env.FRONTEND_URL}/profile?error=link_failed`);
+            }
+
+            // Link the OAuth account to the current user
+            const oauthUser = await User.findById(user._id);
+            if (!oauthUser) {
+                return res.redirect(`${process.env.FRONTEND_URL}/profile?error=link_failed`);
+            }
+
+            // Update the current user with the OAuth provider ID
+            switch(linkingProvider) {
+                case 'google':
+                    if (oauthUser.googleId) {
+                        currentUser.googleId = oauthUser.googleId;
+                    }
+                    break;
+                case 'discord':
+                    if (oauthUser.discordId) {
+                        currentUser.discordId = oauthUser.discordId;
+                    }
+                    break;
+                case 'itchio':
+                    if (oauthUser.itchioId) {
+                        currentUser.itchioId = oauthUser.itchioId;
+                    }
+                    break;
+            }
+
+            // Update provider field to 'mixed' if they have multiple providers
+            const hasMultipleProviders = [
+                !!currentUser.googleId,
+                !!currentUser.discordId,
+                !!currentUser.itchioId,
+                !!currentUser.password
+            ].filter(Boolean).length > 1;
+
+            if (hasMultipleProviders) {
+                currentUser.provider = 'mixed';
+            }
+
+            await currentUser.save();
+
+            // Delete the temporary OAuth user if it's different from the current user
+            if (oauthUser._id.toString() !== currentUser._id.toString()) {
+                await User.deleteOne({ _id: oauthUser._id });
+            }
+
+            // Redirect back to profile with success message
+            return res.redirect(`${process.env.FRONTEND_URL}/profile?linked=${linkingProvider}`);
         }
 
         // Check if this is a new user who needs to select username
@@ -463,11 +529,31 @@ const handleOAuthCallback = (req: express.Request, res: express.Response) => {
     }
 };
 
+// Account linking middleware to track linking state
+const setLinkingState = (provider: string) => (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if ((req as any).user) {
+        // User is logged in, so this is a linking operation
+        (req as any).session.linkingAccount = true;
+        (req as any).session.linkingProvider = provider;
+        (req as any).session.linkingUserId = (req as any).user.userId;
+    }
+    next();
+};
+
 // Google OAuth routes
 // GET /api/auth/google: initiate Google OAuth
-router.get('/google', 
-    passport.authenticate('google', { 
-        scope: ['profile', 'email'] 
+router.get('/google',
+    passport.authenticate('google', {
+        scope: ['profile', 'email']
+    })
+);
+
+// GET /api/auth/link/google: link Google account (requires auth)
+router.get('/link/google',
+    authenticateToken,
+    setLinkingState('google'),
+    passport.authenticate('google', {
+        scope: ['profile', 'email']
     })
 );
 
@@ -482,6 +568,15 @@ router.get('/google/callback',
 // Discord OAuth routes
 // GET /api/auth/discord: initiate Discord OAuth
 router.get('/discord',
+    passport.authenticate('discord', {
+        scope: ['identify', 'email']
+    })
+);
+
+// GET /api/auth/link/discord: link Discord account (requires auth)
+router.get('/link/discord',
+    authenticateToken,
+    setLinkingState('discord'),
     passport.authenticate('discord', {
         scope: ['identify', 'email']
     })
@@ -642,5 +737,8 @@ router.post('/oauth/check-username',
         }
     }
 );
+
+// DELETE /api/auth/provider/:provider - unlink OAuth provider
+router.delete('/provider/:provider', authenticateToken, unlinkProvider);
 
 export default router;
