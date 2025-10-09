@@ -633,6 +633,52 @@ router.get('/link/itchio', authenticateToken, (req: express.Request, res: expres
     res.redirect(itchioAuthUrl);
 });
 
+// DELETE /api/auth/oauth/conflict/:accountId: delete conflicting OAuth account for merge
+router.delete('/oauth/conflict/:accountId', authenticateToken, async (req: express.Request, res: express.Response) => {
+    try {
+        const { accountId } = req.params;
+        const currentUserId = (req as any).user.userId;
+
+        // Find the conflicting account
+        const conflictingAccount = await User.findById(accountId);
+
+        if (!conflictingAccount) {
+            return res.status(404).json({ error: 'Account not found' });
+        }
+
+        // Verify this is a "dummy" OAuth-only account
+        const isDummyAccount =
+            !conflictingAccount.password &&
+            [conflictingAccount.googleId, conflictingAccount.discordId, conflictingAccount.itchioId]
+                .filter(Boolean).length === 1;
+
+        if (!isDummyAccount) {
+            return res.status(400).json({
+                error: 'Cannot delete account: Account has multiple authentication methods or is not an OAuth-only account'
+            });
+        }
+
+        // Store the OAuth IDs before deletion (for re-linking)
+        const oauthIds = {
+            googleId: conflictingAccount.googleId,
+            discordId: conflictingAccount.discordId,
+            itchioId: conflictingAccount.itchioId
+        };
+
+        // Delete the conflicting account
+        await User.deleteOne({ _id: accountId });
+
+        res.json({
+            success: true,
+            message: 'Conflicting account deleted. You can now retry linking.',
+            deletedOAuthIds: oauthIds
+        });
+    } catch (error) {
+        console.error('Error deleting conflicting account:', error);
+        res.status(500).json({ error: 'Failed to delete conflicting account' });
+    }
+});
+
 // Username selection endpoints for OAuth users
 // GET /api/auth/oauth/user-data: get temporary OAuth user data
 router.get('/oauth/user-data', (req: express.Request, res: express.Response) => {
