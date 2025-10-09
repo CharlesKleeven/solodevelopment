@@ -58,6 +58,12 @@ const Profile: React.FC = () => {
         if (linkError === 'link_failed') {
             setError('Failed to link account. Please try again.');
             navigate('/profile', { replace: true });
+        } else if (linkError === 'already_linked') {
+            setError('This account is already linked to another user.');
+            navigate('/profile', { replace: true });
+        } else if (linkError === 'already_yours') {
+            setError('This account is already linked to your profile.');
+            navigate('/profile', { replace: true });
         }
     }, [location, navigate, refreshUser]);
 

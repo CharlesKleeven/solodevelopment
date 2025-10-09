@@ -458,23 +458,41 @@ const handleOAuthCallback = async (req: express.Request, res: express.Response) 
                 return res.redirect(`${process.env.FRONTEND_URL}/profile?error=link_failed`);
             }
 
-            // Update the current user with the OAuth provider ID
-            switch(linkingProvider) {
-                case 'google':
-                    if (oauthUser.googleId) {
-                        currentUser.googleId = oauthUser.googleId;
-                    }
-                    break;
-                case 'discord':
-                    if (oauthUser.discordId) {
-                        currentUser.discordId = oauthUser.discordId;
-                    }
-                    break;
-                case 'itchio':
-                    if (oauthUser.itchioId) {
-                        currentUser.itchioId = oauthUser.itchioId;
-                    }
-                    break;
+            // SECURITY CHECK: If the OAuth user is different from current user,
+            // that means this OAuth account is already linked to another user
+            if (oauthUser._id.toString() !== currentUser._id.toString()) {
+                // Check if this is a newly created temp user or an existing user
+                const oauthCreatedRecently =
+                    oauthUser.createdAt &&
+                    (Date.now() - oauthUser.createdAt.getTime()) < 60000; // Created within last minute
+
+                if (!oauthCreatedRecently) {
+                    // This OAuth account belongs to another existing user
+                    return res.redirect(`${process.env.FRONTEND_URL}/profile?error=already_linked`);
+                }
+
+                // It's a newly created temp user, safe to link
+                // Update the current user with the OAuth provider ID
+                switch(linkingProvider) {
+                    case 'google':
+                        if (oauthUser.googleId) {
+                            currentUser.googleId = oauthUser.googleId;
+                        }
+                        break;
+                    case 'discord':
+                        if (oauthUser.discordId) {
+                            currentUser.discordId = oauthUser.discordId;
+                        }
+                        break;
+                    case 'itchio':
+                        if (oauthUser.itchioId) {
+                            currentUser.itchioId = oauthUser.itchioId;
+                        }
+                        break;
+                }
+            } else {
+                // User is trying to link an OAuth account they already have linked
+                return res.redirect(`${process.env.FRONTEND_URL}/profile?error=already_yours`);
             }
 
             // Update provider field to 'mixed' if they have multiple providers
