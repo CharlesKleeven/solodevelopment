@@ -611,6 +611,28 @@ router.get('/discord/callback',
 // Itch.io OAuth is handled via implicit flow - frontend redirects to itch.io
 // The callback is handled in separate itchioAuth.ts router
 
+// GET /api/auth/link/itchio: initiate itch.io account linking
+router.get('/link/itchio', authenticateToken, (req: express.Request, res: express.Response) => {
+    const userId = (req as any).user?.userId;
+    if (!userId) {
+        return res.redirect(`${process.env.FRONTEND_URL}/profile?error=auth_required`);
+    }
+
+    // Generate a state token for linking
+    const linkingState = jwt.sign(
+        { userId, linking: true },
+        process.env.JWT_SECRET!,
+        { expiresIn: '10m' }
+    );
+
+    // Redirect to itch.io OAuth with state parameter
+    const clientId = process.env.ITCHIO_CLIENT_ID;
+    const redirectUri = encodeURIComponent(`${process.env.FRONTEND_URL}/itchio-callback`);
+    const itchioAuthUrl = `https://itch.io/user/oauth/authorize?client_id=${clientId}&scope=profile%3Ame&response_type=token&redirect_uri=${redirectUri}&state=${linkingState}`;
+
+    res.redirect(itchioAuthUrl);
+});
+
 // Username selection endpoints for OAuth users
 // GET /api/auth/oauth/user-data: get temporary OAuth user data
 router.get('/oauth/user-data', (req: express.Request, res: express.Response) => {

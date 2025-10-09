@@ -18,24 +18,36 @@ const ItchioCallback: React.FC = () => {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // Extract access token from URL hash
+        // Extract access token and state from URL hash
         const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(hash);
         const accessToken = params.get('access_token');
+        const state = params.get('state');
 
         if (!accessToken) {
           throw new Error('No access token received from itch.io');
         }
 
-        // Send token to backend
+        // Send token and state to backend
         const response = await axios.post(
           `${API_BASE_URL}/api/auth/itchio/callback`,
-          { access_token: accessToken },
+          {
+            access_token: accessToken,
+            state: state
+          },
           { withCredentials: true }
         );
 
-        if (response.data.user) {
-          // Cookie is set by the backend (httpOnly)
+        // Check if this was a linking operation
+        if (response.data.redirectUrl) {
+          // Linking flow - redirect to the specified URL
+          setMessage(response.data.message || 'Account linked! Redirecting...');
+          await refreshUser();
+          setTimeout(() => {
+            window.location.href = response.data.redirectUrl;
+          }, 1000);
+        } else if (response.data.user) {
+          // Login flow - cookie is set by the backend (httpOnly)
           // Refresh user data in auth context
           await refreshUser();
 

@@ -3,6 +3,7 @@ import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
 import User from '../models/User';
+import { authenticateToken } from '../middleware/auth';
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ const oauthLimiter = rateLimit({
 // This will receive the access token from the frontend after implicit OAuth flow
 router.post('/callback', oauthLimiter, async (req, res) => {
   try {
-    const { access_token } = req.body;
+    const { access_token, state } = req.body;
 
     if (!access_token) {
       return res.status(400).json({ error: 'Access token required' });
@@ -56,7 +57,60 @@ router.post('/callback', oauthLimiter, async (req, res) => {
       return res.status(400).json({ error: 'Invalid user data from itch.io' });
     }
 
-    // Check if user already exists
+    // Check if this is a linking operation
+    let linkingUserId = null;
+    if (state) {
+      try {
+        const decoded = jwt.verify(state, process.env.JWT_SECRET!) as any;
+        if (decoded.linking && decoded.userId) {
+          linkingUserId = decoded.userId;
+        }
+      } catch (err) {
+        // Invalid state token, treat as normal login
+      }
+    }
+
+    // If linking, update the existing user
+    if (linkingUserId) {
+      const existingUser = await User.findById(linkingUserId);
+      if (!existingUser) {
+        return res.status(400).json({ error: 'User not found for linking' });
+      }
+
+      // Check if this itch.io account is already linked to another user
+      const itchioUser2 = await User.findOne({ itchioId: itchioUser.id });
+      if (itchioUser2 && itchioUser2._id.toString() !== linkingUserId) {
+        return res.status(400).json({
+          error: 'This itch.io account is already linked to another user',
+          redirectUrl: '/profile?error=already_linked'
+        });
+      }
+
+      // Link the itch.io account
+      existingUser.itchioId = itchioUser.id;
+
+      // Update provider to mixed if they have multiple providers
+      const hasMultipleProviders = [
+        !!existingUser.googleId,
+        !!existingUser.discordId,
+        true, // itch.io is being added
+        !!existingUser.password
+      ].filter(Boolean).length > 1;
+
+      if (hasMultipleProviders) {
+        existingUser.provider = 'mixed';
+      }
+
+      await existingUser.save();
+
+      return res.json({
+        success: true,
+        message: 'itch.io account linked successfully',
+        redirectUrl: '/profile?linked=itchio'
+      });
+    }
+
+    // Normal login flow - check if user already exists
     let user = await User.findOne({ itchioId: itchioUser.id });
 
     if (!user) {
