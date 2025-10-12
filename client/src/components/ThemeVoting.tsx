@@ -200,7 +200,13 @@ const ThemeVoting: React.FC<ThemeVotingProps> = ({ jamId, votingDeadline, isVoti
                 <div className="auth-prompt">
                     <span className="prompt-icon">[!]</span>
                     <span>Verify your email to participate in voting</span>
-                    <a href="/verify-email" className="prompt-link">→ verify email</a>
+                    <button
+                        onClick={() => window.location.href = '/verify-email'}
+                        className="prompt-link"
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                    >
+                        → send verification email
+                    </button>
                 </div>
             )}
 

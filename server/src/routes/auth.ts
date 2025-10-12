@@ -350,6 +350,72 @@ router.post('/verify-email-change', authLimiter, async (req: express.Request, re
     }
 });
 
+// POST /api/auth/resend-verification-authenticated: resend verification email for logged-in user
+router.post('/resend-verification-authenticated', authenticateToken, authLimiter, async (req: express.Request, res: express.Response) => {
+    try {
+        const userId = (req as any).user.userId;
+
+        // Find user by ID
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({
+                error: 'User not found'
+            });
+        }
+
+        // Check if already verified
+        if (user.emailVerified) {
+            return res.status(400).json({
+                error: 'Your email is already verified.'
+            });
+        }
+
+        // Check if user has an email
+        if (!user.email || user.email.includes('@oauth.local')) {
+            return res.status(400).json({
+                error: 'Please set an email address in your profile first.'
+            });
+        }
+
+        // Generate new verification token
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+
+        // Update token and expiration
+        user.emailVerificationToken = verificationToken;
+        user.emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+        await user.save();
+
+        // Send verification email
+        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
+
+        try {
+            await sendEmailVerificationEmail({
+                to: user.email,
+                username: user.displayName || user.username,
+                verificationUrl
+            });
+        } catch (emailError) {
+            // Reset the token if email fails
+            user.emailVerificationToken = undefined;
+            user.emailVerificationExpires = undefined;
+            await user.save();
+
+            console.error('Failed to send verification email:', emailError);
+            return res.status(500).json({ error: 'Failed to send verification email. Please try again.' });
+        }
+
+        res.json({
+            message: 'Verification email has been sent to ' + user.email
+        });
+
+    } catch (error) {
+        console.error('Resend verification error:', error);
+        res.status(500).json({ error: 'Server error during resend verification' });
+    }
+});
+
 // POST /api/auth/resend-verification: resend verification email
 router.post('/resend-verification', authLimiter, resendVerificationValidation, async (req: express.Request, res: express.Response) => {
     try {
@@ -376,15 +442,16 @@ router.post('/resend-verification', authLimiter, resendVerificationValidation, a
 
         // Check if already verified
         if (user.emailVerified) {
-            return res.status(400).json({ 
-                error: 'This email is already verified. You can log in.' 
+            return res.status(400).json({
+                error: 'This email is already verified. You can log in.'
             });
         }
 
-        // Check if user is OAuth user
-        if (user.provider !== 'local') {
-            return res.status(400).json({ 
-                error: 'OAuth accounts do not require email verification.' 
+        // Check if user is OAuth-only user (not mixed provider)
+        // Mixed provider users still need email verification for voting
+        if (user.provider !== 'local' && user.provider !== 'mixed' && !user.password) {
+            return res.status(400).json({
+                error: 'OAuth accounts do not require email verification.'
             });
         }
 
