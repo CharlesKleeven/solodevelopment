@@ -17,6 +17,7 @@ const VerifyEmail: React.FC = () => {
   const [email, setEmail] = useState('');
   const [resendLoading, setResendLoading] = useState(false);
   const [autoSent, setAutoSent] = useState(false);
+  const [needsRealEmail, setNeedsRealEmail] = useState(false);
 
   useEffect(() => {
     const token = searchParams.get('token');
@@ -25,18 +26,25 @@ const VerifyEmail: React.FC = () => {
     } else {
       // Check if user is logged in
       if (user && user.email && !user.emailVerified) {
-        setEmail(user.email);
-        setStatus('resend');
-        setMessage('Your email address needs verification. Click below to send a verification email.');
+        // Check if email is a placeholder
+        if (user.email.includes('@oauth.local')) {
+          setNeedsRealEmail(true);
+          setStatus('resend');
+          setMessage('You need to set a real email address first to participate in voting.');
+        } else {
+          setEmail(user.email);
+          setStatus('resend');
+          setMessage('Your email address needs verification. Click below to send a verification email.');
 
-        // Auto-send if coming from voting (has referrer)
-        const fromVoting = document.referrer && document.referrer.includes('/jam/');
-        if (fromVoting && !autoSent) {
-          setAutoSent(true);
-          // Automatically trigger send for logged-in users
-          setTimeout(() => {
-            handleResendVerificationAuto();
-          }, 500);
+          // Auto-send if coming from voting (has referrer)
+          const fromVoting = document.referrer && document.referrer.includes('/jam/');
+          if (fromVoting && !autoSent) {
+            setAutoSent(true);
+            // Automatically trigger send for logged-in users
+            setTimeout(() => {
+              handleResendVerificationAuto();
+            }, 500);
+          }
         }
       } else if (user && user.emailVerified) {
         setStatus('success');
@@ -89,8 +97,21 @@ const VerifyEmail: React.FC = () => {
     try {
       let response;
 
-      // Use authenticated endpoint for logged-in users
-      if (user && user.email) {
+      // Handle different cases
+      if (needsRealEmail && user) {
+        // User with placeholder email setting real email
+        if (!email || email.includes('@oauth.local')) return;
+
+        response = await fetch(`${API_BASE_URL}/api/auth/set-email-and-verify`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ email }),
+        });
+      } else if (user && user.email && !user.email.includes('@oauth.local')) {
+        // Use authenticated endpoint for logged-in users with real email
         response = await fetch(`${API_BASE_URL}/api/auth/resend-verification-authenticated`, {
           method: 'POST',
           headers: {
@@ -116,6 +137,10 @@ const VerifyEmail: React.FC = () => {
       if (response.ok) {
         setStatus('success');
         setMessage(data.message || 'Verification email has been sent! Check your inbox.');
+        // Refresh user data if email was updated
+        if (needsRealEmail) {
+          await refreshUser();
+        }
       } else {
         setMessage(data.error || 'Failed to resend verification email');
       }
@@ -202,8 +227,8 @@ const VerifyEmail: React.FC = () => {
 
           {status === 'resend' && (
             <form onSubmit={handleResendVerification} className="auth-form" style={{ marginTop: '20px' }}>
-              {user && user.email ? (
-                // Logged-in user - show their email and one-click send
+              {user && user.email && !needsRealEmail ? (
+                // Logged-in user with real email - show their email and one-click send
                 <>
                   <div className="form-group">
                     <label htmlFor="email">Your Email Address</label>
@@ -224,6 +249,33 @@ const VerifyEmail: React.FC = () => {
                     className="btn btn-primary btn-block"
                   >
                     {resendLoading ? 'Sending...' : 'Send Verification Email'}
+                  </button>
+                </>
+              ) : needsRealEmail ? (
+                // User with placeholder email - needs to set real email
+                <>
+                  <div className="form-group">
+                    <label htmlFor="email">Enter Your Email Address</label>
+                    <input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="form-control"
+                      placeholder="Enter your real email address"
+                      autoFocus
+                    />
+                    <small className="form-text text-muted" style={{ marginTop: '8px' }}>
+                      Your account was created via OAuth without an email. Please provide an email address to enable voting.
+                    </small>
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={resendLoading || !email || email.includes('@oauth.local')}
+                    className="btn btn-primary btn-block"
+                  >
+                    {resendLoading ? 'Setting up email...' : 'Set Email & Send Verification'}
                   </button>
                 </>
               ) : (

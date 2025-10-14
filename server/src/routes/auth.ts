@@ -350,6 +350,91 @@ router.post('/verify-email-change', authLimiter, async (req: express.Request, re
     }
 });
 
+// POST /api/auth/set-email-and-verify: set email for OAuth users with placeholder emails and send verification
+router.post('/set-email-and-verify', authenticateToken, authLimiter, async (req: express.Request, res: express.Response) => {
+    try {
+        const userId = (req as any).user.userId;
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                error: 'Email is required'
+            });
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({
+                error: 'Invalid email format'
+            });
+        }
+
+        // Find user by ID
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({
+                error: 'User not found'
+            });
+        }
+
+        // Check if user has a placeholder email
+        if (!user.email?.includes('@oauth.local')) {
+            return res.status(400).json({
+                error: 'This endpoint is only for users with placeholder emails'
+            });
+        }
+
+        // Check if email is already taken
+        const existingUser = await User.findOne({ email });
+        if (existingUser && existingUser._id.toString() !== userId) {
+            return res.status(400).json({
+                error: 'This email address is already in use by another account'
+            });
+        }
+
+        // Update user's email
+        user.email = email;
+        user.emailVerified = false;
+
+        // Generate verification token
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+        user.emailVerificationToken = verificationToken;
+        user.emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+        await user.save();
+
+        // Send verification email
+        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
+
+        try {
+            await sendEmailVerificationEmail({
+                to: user.email,
+                username: user.displayName || user.username,
+                verificationUrl
+            });
+        } catch (emailError) {
+            // Reset the token if email fails
+            user.emailVerificationToken = undefined;
+            user.emailVerificationExpires = undefined;
+            await user.save();
+
+            console.error('Failed to send verification email:', emailError);
+            return res.status(500).json({ error: 'Failed to send verification email. Please try again.' });
+        }
+
+        res.json({
+            message: `Email updated! Verification email has been sent to ${email}`,
+            email: email
+        });
+
+    } catch (error) {
+        console.error('Set email and verify error:', error);
+        res.status(500).json({ error: 'Server error during email update' });
+    }
+});
+
 // POST /api/auth/resend-verification-authenticated: resend verification email for logged-in user
 router.post('/resend-verification-authenticated', authenticateToken, authLimiter, async (req: express.Request, res: express.Response) => {
     try {

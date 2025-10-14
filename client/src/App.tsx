@@ -32,6 +32,7 @@ import Admin from './pages/Admin';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import RedirectHandler from './components/RedirectHandler';
+import EmailVerificationBanner from './components/EmailVerificationBanner';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ParticleProvider } from './context/ParticleContext';
@@ -42,6 +43,7 @@ function AppContent() {
 
   return (
     <div className="app">
+      <EmailVerificationBanner />
       <Navbar />
       {isAuthPage ? (
         <Routes>

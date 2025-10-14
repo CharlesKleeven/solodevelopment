@@ -1,0 +1,133 @@
+.email-verification-banner {
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  border-bottom: 1px solid #444;
+  padding: 12px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  animation: slideDown 0.3s ease-out;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.banner-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.banner-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #e0e0e0;
+}
+
+.banner-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: #ef4444;
+  color: white;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.banner-link {
+  color: #4ade80;
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 8px;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.banner-link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.banner-dismiss {
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 8px;
+  transition: color 0.2s;
+  line-height: 1;
+}
+
+.banner-dismiss:hover {
+  color: #fff;
+}
+
+/* Add padding to body when banner is visible */
+body.has-email-banner {
+  padding-top: 49px; /* Height of banner */
+}
+
+/* Light mode adjustments */
+[data-theme="light"] .email-verification-banner {
+  background: linear-gradient(135deg, #f8f8f8 0%, #efefef 100%);
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .banner-message {
+  color: #333;
+}
+
+[data-theme="light"] .banner-icon {
+  background: #dc2626;
+}
+
+[data-theme="light"] .banner-link {
+  color: #10b981;
+}
+
+[data-theme="light"] .banner-dismiss {
+  color: #666;
+}
+
+[data-theme="light"] .banner-dismiss:hover {
+  color: #000;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .banner-content {
+    padding: 0 15px;
+  }
+
+  .banner-message {
+    font-size: 13px;
+    flex-wrap: wrap;
+  }
+
+  .banner-link {
+    display: inline-block;
+    margin-top: 4px;
+    margin-left: 0;
+  }
+}
