@@ -31,10 +31,12 @@ const VerifyEmail: React.FC = () => {
           setNeedsRealEmail(true);
           setStatus('resend');
           setMessage('You need to set a real email address first to participate in voting.');
+          // Clear any previous email input
+          setEmail('');
         } else {
           setEmail(user.email);
           setStatus('resend');
-          setMessage('Your email address needs verification. Click below to send a verification email.');
+          setMessage('Your email address needs verification. You can update it below or send verification to the current address.');
 
           // Auto-send if coming from voting (has referrer)
           const fromVoting = document.referrer && document.referrer.includes('/jam/');
@@ -98,18 +100,31 @@ const VerifyEmail: React.FC = () => {
       let response;
 
       // Handle different cases
-      if (needsRealEmail && user) {
-        // User with placeholder email setting real email
+      if (user && !user.emailVerified) {
+        // User with placeholder email OR unverified email updating their email
         if (!email || email.includes('@oauth.local')) return;
 
-        response = await fetch(`${API_BASE_URL}/api/auth/set-email-and-verify`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({ email }),
-        });
+        // Check if email is different from current email
+        if (email !== user.email) {
+          // User is changing their email
+          response = await fetch(`${API_BASE_URL}/api/auth/set-email-and-verify`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({ email }),
+          });
+        } else {
+          // Same email, just resend verification
+          response = await fetch(`${API_BASE_URL}/api/auth/resend-verification-authenticated`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+          });
+        }
       } else if (user && user.email && !user.email.includes('@oauth.local')) {
         // Use authenticated endpoint for logged-in users with real email
         response = await fetch(`${API_BASE_URL}/api/auth/resend-verification-authenticated`, {
@@ -137,9 +152,11 @@ const VerifyEmail: React.FC = () => {
       if (response.ok) {
         setStatus('success');
         setMessage(data.message || 'Verification email has been sent! Check your inbox.');
-        // Refresh user data if email was updated
-        if (needsRealEmail) {
+        // Refresh user data if email was updated/changed
+        if (user && email !== user.email) {
           await refreshUser();
+          // Update needsRealEmail state after refreshing
+          setNeedsRealEmail(false);
         }
       } else {
         setMessage(data.error || 'Failed to resend verification email');
@@ -227,8 +244,8 @@ const VerifyEmail: React.FC = () => {
 
           {status === 'resend' && (
             <form onSubmit={handleResendVerification} className="auth-form" style={{ marginTop: '20px' }}>
-              {user && user.email && !needsRealEmail ? (
-                // Logged-in user with real email - show their email and one-click send
+              {user && user.email && !needsRealEmail && user.emailVerified ? (
+                // Logged-in user with verified email (shouldn't happen, but just in case)
                 <>
                   <div className="form-group">
                     <label htmlFor="email">Your Email Address</label>
@@ -243,19 +260,15 @@ const VerifyEmail: React.FC = () => {
                       style={{ opacity: 0.8 }}
                     />
                   </div>
-                  <button
-                    type="submit"
-                    disabled={resendLoading}
-                    className="btn btn-primary btn-block"
-                  >
-                    {resendLoading ? 'Sending...' : 'Send Verification Email'}
-                  </button>
+                  <p>Your email is already verified!</p>
                 </>
-              ) : needsRealEmail ? (
-                // User with placeholder email - needs to set real email
+              ) : needsRealEmail || (user && !user.emailVerified) ? (
+                // User with placeholder email OR unverified email - can edit
                 <>
                   <div className="form-group">
-                    <label htmlFor="email">Enter Your Email Address</label>
+                    <label htmlFor="email">
+                      {needsRealEmail ? 'Enter Your Email Address' : 'Your Email Address (not verified)'}
+                    </label>
                     <input
                       id="email"
                       type="email"
@@ -263,11 +276,13 @@ const VerifyEmail: React.FC = () => {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       className="form-control"
-                      placeholder="Enter your real email address"
+                      placeholder={needsRealEmail ? "Enter your real email address" : "Update or resend to this email"}
                       autoFocus
                     />
                     <small className="form-text text-muted" style={{ marginTop: '8px' }}>
-                      Your account was created via OAuth without an email. Please provide an email address to enable voting.
+                      {needsRealEmail
+                        ? 'Your account was created via OAuth without an email. Please provide an email address to enable voting.'
+                        : 'You can change your email address or resend the verification to the current one.'}
                     </small>
                   </div>
                   <button
@@ -275,7 +290,7 @@ const VerifyEmail: React.FC = () => {
                     disabled={resendLoading || !email || email.includes('@oauth.local')}
                     className="btn btn-primary btn-block"
                   >
-                    {resendLoading ? 'Setting up email...' : 'Set Email & Send Verification'}
+                    {resendLoading ? 'Processing...' : (needsRealEmail ? 'Set Email & Send Verification' : 'Update Email & Send Verification')}
                   </button>
                 </>
               ) : (

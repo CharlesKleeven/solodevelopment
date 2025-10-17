@@ -350,7 +350,7 @@ router.post('/verify-email-change', authLimiter, async (req: express.Request, re
     }
 });
 
-// POST /api/auth/set-email-and-verify: set email for OAuth users with placeholder emails and send verification
+// POST /api/auth/set-email-and-verify: set or update email for unverified users and send verification
 router.post('/set-email-and-verify', authenticateToken, authLimiter, async (req: express.Request, res: express.Response) => {
     try {
         const userId = (req as any).user.userId;
@@ -379,10 +379,10 @@ router.post('/set-email-and-verify', authenticateToken, authLimiter, async (req:
             });
         }
 
-        // Check if user has a placeholder email
-        if (!user.email?.includes('@oauth.local')) {
+        // Check if user's email is already verified with a real email
+        if (user.emailVerified && !user.email?.includes('@oauth.local')) {
             return res.status(400).json({
-                error: 'This endpoint is only for users with placeholder emails'
+                error: 'Your email is already verified. Use profile settings to change it.'
             });
         }
 
@@ -425,7 +425,7 @@ router.post('/set-email-and-verify', authenticateToken, authLimiter, async (req:
         }
 
         res.json({
-            message: `Email updated! Verification email has been sent to ${email}`,
+            message: `Email ${user.email?.includes('@oauth.local') ? 'set' : 'updated'}! Verification email has been sent to ${email}`,
             email: email
         });
 
