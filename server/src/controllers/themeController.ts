@@ -244,14 +244,20 @@ export const createThemes = async (req: Request, res: Response) => {
 
         // Get existing themes
         const existingThemes = await Theme.find({ jamId });
-        
-        // Create backup before making changes
-        await VoteBackupService.createBackup(
-            jamId,
-            'pre_update',
-            userId,
-            'Backup before theme update'
-        );
+
+        // Create backup before making changes (with error handling)
+        try {
+            await VoteBackupService.createBackup(
+                jamId,
+                'pre_update',
+                userId,
+                'Backup before theme update'
+            );
+        } catch (backupError) {
+            console.error('Warning: Failed to create backup, continuing with theme update:', backupError);
+            // Continue with update even if backup fails
+            // This prevents the entire operation from failing due to backup issues
+        }
 
         // Normalize for case-insensitive comparison
         const existingThemeMap = new Map(existingThemes.map(t => [t.name.toLowerCase(), t]));
@@ -274,23 +280,57 @@ export const createThemes = async (req: Request, res: Response) => {
             !newThemesLower.includes(t.name.toLowerCase())
         );
         
-        // Delete only themes that are being removed (and their votes)
+        // Delete only themes that are being removed (and their votes) with error handling
         if (themesToRemove.length > 0) {
             const removeIds = themesToRemove.map(t => t._id);
-            await ThemeVote.deleteMany({ themeId: { $in: removeIds } });
-            await Theme.deleteMany({ _id: { $in: removeIds } });
+
+            try {
+                // Delete votes first (they depend on themes)
+                console.log(`Deleting votes for ${removeIds.length} themes...`);
+                const voteResult = await ThemeVote.deleteMany({
+                    themeId: { $in: removeIds }
+                }).maxTimeMS(30000); // 30 second timeout
+
+                console.log(`Deleted ${voteResult.deletedCount} votes`);
+
+                // Then delete themes
+                console.log(`Deleting ${removeIds.length} themes...`);
+                const themeResult = await Theme.deleteMany({
+                    _id: { $in: removeIds }
+                }).maxTimeMS(30000); // 30 second timeout
+
+                console.log(`Deleted ${themeResult.deletedCount} themes`);
+            } catch (deleteError) {
+                console.error('Error during theme/vote deletion:', deleteError);
+                // Return error response instead of crashing
+                return res.status(500).json({
+                    error: 'Failed to delete themes/votes. Database operation timed out or failed.',
+                    details: process.env.NODE_ENV !== 'production' ? deleteError.message : undefined
+                });
+            }
         }
         
-        // Add only new themes
+        // Add only new themes (with individual error handling)
         if (themesToAdd.length > 0) {
-            const themePromises = themesToAdd.map((themeName: string) => 
-                Theme.create({
-                    jamId,
-                    name: themeName,
-                    score: 0
-                })
-            );
-            await Promise.all(themePromises);
+            const themePromises = themesToAdd.map(async (themeName: string) => {
+                try {
+                    return await Theme.create({
+                        jamId,
+                        name: themeName,
+                        score: 0
+                    });
+                } catch (err) {
+                    console.error(`Failed to create theme "${themeName}":`, err);
+                    return null; // Return null for failed creations
+                }
+            });
+
+            const results = await Promise.allSettled(themePromises);
+            const successCount = results.filter(r => r.status === 'fulfilled' && r.value !== null).length;
+
+            if (successCount < themesToAdd.length) {
+                console.warn(`Only ${successCount} of ${themesToAdd.length} themes were created successfully`);
+            }
         }
 
         res.json({ 

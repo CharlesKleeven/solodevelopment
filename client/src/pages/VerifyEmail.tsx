@@ -18,6 +18,7 @@ const VerifyEmail: React.FC = () => {
   const [resendLoading, setResendLoading] = useState(false);
   const [autoSent, setAutoSent] = useState(false);
   const [needsRealEmail, setNeedsRealEmail] = useState(false);
+  const [emailInitialized, setEmailInitialized] = useState(false);
 
   useEffect(() => {
     const token = searchParams.get('token');
@@ -32,9 +33,16 @@ const VerifyEmail: React.FC = () => {
           setStatus('resend');
           setMessage('You need to set a real email address first to participate in voting.');
           // Clear any previous email input
-          setEmail('');
+          if (!emailInitialized) {
+            setEmail('');
+            setEmailInitialized(true);
+          }
         } else {
-          setEmail(user.email);
+          // Only set email from user if we haven't initialized it yet
+          if (!emailInitialized) {
+            setEmail(user.email);
+            setEmailInitialized(true);
+          }
           setStatus('resend');
           setMessage('Your email address needs verification. You can update it below or send verification to the current address.');
 

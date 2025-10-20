@@ -202,3 +202,24 @@ const gracefulShutdown = (signal: string) => {
 // Handle shutdown signals
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+    // Don't crash the server in production
+    if (process.env.NODE_ENV === 'production') {
+        console.error('Continuing despite unhandled rejection...');
+    } else {
+        // In development, optionally exit
+        console.error('Exiting due to unhandled rejection in development mode');
+        process.exit(1);
+    }
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+    console.error('❌ Uncaught Exception:', error);
+    // Try to gracefully shutdown
+    console.error('Server will attempt graceful shutdown...');
+    gracefulShutdown('UNCAUGHT_EXCEPTION');
+});
