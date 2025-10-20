@@ -303,9 +303,10 @@ export const createThemes = async (req: Request, res: Response) => {
             } catch (deleteError) {
                 console.error('Error during theme/vote deletion:', deleteError);
                 // Return error response instead of crashing
+                const errorMessage = deleteError instanceof Error ? deleteError.message : 'Unknown error';
                 return res.status(500).json({
                     error: 'Failed to delete themes/votes. Database operation timed out or failed.',
-                    details: process.env.NODE_ENV !== 'production' ? deleteError.message : undefined
+                    details: process.env.NODE_ENV !== 'production' ? errorMessage : undefined
                 });
             }
         }
