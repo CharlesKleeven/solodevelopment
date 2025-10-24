@@ -104,15 +104,22 @@ const AdminJams: React.FC = () => {
         setMessage('');
 
         try {
+            // Convert datetime-local strings to proper ISO strings with timezone
+            const dataToSubmit = {
+                ...formData,
+                startDate: new Date(formData.startDate).toISOString(),
+                endDate: new Date(formData.endDate).toISOString()
+            };
+
             if (currentJam) {
-                await jamAPI.updateJam(formData.id!, formData);
+                await jamAPI.updateJam(dataToSubmit.id!, dataToSubmit);
                 setMessage('Jam updated successfully!');
             } else {
-                await jamAPI.createJam(formData);
-                await jamAPI.setCurrentJam(formData.id!);
+                await jamAPI.createJam(dataToSubmit);
+                await jamAPI.setCurrentJam(dataToSubmit.id!);
                 setMessage('Jam created successfully!');
             }
-            
+
             fetchCurrentJam();
             resetForm();
         } catch (error: any) {
@@ -177,19 +184,33 @@ const AdminJams: React.FC = () => {
 
     const handleEdit = () => {
         if (!currentJam) return;
-        
+
         // Close other sections
         setShowThemeForm(false);
         setShowVotingResults(false);
-        
+
+        // Convert UTC dates to local datetime-local format
+        const startDate = new Date(currentJam.startDate);
+        const endDate = new Date(currentJam.endDate);
+
+        // Format for datetime-local input (YYYY-MM-DDTHH:mm)
+        const formatLocalDatetime = (date: Date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        };
+
         setFormData({
             id: currentJam.id,
             title: currentJam.title,
             theme: currentJam.theme,
             description: currentJam.description,
             url: currentJam.url,
-            startDate: new Date(currentJam.startDate).toISOString().slice(0, 16),
-            endDate: new Date(currentJam.endDate).toISOString().slice(0, 16)
+            startDate: formatLocalDatetime(startDate),
+            endDate: formatLocalDatetime(endDate)
         });
         setShowForm(true);
     };
