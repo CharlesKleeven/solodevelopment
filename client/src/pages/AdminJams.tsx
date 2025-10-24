@@ -104,6 +104,12 @@ const AdminJams: React.FC = () => {
         setMessage('');
 
         try {
+            // Validate that dates are present
+            if (!formData.startDate || !formData.endDate) {
+                setMessage('Please select both start and end dates');
+                return;
+            }
+
             // Convert datetime-local strings to proper ISO strings with timezone
             const dataToSubmit = {
                 ...formData,
