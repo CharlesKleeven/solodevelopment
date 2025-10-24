@@ -117,7 +117,7 @@ mongoose
         serverSelectionTimeoutMS: 30000, // 30 seconds to connect
         socketTimeoutMS: 45000, // 45 seconds for socket operations
         connectTimeoutMS: 30000, // 30 seconds to establish connection
-        maxPoolSize: 10, // Connection pool size
+        maxPoolSize: 5, // Reduced connection pool size to save memory
         minPoolSize: 1,
     })
     .then(() => console.log('✅ Connected to MongoDB'))
