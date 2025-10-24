@@ -59,7 +59,7 @@ const userSchema = new mongoose.Schema<IUser>(
       required: true, // Make it required
       trim: true,
       minlength: 1,
-      maxlength: 20,
+      maxlength: 50, // Increased to accommodate longer names from OAuth providers
       // Default to username if not provided
       default: function (this: IUser) {
         return this.username;

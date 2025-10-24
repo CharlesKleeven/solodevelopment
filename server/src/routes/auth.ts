@@ -880,11 +880,16 @@ router.post('/oauth/complete',
                 });
             }
 
+            // Truncate displayName if it exceeds max length
+            const displayName = tempUser.displayName && tempUser.displayName.length > 50
+                ? tempUser.displayName.substring(0, 50).trim()
+                : tempUser.displayName;
+
             // Create the new user
             const newUser = new User({
                 username,
                 email: tempUser.email,
-                displayName: tempUser.displayName,
+                displayName: displayName || username,
                 provider: tempUser.provider,
                 // For Discord, use the verified status from Discord; for Google/Itch.io, assume verified
                 emailVerified: tempUser.provider === 'discord' ? (tempUser.emailVerified || false) : true,
