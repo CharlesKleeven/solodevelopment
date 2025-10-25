@@ -63,7 +63,13 @@ app.use(cors({
         if (!origin) return callback(null, true);
         
         const allowedOrigins = process.env.NODE_ENV === 'production'
-            ? [process.env.FRONTEND_URL || 'https://solodevelopment.org']
+            ? [
+                process.env.FRONTEND_URL || 'https://solodevelopment.org',
+                'https://solodevelopment.org',
+                'https://www.solodevelopment.org',
+                'https://solodevelopment.onrender.com', // In case frontend is on Render
+                'https://solodev-front.onrender.com',    // Common Render naming pattern
+              ]
             : ['http://localhost:3000', 'http://127.0.0.1:3000'];
             
         if (allowedOrigins.indexOf(origin) !== -1) {
