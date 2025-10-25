@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import AdminJams from './AdminJams';
 import AdminReportedGames from '../components/AdminReportedGames';
 import AdminRedirects from './AdminRedirects';
+import AdminStreamers from './AdminStreamers';
 import './admin.css';
 
 const Admin: React.FC = () => {
@@ -22,6 +23,7 @@ const Admin: React.FC = () => {
                     <AdminReportedGames />
                     <AdminJams />
                     <AdminRedirects />
+                    <AdminStreamers />
                 </div>
             </div>
         </div>

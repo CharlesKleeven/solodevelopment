@@ -89,6 +89,13 @@ const Navbar: React.FC = () => {
                         >
                             community
                         </Link>
+                        <span className="nav-separator">/</span>
+                        <Link
+                            to="/streams"
+                            className={`nav-link ${isActive('/streams') ? 'active' : ''}`}
+                        >
+                            streams
+                        </Link>
                     </div>
 
                     <div className="navbar-actions">
@@ -192,6 +199,13 @@ const Navbar: React.FC = () => {
                         onClick={() => setIsMobileMenuOpen(false)}
                     >
                         Community
+                    </Link>
+                    <Link
+                        to="/streams"
+                        className={`mobile-nav-link ${isActive('/streams') ? 'active' : ''}`}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                        Streams
                     </Link>
 
                     {user ? (

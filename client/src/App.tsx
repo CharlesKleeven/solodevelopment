@@ -27,6 +27,7 @@ import GameForm from './pages/GameForm';
 import Community from './pages/Community';
 import UserProfile from './pages/UserProfile';
 import Admin from './pages/Admin';
+import Streams from './pages/Streams';
 
 // Components
 import Navbar from './components/Navbar';
@@ -73,6 +74,7 @@ function AppContent() {
             <Route path="/community" element={<Community />} />
             <Route path="/users/:username" element={<UserProfile />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/streams" element={<Streams />} />
             {/* Catch-all route for redirects */}
             <Route path="/:slug" element={<RedirectHandler />} />
           </Routes>

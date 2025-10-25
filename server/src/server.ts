@@ -18,6 +18,7 @@ import themeRoutes from './routes/theme';
 import jamManagementRoutes from './routes/jamManagement';
 import backupRoutes from './routes/backup';
 import redirectRoutes from './routes/redirect';
+import streamerRoutes from './routes/streamer';
 import { handleRedirect } from './controllers/redirectController';
 import { initializeCronJobs } from './services/cronJobs';
 
@@ -116,6 +117,7 @@ app.use('/api/themes', themeRoutes);
 app.use('/api/jam-management', jamManagementRoutes);
 app.use('/api/backup', backupRoutes);
 app.use('/api/redirects', redirectRoutes);
+app.use('/api/streamers', streamerRoutes);
 
 // Connect to MongoDB with longer timeout for Render
 mongoose
