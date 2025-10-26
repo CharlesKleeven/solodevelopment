@@ -5,6 +5,7 @@ import './streams.css';
 interface Stream {
     channel: string;
     title: string;
+    isLive?: boolean;
 }
 
 const Streams: React.FC = () => {
@@ -77,7 +78,8 @@ const Streams: React.FC = () => {
                 <div className="streams-layout">
                     {/* Stream List Sidebar */}
                     <div className="stream-sidebar">
-                        <h3>Featured Streams</h3>
+                        <h3>Featured Streamers</h3>
+                        <p className="sidebar-note">Click to watch their channel</p>
                         {loading ? (
                             <div className="loading">Loading streamers...</div>
                         ) : (
@@ -87,11 +89,17 @@ const Streams: React.FC = () => {
                                     key={stream.channel}
                                     className={`stream-button ${activeStream === stream.channel ? 'active' : ''}`}
                                     onClick={() => setActiveStream(stream.channel)}
+                                    title={`Watch ${stream.channel} on Twitch`}
                                 >
-                                    <span className="stream-indicator"></span>
-                                    {stream.title}
+                                    <span className="channel-info">
+                                        <span className="channel-title">{stream.title}</span>
+                                        <span className="channel-username">@{stream.channel}</span>
+                                    </span>
                                 </button>
                             ))}
+                            {featuredStreams.length === 0 && (
+                                <p className="no-streamers">No featured streamers yet</p>
+                            )}
                         </div>
                         )}
 
@@ -140,10 +148,18 @@ const Streams: React.FC = () => {
 
                 {activeStream && (
                 <div className="stream-info">
-                    <p>Currently watching: <strong>{activeStream}</strong></p>
+                    <p>Currently watching: <strong>@{activeStream}</strong></p>
                     <p className="stream-note">
-                        Streams are embedded from Twitch. Make sure the streamer is live for the best experience!
+                        If the stream shows as offline, the broadcaster is not currently live. Check back later or try another streamer!
                     </p>
+                    <a
+                        href={`https://twitch.tv/${activeStream}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="twitch-link"
+                    >
+                        Open in Twitch →
+                    </a>
                 </div>
                 )}
             </div>
