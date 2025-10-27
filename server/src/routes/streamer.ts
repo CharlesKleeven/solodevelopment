@@ -6,13 +6,15 @@ import {
     addStreamer,
     updateStreamer,
     deleteStreamer,
-    reorderStreamers
+    reorderStreamers,
+    getLiveStatus
 } from '../controllers/streamerController';
 
 const router = express.Router();
 
 // Public routes
 router.get('/', getStreamers); // Get active streamers
+router.get('/live-status', getLiveStatus); // Get live status for active streamers
 
 // Admin routes (require authentication)
 router.get('/all', authenticateToken, getAllStreamers); // Get all streamers including inactive

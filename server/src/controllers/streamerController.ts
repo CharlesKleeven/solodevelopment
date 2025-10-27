@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Streamer, { IStreamer } from '../models/Streamer';
 import User from '../models/User';
+import { twitchService } from '../services/twitchService';
 
 // Get all active streamers (public)
 export const getStreamers = async (req: Request, res: Response) => {
@@ -193,5 +194,29 @@ export const reorderStreamers = async (req: Request, res: Response) => {
     } catch (error) {
         console.error('Error reordering streamers:', error);
         res.status(500).json({ error: 'Failed to reorder streamers' });
+    }
+};
+
+// Get live status for active streamers (public)
+export const getLiveStatus = async (req: Request, res: Response) => {
+    try {
+        // Get all active streamers
+        const streamers = await Streamer.find({ isActive: true })
+            .select('channel');
+
+        const usernames = streamers.map(s => s.channel);
+
+        if (usernames.length === 0) {
+            return res.json({ liveStatus: {} });
+        }
+
+        // Get live status from Twitch
+        const liveStatus = await twitchService.getLiveStatus(usernames);
+
+        res.json({ liveStatus });
+    } catch (error) {
+        console.error('Error fetching live status:', error);
+        // Return empty object on error so frontend can handle gracefully
+        res.json({ liveStatus: {} });
     }
 };

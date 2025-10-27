@@ -6,6 +6,8 @@ interface Stream {
     channel: string;
     title: string;
     isLive?: boolean;
+    viewerCount?: number;
+    gameName?: string;
 }
 
 const Streams: React.FC = () => {
@@ -13,6 +15,7 @@ const Streams: React.FC = () => {
     const [customChannel, setCustomChannel] = useState<string>('');
     const [featuredStreams, setFeaturedStreams] = useState<Stream[]>([]);
     const [loading, setLoading] = useState(true);
+    const [liveStatus, setLiveStatus] = useState<{[key: string]: any}>({});
 
     // Get proper parent domain for Twitch embed
     const getParentDomain = () => {
@@ -30,6 +33,9 @@ const Streams: React.FC = () => {
 
     useEffect(() => {
         fetchStreamers();
+        // Poll for live status every 2 minutes
+        const interval = setInterval(fetchLiveStatus, 2 * 60 * 1000);
+        return () => clearInterval(interval);
     }, []);
 
     const fetchStreamers = async () => {
@@ -45,6 +51,9 @@ const Streams: React.FC = () => {
             if (streamersData.length > 0 && !activeStream) {
                 setActiveStream(streamersData[0].channel);
             }
+
+            // Fetch live status after getting streamers
+            fetchLiveStatus();
         } catch (error) {
             console.error('Error fetching streamers:', error);
             // Fallback to default streamers if API fails
@@ -59,6 +68,16 @@ const Streams: React.FC = () => {
             }
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchLiveStatus = async () => {
+        try {
+            const response = await api.get('/api/streamers/live-status');
+            setLiveStatus(response.data.liveStatus || {});
+        } catch (error) {
+            console.error('Error fetching live status:', error);
+            // Silently fail - not critical
         }
     };
 
@@ -84,19 +103,42 @@ const Streams: React.FC = () => {
                             <div className="loading">Loading streamers...</div>
                         ) : (
                         <div className="stream-list">
-                            {featuredStreams.map((stream) => (
-                                <button
-                                    key={stream.channel}
-                                    className={`stream-button ${activeStream === stream.channel ? 'active' : ''}`}
-                                    onClick={() => setActiveStream(stream.channel)}
-                                    title={`Watch ${stream.channel} on Twitch`}
-                                >
-                                    <span className="channel-info">
-                                        <span className="channel-title">{stream.title}</span>
-                                        <span className="channel-username">@{stream.channel}</span>
-                                    </span>
-                                </button>
-                            ))}
+                            {featuredStreams
+                                .sort((a, b) => {
+                                    // Sort live streams to the top
+                                    const aLive = liveStatus[a.channel]?.isLive || false;
+                                    const bLive = liveStatus[b.channel]?.isLive || false;
+                                    if (aLive && !bLive) return -1;
+                                    if (!aLive && bLive) return 1;
+                                    return 0;
+                                })
+                                .map((stream) => {
+                                    const status = liveStatus[stream.channel];
+                                    const isLive = status?.isLive || false;
+
+                                    return (
+                                        <button
+                                            key={stream.channel}
+                                            className={`stream-button ${activeStream === stream.channel ? 'active' : ''} ${isLive ? 'live' : ''}`}
+                                            onClick={() => setActiveStream(stream.channel)}
+                                            title={isLive ? `${stream.channel} is LIVE with ${status.viewerCount} viewers` : `Watch ${stream.channel} on Twitch`}
+                                        >
+                                            {isLive && (
+                                                <span className="live-badge">LIVE</span>
+                                            )}
+                                            <span className="channel-info">
+                                                <span className="channel-title">{stream.title}</span>
+                                                <span className="channel-username">
+                                                    @{stream.channel}
+                                                    {isLive && status.viewerCount && (
+                                                        <span className="viewer-count"> · {status.viewerCount.toLocaleString()} viewers</span>
+                                                    )}
+                                                </span>
+                                            </span>
+                                        </button>
+                                    );
+                                })}
+
                             {featuredStreams.length === 0 && (
                                 <p className="no-streamers">No featured streamers yet</p>
                             )}

@@ -68,6 +68,7 @@
 .stream-button {
     display: flex;
     align-items: center;
+    gap: var(--space-2);
     padding: var(--space-3) var(--space-4);
     background: var(--bg-primary);
     border: 1px solid var(--border-color);
@@ -76,6 +77,7 @@
     transition: all 0.2s ease;
     text-align: left;
     width: 100%;
+    position: relative;
 }
 
 .stream-button:hover {
@@ -86,6 +88,38 @@
 .stream-button.active {
     background: var(--bg-tertiary);
     border-color: var(--text-primary);
+}
+
+.stream-button.live {
+    border-color: #e91916;
+}
+
+.stream-button.live:hover {
+    border-color: #e91916;
+    box-shadow: 0 0 0 2px rgba(233, 25, 22, 0.1);
+}
+
+.live-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    background: #e91916;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    animation: pulse-badge 2s infinite;
+}
+
+@keyframes pulse-badge {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.85;
+    }
 }
 
 .channel-info {
@@ -104,6 +138,11 @@
     color: var(--text-secondary);
     font-size: var(--text-xs);
     font-family: monospace;
+}
+
+.viewer-count {
+    color: var(--text-secondary);
+    font-weight: 400;
 }
 
 .no-streamers {
