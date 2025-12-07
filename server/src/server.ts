@@ -71,7 +71,7 @@ app.use(cors({
                 'https://solodevelopment.onrender.com', // In case frontend is on Render
                 'https://solodev-front.onrender.com',    // Common Render naming pattern
               ]
-            : ['http://localhost:3000', 'http://127.0.0.1:3000'];
+            : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://192.168.50.167:3000'];
             
         if (allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);

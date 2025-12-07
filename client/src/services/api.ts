@@ -1,10 +1,11 @@
 // services/api.ts
 import axios, { AxiosResponse, AxiosError } from 'axios';
 
-// Simple environment detection
-const isDevelopment = window.location.hostname === 'localhost';
+// Simple environment detection - supports localhost and local network IPs
+const hostname = window.location.hostname;
+const isDevelopment = hostname === 'localhost' || hostname === '127.0.0.1' || hostname.startsWith('192.168.');
 const API_BASE_URL = isDevelopment
-    ? 'http://localhost:3001'
+    ? `http://${hostname}:3001`
     : 'https://api.solodevelopment.org';
 
 // Only log in development

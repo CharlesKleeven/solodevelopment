@@ -284,6 +284,45 @@ export const gameData: Game[] = [
         placement: 3,
         thumb: "M",
         image: "/images/games/primordial-hypergod.png"
+    },
+    {
+        id: 23,
+        title: "Inkfoot",
+        author: "cyrealboxx",
+        url: "https://cyrealboxx.itch.io/inkfoot",
+        jamName: "Halloween Jam #9",
+        jamUrl: "https://itch.io/jam/solodevelopment-jam-9-halloween",
+        jamType: "themed",
+        jamTheme: "Black and White",
+        placement: 1,
+        thumb: "I",
+        image: "/images/games/inkfoot.png"
+    },
+    {
+        id: 24,
+        title: "The Angels Arose (And Tore Us Apart)",
+        author: "@blackvoidtytan",
+        url: "https://blackvoidmedia.itch.io/the-angels-arose",
+        jamName: "Halloween Jam #9",
+        jamUrl: "https://itch.io/jam/solodevelopment-jam-9-halloween",
+        jamType: "themed",
+        jamTheme: "Black and White",
+        placement: 1,
+        thumb: "T",
+        image: "/images/games/angels-arose.jpg"
+    },
+    {
+        id: 25,
+        title: "Achromatopsia",
+        author: "@zelgadis6737",
+        url: "https://yurga.itch.io/achromatopsia",
+        jamName: "Halloween Jam #9",
+        jamUrl: "https://itch.io/jam/solodevelopment-jam-9-halloween",
+        jamType: "themed",
+        jamTheme: "Black and White",
+        placement: 3,
+        thumb: "A",
+        image: "/images/games/achromatopsia.png"
     }
 ];
 
