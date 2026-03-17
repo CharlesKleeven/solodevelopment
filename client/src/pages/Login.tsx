@@ -119,7 +119,7 @@ const Login: React.FC = () => {
       <div className="auth-container">
         <div className="auth-card">
           <div className="auth-header">
-            <h1>{isRegistering ? 'Join SoloDevelopment' : 'Welcome Back'}</h1>
+            <h1>{isRegistering ? 'Join Solo Development' : 'Welcome Back'}</h1>
             <p>{isRegistering ? 'Create your account to join the community' : 'Sign in to your account'}</p>
           </div>
 

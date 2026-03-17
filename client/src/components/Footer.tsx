@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
         <div className="footer-top-columns">
           {/* Column 1: Brand */}
           <div className="footer-column">
-            <h4>SoloDevelopment</h4>
+            <h4>Solo Development</h4>
             <p className="footer-description">
               A community for independent game developers working solo.
             </p>
@@ -50,7 +50,7 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="footer-bottom">
-          <p>&copy; 2025 SoloDevelopment.org — By solo developers, for solo developers.</p>
+          <p>&copy; 2025 Solo Development — By solo developers, for solo developers.</p>
         </div>
       </div>
     </footer>

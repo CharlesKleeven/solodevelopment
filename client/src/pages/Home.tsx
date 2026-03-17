@@ -71,7 +71,7 @@ const Home: React.FC = () => {
                         {user ? (
                             <>Welcome back, <span className="hero-accent">{user.displayName}</span></>
                         ) : (
-                            <>Welcome to <span className="hero-accent">SoloDevelopment</span></>
+                            <>Welcome to <span className="hero-accent">Solo Development</span></>
                         )}
                     </h1>
                     <p className="hero-subtitle">

@@ -5,10 +5,10 @@ const About: React.FC = () => {
   return (
     <div className="page-container">
       <div className="page-content">
-        <h1>About SoloDevelopment</h1>
+        <h1>About Solo Development</h1>
         
         <section className="page-section">
-          <h2>What SoloDevelopment Is</h2>
+          <h2>What Solo Development Is</h2>
           <p>A community for people making games mostly by themselves.</p>
         </section>
 
@@ -34,7 +34,7 @@ const About: React.FC = () => {
         <section className="page-section">
           <h2>What Happens Here</h2>
           <p>
-            SoloDevelopment is a quiet but active corner of the internet for solo game devs. 
+            Solo Development is a quiet but active corner of the internet for solo game devs. 
             Here's what you'll find:
           </p>
           

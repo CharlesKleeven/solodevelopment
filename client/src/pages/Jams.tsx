@@ -86,7 +86,7 @@ const Jams = () => {
       <section className="page-header" data-fade data-delay="1">
         <div className="container">
           <h1>Game Jams</h1>
-          <p>SoloDevelopment hosts monthly and seasonal jams to help you build, learn, and finish projects — on your own terms.</p>
+          <p>Solo Development hosts monthly and seasonal jams to help you build, learn, and finish projects — on your own terms.</p>
         </div>
       </section>
 

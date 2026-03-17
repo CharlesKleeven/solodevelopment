@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
             <div className="navbar-container">
                 {/* Brand */}
                 <Link to="/" className="navbar-brand">
-                    <span className="navbar-title">SoloDevelopment</span>
+                    <span className="navbar-title">Solo Development</span>
                 </Link>
 
                 {/* Right Side - Navigation + Auth */}

@@ -274,7 +274,7 @@ const UserProfile: React.FC = () => {
         <div className="user-profile-page">
             <Helmet>
                 <meta name="robots" content="noindex, nofollow" />
-                <meta name="description" content={`View ${user.displayName}'s profile and games on SoloDevelopment`} />
+                <meta name="description" content={`View ${user.displayName}'s profile and games on Solo Development`} />
             </Helmet>
             <div className="profile-container">
                 <div className="profile-hero">
