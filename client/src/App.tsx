@@ -6,7 +6,7 @@ import './styles/layout.css';
 import './styles/components.css';
 
 // Pages
-import Home from './pages/Home';
+import DesignTest3 from './pages/DesignTest3';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -24,7 +24,6 @@ import Profile from './pages/Profile';
 import About from './pages/About';
 import GameDashboard from './pages/GameDashboard';
 import GameForm from './pages/GameForm';
-import Community from './pages/Community';
 import UserProfile from './pages/UserProfile';
 import Admin from './pages/Admin';
 import Streams from './pages/Streams';
@@ -34,6 +33,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import RedirectHandler from './components/RedirectHandler';
 import EmailVerificationBanner from './components/EmailVerificationBanner';
+import DiscordBanner from './components/DiscordBanner';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ParticleProvider } from './context/ParticleContext';
@@ -44,6 +44,7 @@ function AppContent() {
 
   return (
     <div className="app">
+      <DiscordBanner />
       <EmailVerificationBanner />
       <Navbar />
       {isAuthPage ? (
@@ -60,9 +61,10 @@ function AppContent() {
       ) : (
         <main className="main-content">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<DesignTest3 />} />
             <Route path="/jams" element={<Jams />} />
             <Route path="/showcase" element={<Showcase />} />
+            <Route path="/community" element={<Showcase />} />
             <Route path="/resources" element={<Resources />} />
             <Route path="/support" element={<Support />} />
             <Route path="/privacy" element={<Privacy />} />
@@ -71,7 +73,6 @@ function AppContent() {
             <Route path="/dashboard/games" element={<GameDashboard />} />
             <Route path="/games/new" element={<GameForm />} />
             <Route path="/games/:id/edit" element={<GameForm />} />
-            <Route path="/community" element={<Community />} />
             <Route path="/users/:username" element={<UserProfile />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/streams" element={<Streams />} />

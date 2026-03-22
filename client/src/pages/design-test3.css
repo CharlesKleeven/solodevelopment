@@ -1,0 +1,713 @@
+/* ===== DESIGN TEST 3 — OG LAYOUT + BLUE BG + COMPACT TILES ===== */
+
+.dt3-page {
+    background: #0f1923;
+    color: #b0c0d0;
+    font-family: "Plus Jakarta Sans", "Inter", "Segoe UI", sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+.dt3-container {
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.dt3-container-narrow {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* ===== TOP BANNER ===== */
+.dt3-top-banner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem 1.5rem;
+    background: #141f2e;
+    border-bottom: 1px solid #1c2a3a;
+    font-size: 0.8rem;
+    color: #7a90a5;
+}
+
+.dt3-banner-content {
+    flex: 1;
+    text-align: center;
+}
+
+.dt3-banner-content strong {
+    color: #e0eaf4;
+}
+
+.dt3-top-banner a {
+    color: #ff6b35;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.dt3-top-banner a:hover {
+    text-decoration: underline;
+}
+
+.dt3-banner-close {
+    background: none;
+    border: none;
+    color: #5a7088;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0 0.5rem;
+    line-height: 1;
+    transition: color 0.15s;
+}
+
+.dt3-banner-close:hover {
+    color: #e0eaf4;
+}
+
+/* ===== NAV ===== */
+.dt3-nav {
+    background: #0f1923;
+    border-bottom: 1px solid #1c2a3a;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.dt3-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.dt3-nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    height: 56px;
+}
+
+.dt3-brand {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #e0eaf4 !important;
+    text-decoration: none;
+}
+
+.dt3-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.dt3-nav-link {
+    font-size: 0.875rem;
+    color: #5a7088;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.dt3-nav-link:hover {
+    color: #ff6b35;
+}
+
+.dt3-nav-sep {
+    color: #2a3a4a;
+    font-size: 0.875rem;
+    user-select: none;
+}
+
+.dt3-nav-login {
+    font-size: 0.875rem;
+    color: #ff6b35 !important;
+    font-weight: 500;
+    text-decoration: none;
+    margin-left: 0.5rem;
+}
+
+/* Burger */
+.dt3-burger {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+}
+
+.dt3-burger span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: #7a90a5;
+    transition: background 0.15s;
+}
+
+.dt3-burger:hover span {
+    background: #e0eaf4;
+}
+
+.dt3-nav-user {
+    font-size: 0.875rem;
+    color: #ff6b35 !important;
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 0.5rem;
+}
+
+/* ===== HERO ===== */
+.dt3-hero {
+    text-align: center;
+}
+
+.dt3-hero-bg {
+    display: none;
+}
+
+.dt3-hero-content {
+    padding: 4rem 0 3rem;
+}
+
+.dt3-hero-title {
+    font-size: 2.25rem;
+    font-weight: 600;
+    color: #e0eaf4;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.dt3-accent {
+    font-weight: 600;
+    color: #e0eaf4;
+}
+
+.dt3-hero-subtitle {
+    font-size: 1.125rem;
+    font-weight: 400;
+    color: #7a90a5;
+    max-width: 38rem;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.dt3-hero-buttons {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.dt3-btn {
+    font-weight: 500;
+    padding: 0.625rem 1.5rem;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    min-width: 120px;
+    text-align: center;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.dt3-btn-primary {
+    background: #ff6b35;
+    color: #0f1923;
+    border: 1px solid #ff6b35;
+}
+
+.dt3-btn-primary:hover {
+    background: #fb7185;
+    border-color: #fb7185;
+    transform: translateY(-1px);
+    color: #0f1923;
+}
+
+.dt3-btn-secondary {
+    background: #141f2e;
+    color: #7a90a5;
+    border: 1px solid #1c2a3a;
+}
+
+.dt3-btn-secondary:hover {
+    color: #e0eaf4;
+    border-color: #7a90a5;
+    background: #172536;
+    transform: translateY(-1px);
+}
+
+/* ===== JAM BANNER ===== */
+.dt3-jam-section {
+    padding: 2rem 0 3rem;
+}
+
+.dt3-jam-banner {
+    background: #141f2e;
+    border: 1px solid #1c2a3a;
+    border-radius: 10px;
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.dt3-jam-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.dt3-jam-badge {
+    color: #0f1923;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+    background: #5a7088;
+}
+
+.dt3-jam-badge.upcoming {
+    background: #0891b2;
+    color: white;
+}
+
+.dt3-jam-badge.active {
+    background: #2dd4bf;
+    color: #0f1923;
+}
+
+.dt3-voting {
+    color: #ff6b35;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.dt3-jam-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #e0eaf4;
+    margin-bottom: 0.5rem;
+}
+
+.dt3-jam-desc {
+    font-size: 0.875rem;
+    color: #7a90a5;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.dt3-jam-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dt3-jam-stats {
+    font-size: 0.875rem;
+    color: #5a7088;
+}
+
+/* ===== FEATURES — BLOCKY GRID ===== */
+.dt3-features {
+    padding: 0 0 2rem;
+}
+
+.dt3-features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: #1c2a3a;
+    max-width: 68rem;
+    margin: 0 auto;
+}
+
+.dt3-feature {
+    background: #0f1923;
+    padding: 2rem;
+}
+
+.dt3-feature-bar {
+    width: 24px;
+    height: 2px;
+    background: #ff6b35;
+    margin-bottom: 1rem;
+}
+
+.dt3-feature h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #e0eaf4;
+    margin-bottom: 0.5rem;
+}
+
+.dt3-feature p {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: #5a7088;
+    margin: 0;
+}
+
+/* ===== GAMES — STATIC MOSAIC ===== */
+.dt3-games-section {
+    padding: 2rem 0;
+}
+
+.dt3-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.dt3-section-label {
+    font-size: 1.125rem;
+    font-weight: 400;
+    color: #5a7088;
+    letter-spacing: 0.02em;
+}
+
+.dt3-btn-ghost {
+    background: none;
+    border: none;
+    color: #5a7088;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    text-decoration: none;
+    font-family: inherit;
+}
+
+.dt3-btn-ghost:hover {
+    color: #ff6b35;
+}
+
+.dt3-see-more {
+    text-align: center;
+    margin-top: 1.25rem;
+}
+
+/* Jam groups */
+.dt3-jam-group {
+    margin-bottom: 2rem;
+}
+
+.dt3-jam-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.dt3-jam-header h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #e0eaf4;
+    margin: 0;
+}
+
+.dt3-jam-header h3 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.dt3-jam-header h3 a:hover {
+    color: #ff6b35;
+}
+
+.dt3-jam-theme {
+    font-size: 0.8rem;
+    color: #5a7088;
+    font-style: italic;
+}
+
+.dt3-jam-tiles {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0.5rem;
+    height: 280px;
+}
+
+.dt3-jam-tile {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: transform 0.2s;
+    min-height: 0;
+}
+
+.dt3-jam-tile:hover {
+    transform: scale(1.02);
+    color: inherit;
+}
+
+.dt3-jam-tile-first {
+    grid-row: 1 / -1;
+}
+
+.dt3-tile-place {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: #ff6b35;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.1rem;
+    display: block;
+}
+
+.dt3-mosaic-tile:hover .dt3-tile-overlay {
+    opacity: 1;
+}
+
+.dt3-tile-img {
+    width: 100%;
+    height: 100%;
+    background: #172536;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dt3-tile-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dt3-tile-img span {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1c2a3a;
+}
+
+.dt3-tile-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem 0.6rem 0.5rem;
+    background: linear-gradient(transparent, rgba(0,0,0,0.75));
+}
+
+.dt3-tile-title {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dt3-tile-author {
+    display: block;
+    font-size: 0.6rem;
+    color: #aaa;
+}
+
+/* ===== EXPLORE ===== */
+.dt3-explore {
+    padding: 2rem 0 3rem;
+}
+
+.dt3-explore-links {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.dt3-explore-links a {
+    font-size: 1rem;
+    color: #7a90a5;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.dt3-explore-links a:hover {
+    color: #ff6b35;
+}
+
+.dt3-explore-sep {
+    color: #2a3a4a;
+    user-select: none;
+}
+
+/* ===== FOOTER ===== */
+.dt3-footer {
+    background: #0b1219;
+    border-top: 1px solid #1c2a3a;
+    padding: 2.5rem 0 1.5rem;
+    margin-top: 2rem;
+}
+
+.dt3-footer-top {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.dt3-footer-col h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #e0eaf4;
+    margin-bottom: 0.75rem;
+}
+
+.dt3-footer-col p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #5a7088;
+    margin: 0;
+}
+
+.dt3-footer-col ul {
+    list-style: none;
+    padding: 0;
+}
+
+.dt3-footer-col li {
+    margin-bottom: 0.4rem;
+}
+
+.dt3-footer-col a {
+    font-size: 0.875rem;
+    color: #5a7088;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.dt3-footer-col a:hover {
+    color: #ff6b35;
+}
+
+.dt3-footer-bottom {
+    padding-top: 1.5rem;
+    border-top: 1px solid #1c2a3a;
+    text-align: center;
+}
+
+.dt3-footer-bottom p {
+    font-size: 0.8rem;
+    color: #3a5068;
+    margin: 0;
+}
+
+/* ===== FADE ANIMATIONS ===== */
+[data-fade] {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.25s ease-out, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-fade].visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (min-width: 768px) {
+    .dt3-hero-title {
+        font-size: 2.25rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .dt3-burger {
+        display: flex;
+    }
+
+    .dt3-nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 56px;
+        right: 0;
+        left: 0;
+        background: #0f1923;
+        border-bottom: 1px solid #1c2a3a;
+        padding: 1rem 1.5rem;
+        gap: 0.75rem;
+    }
+
+    .dt3-nav-links.open {
+        display: flex;
+    }
+
+    .dt3-nav-sep {
+        display: none;
+    }
+
+    .dt3-nav-inner {
+        position: relative;
+    }
+
+    .dt3-nav-right {
+        gap: 1rem;
+    }
+
+    .dt3-hero-title {
+        font-size: 1.75rem;
+    }
+
+    .dt3-hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .dt3-jam-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dt3-features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dt3-mosaic {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dt3-footer-top {
+        grid-template-columns: 1fr;
+    }
+
+    .dt3-explore-links {
+        flex-wrap: wrap;
+    }
+
+    .dt3-jam-tiles {
+        grid-template-columns: 1fr 1fr;
+        height: 200px;
+    }
+
+    .dt3-jam-tile-first {
+        grid-row: 1 / -1;
+    }
+}
+
+@media (max-width: 480px) {
+    .dt3-hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .dt3-jam-banner {
+        padding: 1rem;
+    }
+
+    .dt3-mosaic {
+        grid-template-columns: 1fr 1fr;
+    }
+}
