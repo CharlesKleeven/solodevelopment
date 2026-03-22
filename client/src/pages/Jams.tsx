@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import './jams.css';
 import { gameData } from '../data/gameData';
 import { useJam } from '../hooks/useJam';
@@ -9,6 +10,9 @@ interface JamEntry {
   jamName: string;
   jamUrl: string;
   jamTheme?: string;
+  startDate?: string;
+  endDate?: string;
+  submissions?: number;
 }
 
 function getTimeLeft(targetTime: Date, currentTime: Date) {
@@ -27,6 +31,24 @@ function getTimeLeft(targetTime: Date, currentTime: Date) {
   };
 }
 
+const jamMeta: { [key: string]: { startDate: string; endDate: string; submissions: number } } = {
+  'Marathon Jam #5 — Community Voted': { startDate: 'Jan 9, 2026', endDate: 'Feb 9, 2026', submissions: 139 },
+  'Marathon Jam #5 — Cash Prize (Judge Selected)': { startDate: 'Jan 9, 2026', endDate: 'Feb 9, 2026', submissions: 139 },
+  'Solo Development Marathon Jam 4': { startDate: 'Feb 7, 2025', endDate: 'Mar 7, 2025', submissions: 95 },
+  'Third Marathon Jam': { startDate: 'Apr 1, 2023', endDate: 'May 1, 2023', submissions: 24 },
+  'Second Marathon Jam': { startDate: 'Mar 18, 2022', endDate: 'Apr 23, 2022', submissions: 32 },
+  'First Marathon Jam': { startDate: 'Jun 25, 2021', endDate: 'Jul 25, 2021', submissions: 111 },
+  'Halloween Jam #9': { startDate: 'Oct 24, 2025', endDate: 'Oct 27, 2025', submissions: 88 },
+  'Summer Jam #8': { startDate: 'Aug 8, 2025', endDate: 'Aug 11, 2025', submissions: 62 },
+  'Solo Development 72hr Jam 7': { startDate: 'May 2, 2025', endDate: 'May 5, 2025', submissions: 61 },
+  'Solo Development Game Jam 6 (Winter Jam)': { startDate: 'Dec 13, 2024', endDate: 'Dec 16, 2024', submissions: 47 },
+  'Solo Development Game Jam 5 (Spooky Jam)': { startDate: 'Oct 25, 2024', endDate: 'Oct 28, 2024', submissions: 44 },
+  'Solo Development Game Jam 4': { startDate: 'Aug 23, 2024', endDate: 'Aug 26, 2024', submissions: 197 },
+  'Winter Jam': { startDate: 'Jan 13, 2023', endDate: 'Jan 16, 2023', submissions: 85 },
+  'Halloween Jam 2021': { startDate: 'Oct 29, 2021', endDate: 'Nov 1, 2021', submissions: 38 },
+  'First r/SoloDevelopment Jam': { startDate: 'Apr 30, 2021', endDate: 'May 3, 2021', submissions: 46 },
+};
+
 function extractJamGroups() {
   const seen = new Set<string>();
   const marathon: JamEntry[] = [];
@@ -35,10 +57,12 @@ function extractJamGroups() {
   for (const game of gameData) {
     if (seen.has(game.jamName)) continue;
     seen.add(game.jamName);
-    const entry = {
+    const meta = jamMeta[game.jamName];
+    const entry: JamEntry = {
       jamName: game.jamName,
       jamUrl: game.jamUrl,
       jamTheme: game.jamTheme,
+      ...(meta && { startDate: meta.startDate, endDate: meta.endDate, submissions: meta.submissions }),
     };
     if (game.jamType === 'marathon') marathon.push(entry);
     else themed.push(entry);
@@ -53,8 +77,6 @@ function extractJamGroups() {
 const Jams = () => {
   useFadeInOnScroll();
   const { jamData, loading: jamLoading } = useJam();
-  const [showMarathon, setShowMarathon] = useState(false);
-  const [showThemed, setShowThemed] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const { marathon, themed } = extractJamGroups();
   
@@ -83,6 +105,10 @@ const Jams = () => {
 
   return (
     <div className="jams-page">
+      <Helmet>
+        <title>Game Jams — Solo Development</title>
+        <meta name="description" content="Monthly and seasonal game jams for solo developers. Themed 72-hour jams and month-long marathon jams with cash prizes." />
+      </Helmet>
       <section className="page-header" data-fade data-delay="1">
         <div className="container">
           <h1>Game Jams</h1>
@@ -111,26 +137,46 @@ const Jams = () => {
               </div>
 
               <div className="jam-timer-section">
-                <div className="timer-label-main">
-                  {jamData.status === 'upcoming' ? 'starts in' : 'ends in'}
-                </div>
-                <div className="jam-timer">
-                  <div className="timer-unit">
-                    <div className="timer-number">{timeLeft.days}</div>
-                    <div className="timer-label">Days</div>
-                  </div>
-                  <div className="timer-unit">
-                    <div className="timer-number">{timeLeft.hours}</div>
-                    <div className="timer-label">Hours</div>
-                  </div>
-                  <div className="timer-unit">
-                    <div className="timer-number">{timeLeft.minutes}</div>
-                    <div className="timer-label">Minutes</div>
-                  </div>
-                </div>
-                <div className="timer-participants">
-                  {jamData.participants} joined
-                </div>
+                {jamData.status === 'ended' ? (
+                  <>
+                    <div className="jam-dates">
+                      <span>{new Date(jamData.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} — {new Date(jamData.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                    </div>
+                    <div className="jam-timer">
+                      <div className="timer-unit">
+                        <div className="timer-number">{jamData.participants}</div>
+                        <div className="timer-label">Joined</div>
+                      </div>
+                      <div className="timer-unit">
+                        <div className="timer-number">{jamData.submissions}</div>
+                        <div className="timer-label">Games</div>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="timer-label-main">
+                      {jamData.status === 'upcoming' ? 'starts in' : 'ends in'}
+                    </div>
+                    <div className="jam-timer">
+                      <div className="timer-unit">
+                        <div className="timer-number">{timeLeft.days}</div>
+                        <div className="timer-label">Days</div>
+                      </div>
+                      <div className="timer-unit">
+                        <div className="timer-number">{timeLeft.hours}</div>
+                        <div className="timer-label">Hours</div>
+                      </div>
+                      <div className="timer-unit">
+                        <div className="timer-number">{timeLeft.minutes}</div>
+                        <div className="timer-label">Minutes</div>
+                      </div>
+                    </div>
+                    <div className="timer-participants">
+                      {jamData.participants} joined
+                    </div>
+                  </>
+                )}
               </div>
 
               <div className="jam-bottom-section">
@@ -141,6 +187,9 @@ const Jams = () => {
                   </a>
                   {(jamData.status === 'active' || jamData.status === 'ended') && (
                     <a href={jamData.url} className="btn btn-ghost" target="_blank" rel="noopener noreferrer nofollow">View Submissions</a>
+                  )}
+                  {jamData.status === 'ended' && (
+                    <a href="https://forms.gle/gpvm9AZaft4uK7oYA" className="btn btn-ghost" target="_blank" rel="noopener noreferrer nofollow">Suggest a Theme</a>
                   )}
                 </div>
                 
@@ -218,39 +267,38 @@ const Jams = () => {
             <a href="/showcase" className="btn btn-ghost btn-sm">See Winners</a>
           </div>
 
-          <div className="jam-group">
-            <button className="accordion-toggle" onClick={() => setShowMarathon(!showMarathon)}>
-              Marathon Jams {showMarathon ? '▾' : '▸'}
-            </button>
-            {showMarathon && (
-              <ul className="jam-list">
-                {marathon.map((jam) => (
-                  <li key={jam.jamName}>
-                    <a href={jam.jamUrl} className="jam-title-link" target="_blank" rel="noopener noreferrer nofollow">
-                      {jam.jamName}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
+          <h3 className="jam-group-title">Marathon Jams</h3>
+          <div className="jam-table">
+            <div className="jam-table-header">
+              <span className="jam-col-name">Jam</span>
+              <span className="jam-col-dates">Dates</span>
+              <span className="jam-col-games">Games</span>
+            </div>
+            {marathon.map((jam) => (
+              <a key={jam.jamName} href={jam.jamUrl} className="jam-table-row" target="_blank" rel="noopener noreferrer nofollow">
+                <span className="jam-col-name">{jam.jamName}</span>
+                <span className="jam-col-dates">{jam.startDate && jam.endDate ? `${jam.startDate} — ${jam.endDate}` : '—'}</span>
+                <span className="jam-col-games">{jam.submissions || '—'}</span>
+              </a>
+            ))}
           </div>
 
-          <div className="jam-group">
-            <button className="accordion-toggle" onClick={() => setShowThemed(!showThemed)}>
-              Themed Jams {showThemed ? '▾' : '▸'}
-            </button>
-            {showThemed && (
-              <ul className="jam-list">
-                {themed.map((jam) => (
-                  <li key={jam.jamName}>
-                    <a href={jam.jamUrl} className="jam-title-link" target="_blank" rel="noopener noreferrer nofollow">
-                      {jam.jamName}
-                    </a>
-                    {jam.jamTheme && <span className="jam-note">— {jam.jamTheme}</span>}
-                  </li>
-                ))}
-              </ul>
-            )}
+          <h3 className="jam-group-title">Themed Jams</h3>
+          <div className="jam-table">
+            <div className="jam-table-header">
+              <span className="jam-col-name">Jam</span>
+              <span className="jam-col-theme">Theme</span>
+              <span className="jam-col-dates">Dates</span>
+              <span className="jam-col-games">Games</span>
+            </div>
+            {themed.map((jam) => (
+              <a key={jam.jamName} href={jam.jamUrl} className="jam-table-row" target="_blank" rel="noopener noreferrer nofollow">
+                <span className="jam-col-name">{jam.jamName}</span>
+                <span className="jam-col-theme">{jam.jamTheme || '—'}</span>
+                <span className="jam-col-dates">{jam.startDate && jam.endDate ? `${jam.startDate} — ${jam.endDate}` : '—'}</span>
+                <span className="jam-col-games">{jam.submissions || '—'}</span>
+              </a>
+            ))}
           </div>
         </div>
       </section>
