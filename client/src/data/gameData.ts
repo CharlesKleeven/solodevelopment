@@ -323,6 +323,84 @@ export const gameData: Game[] = [
         placement: 3,
         thumb: "A",
         image: "/images/games/achromatopsia.png"
+    },
+    {
+        id: 26,
+        title: "Fabled Footy Demo",
+        author: "@justacupgames",
+        url: "https://jcupdev.itch.io/fabled-footy",
+        jamName: "Marathon Jam #5 — Community Voted",
+        jamUrl: "https://itch.io/jam/solodevelopment-marathon-jam-5",
+        jamType: "marathon",
+        jamTheme: "Work on your own project",
+        placement: 1,
+        thumb: "F",
+        image: "/images/games/fabled-footy.jpg"
+    },
+    {
+        id: 27,
+        title: "Kill The Eye",
+        author: "Ar",
+        url: "https://ardue.itch.io/kill-the-eye",
+        jamName: "Marathon Jam #5 — Community Voted",
+        jamUrl: "https://itch.io/jam/solodevelopment-marathon-jam-5",
+        jamType: "marathon",
+        jamTheme: "Work on your own project",
+        placement: 2,
+        thumb: "K",
+        image: "/images/games/kill-the-eye.png"
+    },
+    {
+        id: 28,
+        title: "11th Floor",
+        author: "@angelhyype",
+        url: "https://angelhyype.itch.io/11th-floor",
+        jamName: "Marathon Jam #5 — Community Voted",
+        jamUrl: "https://itch.io/jam/solodevelopment-marathon-jam-5",
+        jamType: "marathon",
+        jamTheme: "Work on your own project",
+        placement: 3,
+        thumb: "1",
+        image: "/images/games/11th-floor.png"
+    },
+    {
+        id: 29,
+        title: "Kill The Eye",
+        author: "Ar",
+        url: "https://ardue.itch.io/kill-the-eye",
+        jamName: "Marathon Jam #5 — Cash Prize (Judge Selected)",
+        jamUrl: "https://itch.io/jam/solodevelopment-marathon-jam-5",
+        jamType: "marathon",
+        jamTheme: "Work on your own project",
+        placement: 1,
+        thumb: "K",
+        image: "/images/games/kill-the-eye.png"
+    },
+    {
+        id: 30,
+        title: "Just Another Worldview",
+        author: "@coderkillo",
+        url: "https://coderkillo.itch.io/just-another-worldview",
+        jamName: "Marathon Jam #5 — Cash Prize (Judge Selected)",
+        jamUrl: "https://itch.io/jam/solodevelopment-marathon-jam-5",
+        jamType: "marathon",
+        jamTheme: "Work on your own project",
+        placement: 2,
+        thumb: "J",
+        image: "/images/games/just-another-worldview.png"
+    },
+    {
+        id: 31,
+        title: "Segworm",
+        author: "@dur__ka",
+        url: "https://dur-ka.itch.io/segworm",
+        jamName: "Marathon Jam #5 — Cash Prize (Judge Selected)",
+        jamUrl: "https://itch.io/jam/solodevelopment-marathon-jam-5",
+        jamType: "marathon",
+        jamTheme: "Work on your own project",
+        placement: 3,
+        thumb: "S",
+        image: "/images/games/segworm.gif"
     }
 ];
 
