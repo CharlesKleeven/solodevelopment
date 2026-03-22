@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './auth.css';
@@ -116,6 +117,10 @@ const Login: React.FC = () => {
 
   return (
     <div className="auth-page">
+      <Helmet>
+        <title>Log In — Solo Development</title>
+        <meta name="description" content="Sign in or create an account to join the Solo Development community." />
+      </Helmet>
       <div className="auth-container">
         <div className="auth-card">
           <div className="auth-header">

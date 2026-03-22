@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import api from '../services/api';
 import './support.css';
 
@@ -41,6 +42,10 @@ const Support: React.FC = () => {
 
   return (
     <div className="support-page">
+      <Helmet>
+        <title>Contact — Solo Development</title>
+        <meta name="description" content="Get help, report issues, or submit a ban appeal for the Solo Development community." />
+      </Helmet>
       <h1>Get support</h1>
       <p>If you're having trouble with the site or need help, you're in the right place.</p>
 
@@ -99,6 +104,18 @@ const Support: React.FC = () => {
               {loading ? 'Sending...' : 'Send Message'}
             </button>
           </form>
+        </div>
+      </section>
+
+      <section className="support-section">
+        <div className="contact-card">
+          <h2>Ban Appeal</h2>
+          <p className="contact-note">
+            If you've been banned and believe it was a mistake or want to appeal, you can submit a ban appeal form.
+          </p>
+          <a href="https://forms.gle/XEuXXk6RNenQSAnU6" target="_blank" rel="noopener noreferrer nofollow" className="btn btn-secondary">
+            Submit Ban Appeal
+          </a>
         </div>
       </section>
     </div>

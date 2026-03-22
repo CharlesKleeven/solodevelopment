@@ -53,6 +53,130 @@
     font-family: monospace;
 }
 
+.jam-dates {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-3);
+}
+
+.jam-meta-info {
+    display: inline-block;
+    font-size: var(--text-xs);
+    color: var(--text-quaternary);
+    margin-left: var(--space-2);
+}
+
+/* Past Jams Table */
+.jam-group-title {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-3);
+    margin-top: var(--space-8);
+}
+
+.jam-table {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    margin-bottom: var(--space-4);
+}
+
+.jam-table-header {
+    display: flex;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--text-quaternary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.jam-table-row {
+    display: flex;
+    align-items: center;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+    text-decoration: none;
+    transition: background 0.1s;
+}
+
+.jam-table-row:last-child {
+    border-bottom: none;
+}
+
+.jam-table-row:nth-child(odd) {
+    background: var(--bg-secondary);
+}
+
+.jam-table-row:hover {
+    background: var(--bg-tertiary);
+    color: inherit;
+}
+
+.jam-table-row:hover .jam-col-name {
+    color: var(--color-accent);
+}
+
+.jam-col-name {
+    flex: 1.5;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    transition: color 0.15s;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.jam-col-theme {
+    flex: 1;
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+    font-style: italic;
+}
+
+.jam-col-dates {
+    flex: 1.2;
+    font-size: var(--text-xs);
+    color: var(--text-quaternary);
+}
+
+.jam-col-games {
+    flex: 0.4;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    text-align: right;
+}
+
+@media (max-width: 768px) {
+    .jam-table-header {
+        display: none;
+    }
+
+    .jam-table-row {
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+
+    .jam-col-name {
+        width: 100%;
+        flex: none;
+    }
+
+    .jam-col-theme,
+    .jam-col-dates {
+        flex: 1;
+    }
+
+    .jam-col-games {
+        text-align: left;
+    }
+}
+
 .jam-timer {
     display: flex;
     justify-content: center;

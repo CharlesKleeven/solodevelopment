@@ -1,9 +1,14 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import './privacy.css';
 
 const Privacy: React.FC = () => {
     return (
         <div className="privacy-page">
+            <Helmet>
+                <title>Privacy Policy — Solo Development</title>
+                <meta name="description" content="Privacy policy for solodevelopment.org." />
+            </Helmet>
             <section className="page-header">
                 <h1>Privacy Policy</h1>
                 <p>How we handle your data</p>

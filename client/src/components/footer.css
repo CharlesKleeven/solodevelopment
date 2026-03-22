@@ -58,8 +58,7 @@
 }
 
 .footer-link:hover {
-    color: var(--text-primary);
-    text-decoration: underline;
+    color: var(--color-accent);
 }
 
 .footer-column ul {

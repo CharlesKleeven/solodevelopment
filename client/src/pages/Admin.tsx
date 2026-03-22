@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../context/AuthContext';
 import AdminJams from './AdminJams';
 import AdminReportedGames from '../components/AdminReportedGames';
@@ -14,6 +15,10 @@ const Admin: React.FC = () => {
 
     return (
         <div className="admin-page">
+            <Helmet>
+                <title>Admin — Solo Development</title>
+                <meta name="robots" content="noindex, nofollow" />
+            </Helmet>
             <div className="container">
                 <div className="admin-header">
                     <h1>Admin Dashboard</h1>

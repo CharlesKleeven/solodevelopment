@@ -39,31 +39,31 @@
     --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.1);
     /* Card shadow */
 
-    /* === WARM DARK BACKGROUNDS === */
-    --bg-primary: #0f1419;
-    /* Warm ink-dark base */
-    --bg-secondary: #1a1f25;
-    /* Cards / panels with warmth */
-    --bg-tertiary: #252b33;
-    /* Inside elements - softer */
-    --bg-fade: #13181e;
+    /* === DARK BLUE BACKGROUNDS === */
+    --bg-primary: #0f1923;
+    /* Dark blue base */
+    --bg-secondary: #141f2e;
+    /* Cards / panels */
+    --bg-tertiary: #1c2a3a;
+    /* Inside elements */
+    --bg-fade: #121c28;
     /* Subtle section contrast */
 
-    /* === WARM TEXT COLORS === */
-    --text-primary: #f8fafc;
-    /* Warm almost-white */
-    --text-secondary: #cbd5e1;
-    /* Warmer gray */
-    --text-tertiary: #94a3b8;
+    /* === BLUE-TINTED TEXT === */
+    --text-primary: #e0eaf4;
+    /* Soft white-blue */
+    --text-secondary: #b0c0d0;
+    /* Mid blue-gray */
+    --text-tertiary: #7a90a5;
     /* Softer tertiary */
-    --text-quaternary: #64748b;
-    /* Even softer for subtle text */
+    --text-quaternary: #5a7088;
+    /* Subtle text */
 
     /* === BORDERS & BADGES === */
-    --border-subtle: #334155;
-    /* Warmer border */
-    --border-radius: 6px;
-    --border-radius-lg: 10px;
+    --border-subtle: #1c2a3a;
+    /* Blue border */
+    --border-radius: 12px;
+    --border-radius-lg: 16px;
 
     --badge-upcoming: #0891b2;
     --badge-complete: #16a34a;
@@ -90,9 +90,9 @@
     --text-4xl: 2.25rem;
 
     /* === EFFECTS === */
-    --transition: 150ms ease;
-    --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.04);
-    --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+    --transition: 200ms ease;
+    --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.06);
+    --shadow-soft: 0 4px 12px -2px rgba(0, 0, 0, 0.12);
 }
 
 /* ===== LIGHT MODE THEME ===== */
@@ -242,7 +242,7 @@ h6 {
     color: var(--text-primary);
     font-weight: 600;
     line-height: 1.2;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.01em;
     margin-bottom: var(--space-4);
 }
 
