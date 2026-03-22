@@ -62,40 +62,15 @@ const Navbar: React.FC = () => {
                 {/* Right Side - Navigation + Auth */}
                 <div className="navbar-right">
                     <div className="navbar-nav navbar-breadcrumb">
-                        <Link
-                            to="/"
-                            className={`nav-link ${isActive('/') ? 'active' : ''}`}
-                        >
-                            home
-                        </Link>
+                        <Link to="/" className={`nav-link ${isActive('/') ? 'active' : ''}`}>home</Link>
                         <span className="nav-separator">/</span>
-                        <Link
-                            to="/jams"
-                            className={`nav-link ${isActive('/jams') ? 'active' : ''}`}
-                        >
-                            jams
-                        </Link>
+                        <Link to="/jams" className={`nav-link ${isActive('/jams') ? 'active' : ''}`}>jams</Link>
                         <span className="nav-separator">/</span>
-                        <Link
-                            to="/showcase"
-                            className={`nav-link ${isActive('/showcase') ? 'active' : ''}`}
-                        >
-                            showcase
-                        </Link>
+                        <Link to="/showcase" className={`nav-link ${isActive('/showcase') || isActive('/community') ? 'active' : ''}`}>showcase</Link>
                         <span className="nav-separator">/</span>
-                        <Link
-                            to="/community"
-                            className={`nav-link ${isActive('/community') ? 'active' : ''}`}
-                        >
-                            community
-                        </Link>
+                        <Link to="/streams" className={`nav-link ${isActive('/streams') ? 'active' : ''}`}>streams</Link>
                         <span className="nav-separator">/</span>
-                        <Link
-                            to="/streams"
-                            className={`nav-link ${isActive('/streams') ? 'active' : ''}`}
-                        >
-                            streams
-                        </Link>
+                        <Link to="/resources" className={`nav-link ${isActive('/resources') ? 'active' : ''}`}>resources</Link>
                     </div>
 
                     <div className="navbar-actions">
@@ -172,41 +147,11 @@ const Navbar: React.FC = () => {
                     <div className="mobile-theme-toggle">
                         <ThemeToggle />
                     </div>
-                    <Link
-                        to="/"
-                        className={`mobile-nav-link ${isActive('/') ? 'active' : ''}`}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                        Home
-                    </Link>
-                    <Link
-                        to="/jams"
-                        className={`mobile-nav-link ${isActive('/jams') ? 'active' : ''}`}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                        Jams
-                    </Link>
-                    <Link
-                        to="/showcase"
-                        className={`mobile-nav-link ${isActive('/showcase') ? 'active' : ''}`}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                        Showcase
-                    </Link>
-                    <Link
-                        to="/community"
-                        className={`mobile-nav-link ${isActive('/community') ? 'active' : ''}`}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                        Community
-                    </Link>
-                    <Link
-                        to="/streams"
-                        className={`mobile-nav-link ${isActive('/streams') ? 'active' : ''}`}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                        Streams
-                    </Link>
+                    <Link to="/" className={`mobile-nav-link ${isActive('/') ? 'active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+                    <Link to="/jams" className={`mobile-nav-link ${isActive('/jams') ? 'active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>Jams</Link>
+                    <Link to="/showcase" className={`mobile-nav-link ${isActive('/showcase') ? 'active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>Showcase</Link>
+                    <Link to="/streams" className={`mobile-nav-link ${isActive('/streams') ? 'active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>Streams</Link>
+                    <Link to="/resources" className={`mobile-nav-link ${isActive('/resources') ? 'active' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>Resources</Link>
 
                     {user ? (
                         <>
