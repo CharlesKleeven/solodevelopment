@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import api from '../services/api';
 import './streams.css';
 
@@ -90,6 +91,10 @@ const Streams: React.FC = () => {
 
     return (
         <div className="streams-page">
+            <Helmet>
+                <title>Streams — Solo Development</title>
+                <meta name="description" content="Watch solo game developers stream their work live." />
+            </Helmet>
             <div className="page-container">
                 <h1 className="page-title">Community Streams</h1>
                 <p className="page-subtitle">Watch game development live from our community</p>

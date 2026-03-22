@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { gameAPI } from '../services/api';
@@ -253,6 +254,10 @@ const GameForm: React.FC = () => {
 
     return (
         <div className="game-form-page">
+            <Helmet>
+                <title>Submit Game — Solo Development</title>
+                <meta name="robots" content="noindex, nofollow" />
+            </Helmet>
             <div className="container">
                 <div className="form-header">
                     <h1>{isEditing ? 'Edit Game' : 'Add New Game'}</h1>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../context/AuthContext';
 import { gameAPI } from '../services/api';
 import './game-dashboard.css';
@@ -142,6 +143,10 @@ const GameDashboard: React.FC = () => {
 
     return (
         <div className="game-dashboard">
+            <Helmet>
+                <title>My Games — Solo Development</title>
+                <meta name="robots" content="noindex, nofollow" />
+            </Helmet>
             <div className="container">
                 {/* Header */}
                 <div className="dashboard-header">

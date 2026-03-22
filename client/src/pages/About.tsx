@@ -1,9 +1,14 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import './about.css';
 
 const About: React.FC = () => {
   return (
     <div className="page-container">
+      <Helmet>
+        <title>About — Solo Development</title>
+        <meta name="description" content="What Solo Development is, our mission, and what happens in our community of solo game developers." />
+      </Helmet>
       <div className="page-content">
         <h1>About Solo Development</h1>
         
