@@ -30,7 +30,7 @@ const DateVoting: React.FC<DateVotingProps> = ({ jamId, isDateVotingOpen }) => {
     const [saving, setSaving] = useState<string | null>(null);
     const [showSuggestForm, setShowSuggestForm] = useState(false);
     const [suggestStart, setSuggestStart] = useState('');
-    const [suggestEnd, setSuggestEnd] = useState('');
+    const [suggestHours, setSuggestHours] = useState('72');
     const [suggestError, setSuggestError] = useState('');
     const [submittingSuggestion, setSubmittingSuggestion] = useState(false);
 
@@ -77,22 +77,21 @@ const DateVoting: React.FC<DateVotingProps> = ({ jamId, isDateVotingOpen }) => {
         e.preventDefault();
         setSuggestError('');
 
-        if (!suggestStart || !suggestEnd) {
-            setSuggestError('Both dates are required');
+        if (!suggestStart) {
+            setSuggestError('Start date is required');
             return;
         }
 
-        if (suggestEnd <= suggestStart) {
-            setSuggestError('End date must be after start date');
-            return;
-        }
+        const hours = parseInt(suggestHours) || 72;
+        const start = new Date(suggestStart + 'T12:00:00Z');
+        const end = new Date(start.getTime() + hours * 60 * 60 * 1000);
 
         setSubmittingSuggestion(true);
         try {
-            await dateVoteAPI.suggestDate(jamId, suggestStart + 'T12:00:00Z', suggestEnd + 'T12:00:00Z');
+            await dateVoteAPI.suggestDate(jamId, start.toISOString(), end.toISOString());
             setShowSuggestForm(false);
             setSuggestStart('');
-            setSuggestEnd('');
+            setSuggestHours('72');
             loadDateOptions();
         } catch (err: any) {
             setSuggestError(err.response?.data?.error || 'Failed to suggest date');
@@ -160,7 +159,7 @@ const DateVoting: React.FC<DateVotingProps> = ({ jamId, isDateVotingOpen }) => {
                                 <form className="date-suggest-form" onSubmit={handleSuggest}>
                                     <div className="date-suggest-inputs">
                                         <label>
-                                            Start
+                                            Start date
                                             <input
                                                 type="date"
                                                 value={suggestStart}
@@ -169,12 +168,13 @@ const DateVoting: React.FC<DateVotingProps> = ({ jamId, isDateVotingOpen }) => {
                                             />
                                         </label>
                                         <label>
-                                            End
+                                            Duration (hours)
                                             <input
-                                                type="date"
-                                                value={suggestEnd}
-                                                onChange={e => setSuggestEnd(e.target.value)}
-                                                required
+                                                type="number"
+                                                value={suggestHours}
+                                                onChange={e => setSuggestHours(e.target.value)}
+                                                min="1"
+                                                style={{width: '80px'}}
                                             />
                                         </label>
                                     </div>

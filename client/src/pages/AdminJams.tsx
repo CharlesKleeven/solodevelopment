@@ -68,7 +68,7 @@ const AdminJams: React.FC = () => {
     const [showDateVoting, setShowDateVoting] = useState(false);
     const [isDateVotingOpen, setIsDateVotingOpen] = useState(false);
     const [dateOptions, setDateOptions] = useState<Array<{ id: string; startDate: string; endDate: string; voteCount: number; suggestedBy: string | null }>>([]);
-    const [newDates, setNewDates] = useState<Array<{ startDate: string; endDate: string }>>([{ startDate: '', endDate: '' }]);
+    const [newDates, setNewDates] = useState<Array<{ startDate: string; hours: string }>>([{ startDate: '', hours: '72' }]);
 
     // Form state
     const [formData, setFormData] = useState<Partial<Jam>>({
@@ -197,18 +197,19 @@ const AdminJams: React.FC = () => {
 
     const handleSaveDates = async () => {
         if (!currentJam) return;
-        const validDates = newDates.filter(d => d.startDate && d.endDate);
+        const validDates = newDates.filter(d => d.startDate && d.hours);
         if (validDates.length === 0) {
-            setMessage('Please add at least one date range');
+            setMessage('Please add at least one date');
             return;
         }
         try {
             const response = await api.post('/api/date-votes/create', {
                 jamId: currentJam.id,
-                dates: validDates.map(d => ({
-                    startDate: d.startDate + 'T12:00:00Z',
-                    endDate: d.endDate + 'T12:00:00Z'
-                }))
+                dates: validDates.map(d => {
+                    const start = new Date(d.startDate + 'T12:00:00Z');
+                    const end = new Date(start.getTime() + parseInt(d.hours) * 60 * 60 * 1000);
+                    return { startDate: start.toISOString(), endDate: end.toISOString() };
+                })
             });
             setMessage(response.data.message);
             setNewDates([{ startDate: '', endDate: '' }]);
@@ -889,33 +890,28 @@ const AdminJams: React.FC = () => {
                             <h3>Add Date Option</h3>
                             {newDates.map((d, i) => (
                                 <div key={i} className="date-input-row">
-                                    <label>Start
+                                    <label>Start date
                                     <input
                                         type="date"
                                         value={d.startDate}
                                         onChange={e => {
                                             const updated = [...newDates];
                                             updated[i].startDate = e.target.value;
-                                            // Auto-fill end date 3 days after start
-                                            if (e.target.value && !updated[i].endDate) {
-                                                const start = new Date(e.target.value);
-                                                start.setDate(start.getDate() + 3);
-                                                updated[i].endDate = start.toISOString().split('T')[0];
-                                            }
                                             setNewDates(updated);
                                         }}
                                     />
                                     </label>
-                                    <span>to</span>
-                                    <label>End
+                                    <label>Duration (hours)
                                     <input
-                                        type="date"
-                                        value={d.endDate}
+                                        type="number"
+                                        value={d.hours}
                                         onChange={e => {
                                             const updated = [...newDates];
-                                            updated[i].endDate = e.target.value;
+                                            updated[i].hours = e.target.value;
                                             setNewDates(updated);
                                         }}
+                                        min="1"
+                                        style={{width: '80px'}}
                                     />
                                     </label>
                                     {newDates.length > 1 && (
@@ -933,7 +929,7 @@ const AdminJams: React.FC = () => {
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-secondary"
-                                    onClick={() => setNewDates([...newDates, { startDate: '', endDate: '' }])}
+                                    onClick={() => setNewDates([...newDates, { startDate: '', hours: '72' }])}
                                 >
                                     + Add Another
                                 </button>
