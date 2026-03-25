@@ -212,7 +212,7 @@ const AdminJams: React.FC = () => {
                 })
             });
             setMessage(response.data.message);
-            setNewDates([{ startDate: '', endDate: '' }]);
+            setNewDates([{ startDate: '', hours: '72' }]);
             fetchDateOptions();
         } catch (error: any) {
             setMessage(`Error: ${error.response?.data?.error || error.message}`);
