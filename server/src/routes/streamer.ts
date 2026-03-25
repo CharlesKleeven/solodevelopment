@@ -7,18 +7,24 @@ import {
     updateStreamer,
     deleteStreamer,
     reorderStreamers,
-    getLiveStatus
+    getLiveStatus,
+    submitStreamer,
+    reviewStreamer
 } from '../controllers/streamerController';
 
 const router = express.Router();
 
 // Public routes
-router.get('/', getStreamers); // Get active streamers
-router.get('/live-status', getLiveStatus); // Get live status for active streamers
+router.get('/', getStreamers);
+router.get('/live-status', getLiveStatus);
 
-// Admin routes (require authentication)
-router.get('/all', authenticateToken, getAllStreamers); // Get all streamers including inactive
+// User routes
+router.post('/submit', authenticateToken, submitStreamer);
+
+// Admin routes
+router.get('/all', authenticateToken, getAllStreamers);
 router.post('/add', authenticateToken, addStreamer);
+router.post('/:id/review', authenticateToken, reviewStreamer);
 router.put('/:id', authenticateToken, updateStreamer);
 router.delete('/:id', authenticateToken, deleteStreamer);
 router.post('/reorder', authenticateToken, reorderStreamers);

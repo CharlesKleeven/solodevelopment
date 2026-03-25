@@ -5,6 +5,7 @@ import { gameData } from '../data/gameData';
 import { useJam } from '../hooks/useJam';
 import useFadeInOnScroll from '../hooks/useFadeInOnScroll';
 import ThemeVoting from '../components/ThemeVoting';
+import DateVoting from '../components/DateVoting';
 
 interface JamEntry {
   jamName: string;
@@ -108,11 +109,17 @@ const Jams = () => {
       <Helmet>
         <title>Game Jams — Solo Development</title>
         <meta name="description" content="Monthly and seasonal game jams for solo developers. Themed 72-hour jams and month-long marathon jams with cash prizes." />
+        <link rel="canonical" href="https://solodevelopment.org/jams" />
+        <meta property="og:title" content="Game Jams — Solo Development" />
+        <meta property="og:description" content="Monthly and seasonal game jams for solo developers. Themed 72-hour jams and month-long marathon jams with cash prizes." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://solodevelopment.org/jams" />
+        <meta property="og:site_name" content="Solo Development" />
       </Helmet>
       <section className="page-header" data-fade data-delay="1">
         <div className="container">
           <h1>Game Jams</h1>
-          <p>Solo Development hosts monthly and seasonal jams to help you build, learn, and finish projects — on your own terms.</p>
+          <p>Monthly and seasonal jams for solo game developers.</p>
         </div>
       </section>
 
@@ -125,72 +132,63 @@ const Jams = () => {
                 <h2 className="jam-title">Loading jam data...</h2>
               </div>
             </div>
+          ) : jamData && jamData.status === 'ended' ? (
+            <div className="jam-featured-card jam-ended-card">
+              <div className="jam-ended-layout">
+                <div className="jam-ended-info">
+                  <span className="jam-ended-badge">Ended</span>
+                  <h2 className="jam-title">{jamData.title}</h2>
+                  <p className="jam-ended-meta">
+                    {new Date(jamData.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} — {new Date(jamData.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    {jamData.theme && jamData.theme !== 'TBD' && <> &middot; Theme: "{jamData.theme}"</>}
+                  </p>
+                  <p className="jam-ended-stats">{jamData.participants} joined &middot; {jamData.submissions} games submitted</p>
+                </div>
+                <div className="jam-ended-actions">
+                  <a href={jamData.url} className="btn btn-secondary" target="_blank" rel="noopener noreferrer nofollow">View Results</a>
+                  <a href="https://forms.gle/gpvm9AZaft4uK7oYA" className="btn btn-ghost" target="_blank" rel="noopener noreferrer nofollow">Suggest a Theme</a>
+                </div>
+              </div>
+            </div>
           ) : jamData ? (
             <div className="jam-featured-card">
               <div className="jam-header">
                 <h2 className="jam-title">{jamData.title}</h2>
                 <p className="jam-theme">
-                  {jamData.theme !== 'TBD' ? 
-                    `theme: "${jamData.theme}"` : 
+                  {jamData.theme !== 'TBD' ?
+                    `theme: "${jamData.theme}"` :
                     'theme: TBD'}
                 </p>
               </div>
 
               <div className="jam-timer-section">
-                {jamData.status === 'ended' ? (
-                  <>
-                    <div className="jam-dates">
-                      <span>{new Date(jamData.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} — {new Date(jamData.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                    </div>
-                    <div className="jam-timer">
-                      <div className="timer-unit">
-                        <div className="timer-number">{jamData.participants}</div>
-                        <div className="timer-label">Joined</div>
-                      </div>
-                      <div className="timer-unit">
-                        <div className="timer-number">{jamData.submissions}</div>
-                        <div className="timer-label">Games</div>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="timer-label-main">
-                      {jamData.status === 'upcoming' ? 'starts in' : 'ends in'}
-                    </div>
-                    <div className="jam-timer">
-                      <div className="timer-unit">
-                        <div className="timer-number">{timeLeft.days}</div>
-                        <div className="timer-label">Days</div>
-                      </div>
-                      <div className="timer-unit">
-                        <div className="timer-number">{timeLeft.hours}</div>
-                        <div className="timer-label">Hours</div>
-                      </div>
-                      <div className="timer-unit">
-                        <div className="timer-number">{timeLeft.minutes}</div>
-                        <div className="timer-label">Minutes</div>
-                      </div>
-                    </div>
-                    <div className="timer-participants">
-                      {jamData.participants} joined
-                    </div>
-                  </>
-                )}
+                <div className="timer-label-main">
+                  {jamData.status === 'upcoming' ? 'starts in' : 'ends in'}
+                </div>
+                <div className="jam-timer">
+                  <div className="timer-unit">
+                    <div className="timer-number">{timeLeft.days}</div>
+                    <div className="timer-label">Days</div>
+                  </div>
+                  <div className="timer-unit">
+                    <div className="timer-number">{timeLeft.hours}</div>
+                    <div className="timer-label">Hours</div>
+                  </div>
+                  <div className="timer-unit">
+                    <div className="timer-number">{timeLeft.minutes}</div>
+                    <div className="timer-label">Minutes</div>
+                  </div>
+                </div>
+                <div className="timer-participants">
+                  {jamData.participants} joined
+                </div>
               </div>
 
               <div className="jam-bottom-section">
                 <div className="jam-actions">
                   <a href={jamData.url} className="btn btn-primary" target="_blank" rel="noopener noreferrer nofollow">
-                    {jamData.status === 'upcoming' ? 'itch.io page' :
-                      jamData.status === 'active' ? 'Join Jam' : 'View Results'}
+                    {jamData.status === 'upcoming' ? 'itch.io page' : 'Join Jam'}
                   </a>
-                  {(jamData.status === 'active' || jamData.status === 'ended') && (
-                    <a href={jamData.url} className="btn btn-ghost" target="_blank" rel="noopener noreferrer nofollow">View Submissions</a>
-                  )}
-                  {jamData.status === 'ended' && (
-                    <a href="https://forms.gle/gpvm9AZaft4uK7oYA" className="btn btn-ghost" target="_blank" rel="noopener noreferrer nofollow">Suggest a Theme</a>
-                  )}
                 </div>
                 
                 {jamData.isVotingOpen && (
@@ -248,26 +246,22 @@ const Jams = () => {
         />
       )}
 
-      <section className="section-info" data-fade data-delay="5">
-        <div className="container">
-          <h2>What Are SoloDev Jams?</h2>
-          <p>We run two kinds of jams:</p>
-          <ul>
-            <li><strong>Themed Jams</strong> — Short 72-hour bursts with a community-voted theme. Great for experimenting and finishing something small.</li>
-            <li><strong>Marathon Jams</strong> — Month-long sprints for bigger ideas or ongoing solo projects. Relaxed, open-ended, and rewarding.</li>
-          </ul>
-          <p>You can join anytime. No experience required.</p>
-        </div>
-      </section>
+      {/* Date Voting Section */}
+      {jamData && jamData.isDateVotingOpen && (
+        <DateVoting
+          jamId={jamData.id || ''}
+          isDateVotingOpen={jamData.isDateVotingOpen}
+        />
+      )}
 
-      <section className="section-past-jams" data-fade data-delay="6">
+      <section className="section-past-jams" data-fade data-delay="5">
         <div className="container">
           <div className="section-header">
             <h2 className="section-title">Past Jams</h2>
             <a href="/showcase" className="btn btn-ghost btn-sm">See Winners</a>
           </div>
 
-          <h3 className="jam-group-title">Marathon Jams</h3>
+          <h3 className="jam-group-title">Marathon Jams <span className="jam-group-desc">— Month-long sprints for bigger ideas or ongoing solo projects</span></h3>
           <div className="jam-table">
             <div className="jam-table-header">
               <span className="jam-col-name">Jam</span>
@@ -283,7 +277,7 @@ const Jams = () => {
             ))}
           </div>
 
-          <h3 className="jam-group-title">Themed Jams</h3>
+          <h3 className="jam-group-title">Themed Jams <span className="jam-group-desc">— 72-hour jams with a community-voted theme</span></h3>
           <div className="jam-table">
             <div className="jam-table-header">
               <span className="jam-col-name">Jam</span>

@@ -1,4 +1,3 @@
-// --- Clean 3-Column Footer Layout ---
 import React from 'react';
 import './footer.css';
 
@@ -15,7 +14,18 @@ const Footer: React.FC = () => {
             </p>
           </div>
 
-          {/* Column 2: Community */}
+          {/* Column 2: Site */}
+          <div className="footer-column">
+            <h4>Site</h4>
+            <ul>
+              <li><a className="footer-link" href="/jams">Game Jams</a></li>
+              <li><a className="footer-link" href="/showcase">Showcase</a></li>
+              <li><a className="footer-link" href="/streams">Streams</a></li>
+              <li><a className="footer-link" href="/resources">Resources</a></li>
+            </ul>
+          </div>
+
+          {/* Column 3: Community */}
           <div className="footer-column">
             <h4>Community</h4>
             <ul>
@@ -37,12 +47,11 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Column 3: Support */}
+          {/* Column 4: Support */}
           <div className="footer-column">
             <h4>Support</h4>
             <ul>
               <li><a className="footer-link" href="/about">About</a></li>
-              <li><a className="footer-link" href="/resources">Resources</a></li>
               <li><a className="footer-link" href="/support">Contact</a></li>
               <li><a className="footer-link" href="/privacy">Privacy</a></li>
             </ul>

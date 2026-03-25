@@ -4,6 +4,8 @@ export interface IStreamer extends Document {
     channel: string;  // Twitch username
     title: string;    // Display name for the streamer
     isActive: boolean;
+    status: 'pending' | 'approved' | 'rejected';
+    submittedBy: string | null;  // userId of who submitted, null = admin-added
     order: number;    // Display order (lower numbers show first)
     createdAt: Date;
     updatedAt: Date;
@@ -25,6 +27,15 @@ const streamerSchema = new Schema<IStreamer>({
     isActive: {
         type: Boolean,
         default: true
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'approved'
+    },
+    submittedBy: {
+        type: String,
+        default: null
     },
     order: {
         type: Number,

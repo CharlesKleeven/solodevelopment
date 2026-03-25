@@ -235,6 +235,12 @@ const Showcase: React.FC = () => {
       <Helmet>
         <title>Showcase — Solo Development</title>
         <meta name="description" content="Browse winning games and community submissions from Solo Development game jams." />
+        <link rel="canonical" href="https://solodevelopment.org/showcase" />
+        <meta property="og:title" content="Showcase — Solo Development" />
+        <meta property="og:description" content="Browse winning games and community submissions from Solo Development game jams." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://solodevelopment.org/showcase" />
+        <meta property="og:site_name" content="Solo Development" />
       </Helmet>
       {/* Showcase Header */}
       <section className="page-header" data-fade data-delay="1">

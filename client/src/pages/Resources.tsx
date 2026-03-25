@@ -103,6 +103,12 @@ const Resources: React.FC = () => {
       <Helmet>
         <title>Resources — Solo Development</title>
         <meta name="description" content="Game engines, tools, free assets, and learning resources curated for solo game developers." />
+        <link rel="canonical" href="https://solodevelopment.org/resources" />
+        <meta property="og:title" content="Resources — Solo Development" />
+        <meta property="og:description" content="Game engines, tools, free assets, and learning resources curated for solo game developers." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://solodevelopment.org/resources" />
+        <meta property="og:site_name" content="Solo Development" />
       </Helmet>
       <section className="page-header" data-fade data-delay="1">
         <div className="container">

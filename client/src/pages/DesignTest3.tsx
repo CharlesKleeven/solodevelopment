@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { gameData } from '../data/gameData';
 import { useJam } from '../hooks/useJam';
 import useFadeInOnScroll from '../hooks/useFadeInOnScroll';
+import DateVoting from '../components/DateVoting';
 import './design-test3.css';
 
 const DesignTest3: React.FC = () => {
@@ -17,6 +18,12 @@ const DesignTest3: React.FC = () => {
             <Helmet>
                 <title>Solo Development — A Community for Solo Game Developers</title>
                 <meta name="description" content="Join a community of indie game developers. Game jams with cash prizes, a showcase for your work, and people who actually play your games." />
+                <link rel="canonical" href="https://solodevelopment.org/" />
+                <meta property="og:title" content="Solo Development — A Community for Solo Game Developers" />
+                <meta property="og:description" content="Join a community of indie game developers. Game jams with cash prizes, a showcase for your work, and people who actually play your games." />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://solodevelopment.org/" />
+                <meta property="og:site_name" content="Solo Development" />
             </Helmet>
             <div className="dt3-main">
                 {/* Hero with scrolling game tiles behind */}
@@ -76,22 +83,23 @@ const DesignTest3: React.FC = () => {
                                                     {jamData.isVotingOpen && <span className="dt3-voting">• Theme voting open</span>}
                                                 </div>
                                                 <h2 className="dt3-jam-title">{jamData.title}{jamData.theme !== 'TBD' ? `: "${jamData.theme}"` : ''}</h2>
-                                                <p className="dt3-jam-desc">{jamData.description} • {jamData.timeLeft}</p>
+                                                <p className="dt3-jam-desc">
+                                                    {jamData.status === 'ended'
+                                                        ? `${jamData.participants} joined · ${jamData.submissions} games`
+                                                        : `${jamData.description} • ${jamData.timeLeft}`
+                                                    }
+                                                </p>
                                             </div>
                                             <div className="dt3-jam-cta">
                                                 {jamData.isVotingOpen ? (
                                                     <a href="/jams" className="dt3-btn dt3-btn-secondary">Vote on Themes</a>
                                                 ) : jamData.status === 'ended' ? (
-                                                    <>
-                                                        <a href={jamData.url} target="_blank" rel="noopener noreferrer nofollow" className="dt3-btn dt3-btn-secondary">View Results</a>
-                                                        <a href="https://forms.gle/gpvm9AZaft4uK7oYA" target="_blank" rel="noopener noreferrer nofollow" className="dt3-btn dt3-btn-secondary">Suggest Themes</a>
-                                                    </>
+                                                    <a href="/jams" className="dt3-btn dt3-btn-secondary">View Jam</a>
                                                 ) : (
                                                     <a href={jamData.url} target="_blank" rel="noopener noreferrer nofollow" className="dt3-btn dt3-btn-secondary">
                                                         {jamData.status === 'upcoming' ? 'Learn More' : 'Join Now'}
                                                     </a>
                                                 )}
-                                                <span className="dt3-jam-stats">{jamData.participants} joined</span>
                                             </div>
                                         </>
                                     ) : (
@@ -155,33 +163,22 @@ const DesignTest3: React.FC = () => {
                         </section>
                     );
 
-                    // No jam data at all — just show community
+                    const dateVotingSection = jamData?.isDateVotingOpen ? (
+                        <DateVoting key="datevoting" jamId={jamData.id || ''} isDateVotingOpen={true} />
+                    ) : null;
+
+                    // No jam data — show date voting (if open) then community
                     if (!jamData && !jamLoading) {
-                        return [communitySection];
+                        return [dateVotingSection, communitySection];
                     }
-                    // Active/upcoming jam goes above community, ended goes below
-                    const jamIsLive = jamData && (jamData.status === 'active' || jamData.status === 'upcoming');
-                    if (jamIsLive) {
+                    // Active/upcoming — jam on top, community below
+                    if (jamData && (jamData.status === 'active' || jamData.status === 'upcoming')) {
                         return [jamSection, communitySection];
                     }
-                    return [communitySection, jamSection];
+                    // Ended — date voting on top, community, ended jam at bottom
+                    return [dateVotingSection, communitySection, jamSection];
                 })()}
 
-                {/* Explore */}
-                <section className="dt3-explore" data-fade data-delay="5">
-                    <div className="dt3-container">
-                        <div className="dt3-section-label">// explore</div>
-                        <div className="dt3-explore-links">
-                            <a href="/jams">Game Jams</a>
-                            <span className="dt3-explore-sep">/</span>
-                            <a href="/showcase">Showcase</a>
-                            <span className="dt3-explore-sep">/</span>
-                            <a href="/streams">Streams</a>
-                            <span className="dt3-explore-sep">/</span>
-                            <a href="/resources">Resources</a>
-                        </div>
-                    </div>
-                </section>
             </div>
         </div>
     );

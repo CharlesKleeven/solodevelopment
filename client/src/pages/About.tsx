@@ -8,6 +8,12 @@ const About: React.FC = () => {
       <Helmet>
         <title>About — Solo Development</title>
         <meta name="description" content="What Solo Development is, our mission, and what happens in our community of solo game developers." />
+        <link rel="canonical" href="https://solodevelopment.org/about" />
+        <meta property="og:title" content="About — Solo Development" />
+        <meta property="og:description" content="What Solo Development is, our mission, and what happens in our community of solo game developers." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://solodevelopment.org/about" />
+        <meta property="og:site_name" content="Solo Development" />
       </Helmet>
       <div className="page-content">
         <h1>About Solo Development</h1>
