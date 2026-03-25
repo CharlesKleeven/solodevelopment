@@ -169,7 +169,7 @@ export const voteOnDate = async (req: Request, res: Response) => {
     }
 };
 
-// Create date options for a jam (admin only)
+// Add date options to a jam (admin only) — appends, does not replace
 export const createDateOptions = async (req: Request, res: Response) => {
     try {
         const { jamId, dates } = req.body;
@@ -188,15 +188,6 @@ export const createDateOptions = async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'Dates array is required' });
         }
 
-        // Delete existing admin-created options (keep user suggestions)
-        const adminOptions = await DateOption.find({ jamId, suggestedBy: null });
-        const adminOptionIds = adminOptions.map(d => (d._id as any).toString());
-        if (adminOptionIds.length > 0) {
-            await DateVote.deleteMany({ dateOptionId: { $in: adminOptionIds } });
-            await DateOption.deleteMany({ jamId, suggestedBy: null });
-        }
-
-        // Create new date options
         const created = [];
         for (const date of dates) {
             try {
@@ -208,12 +199,16 @@ export const createDateOptions = async (req: Request, res: Response) => {
                     voteCount: 0
                 });
                 created.push(option);
-            } catch (err) {
-                console.error('Failed to create date option:', err);
+            } catch (err: any) {
+                if (err.code === 11000) {
+                    // Duplicate date range, skip
+                } else {
+                    console.error('Failed to create date option:', err);
+                }
             }
         }
 
-        res.json({ success: true, message: `Created ${created.length} date options` });
+        res.json({ success: true, message: `Added ${created.length} date option${created.length !== 1 ? 's' : ''}` });
     } catch (error) {
         console.error('Error creating date options:', error);
         res.status(500).json({ error: 'Failed to create date options' });
