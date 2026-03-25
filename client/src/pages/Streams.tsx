@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import './streams.css';
 
@@ -12,11 +13,19 @@ interface Stream {
 }
 
 const Streams: React.FC = () => {
+    const { user } = useAuth();
     const [activeStream, setActiveStream] = useState<string>('');
     const [customChannel, setCustomChannel] = useState<string>('');
     const [featuredStreams, setFeaturedStreams] = useState<Stream[]>([]);
     const [loading, setLoading] = useState(true);
     const [liveStatus, setLiveStatus] = useState<{[key: string]: any}>({});
+
+    // Submit stream state
+    const [showSubmitForm, setShowSubmitForm] = useState(false);
+    const [submitChannel, setSubmitChannel] = useState('');
+    const [submitTitle, setSubmitTitle] = useState('');
+    const [submitMessage, setSubmitMessage] = useState('');
+    const [submitting, setSubmitting] = useState(false);
 
     // Get proper parent domain for Twitch embed
     const getParentDomain = () => {
@@ -94,6 +103,12 @@ const Streams: React.FC = () => {
             <Helmet>
                 <title>Streams — Solo Development</title>
                 <meta name="description" content="Watch solo game developers stream their work live." />
+                <link rel="canonical" href="https://solodevelopment.org/streams" />
+                <meta property="og:title" content="Streams — Solo Development" />
+                <meta property="og:description" content="Watch solo game developers stream their work live." />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://solodevelopment.org/streams" />
+                <meta property="og:site_name" content="Solo Development" />
             </Helmet>
             <div className="page-container">
                 <h1 className="page-title">Community Streams</h1>
@@ -103,7 +118,48 @@ const Streams: React.FC = () => {
                     {/* Stream List Sidebar */}
                     <div className="stream-sidebar">
                         <h3>Featured Streamers</h3>
-                        <p className="sidebar-note">Click to watch their channel</p>
+                        {!showSubmitForm ? (
+                            <p className="sidebar-note">
+                                {!user ? (
+                                    <>Want to be featured? <a href="/login">Log in</a> to submit your stream</>
+                                ) : (
+                                    <button className="submit-stream-toggle" onClick={() => setShowSubmitForm(true)}>Want to be featured? Submit your stream</button>
+                                )}
+                            </p>
+                        ) : (
+                            <div className="submit-stream-form">
+                                {submitMessage && <p className={`submit-message ${submitMessage.startsWith('Error') ? 'error' : 'success'}`}>{submitMessage}</p>}
+                                <form onSubmit={async (e) => {
+                                    e.preventDefault();
+                                    if (!submitChannel.trim() || !submitTitle.trim()) return;
+                                    setSubmitting(true);
+                                    setSubmitMessage('');
+                                    try {
+                                        const response = await api.post('/api/streamers/submit', {
+                                            channel: submitChannel.trim(),
+                                            title: submitTitle.trim()
+                                        });
+                                        setSubmitMessage(response.data.message);
+                                        setSubmitChannel('');
+                                        setSubmitTitle('');
+                                        setShowSubmitForm(false);
+                                    } catch (err: any) {
+                                        setSubmitMessage(`Error: ${err.response?.data?.error || 'Failed to submit'}`);
+                                    } finally {
+                                        setSubmitting(false);
+                                    }
+                                }}>
+                                    <div className="submit-fields">
+                                        <label>Twitch channel<input type="text" value={submitChannel} onChange={e => setSubmitChannel(e.target.value)} placeholder="your_twitch_username" required /></label>
+                                        <label>Display name<input type="text" value={submitTitle} onChange={e => setSubmitTitle(e.target.value)} placeholder="How you want to be shown" required /></label>
+                                    </div>
+                                    <div className="submit-actions">
+                                        <button type="submit" className="btn btn-primary btn-sm" disabled={submitting}>{submitting ? 'Submitting...' : 'Submit'}</button>
+                                        <button type="button" className="btn btn-ghost btn-sm" onClick={() => setShowSubmitForm(false)}>Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        )}
                         {loading ? (
                             <div className="loading">Loading streamers...</div>
                         ) : (
@@ -209,6 +265,7 @@ const Streams: React.FC = () => {
                     </a>
                 </div>
                 )}
+
             </div>
         </div>
     );

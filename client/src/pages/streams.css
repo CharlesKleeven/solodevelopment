@@ -56,6 +56,18 @@
     font-size: var(--text-xs);
     margin-bottom: var(--space-4);
     font-style: italic;
+    text-align: left;
+}
+
+.sidebar-note a {
+    color: var(--color-accent);
+    text-decoration: none;
+}
+
+.sidebar-note .submit-stream-toggle {
+    font-style: italic;
+    font-size: var(--text-xs);
+    text-align: left;
 }
 
 .stream-list {
@@ -339,5 +351,113 @@
     .watch-button {
         width: 100%;
         justify-content: center;
+    }
+}
+
+/* Submit Stream */
+.submit-stream-section {
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.submit-stream-prompt {
+    font-size: var(--text-sm);
+    color: var(--text-tertiary);
+}
+
+.submit-stream-prompt a {
+    color: var(--color-accent);
+    text-decoration: none;
+}
+
+.submit-stream-prompt a:hover {
+    text-decoration: underline;
+}
+
+.submit-stream-toggle {
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.15s;
+}
+
+.submit-stream-toggle:hover {
+    color: var(--color-accent);
+}
+
+.submit-stream-form {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius);
+    padding: var(--space-4);
+}
+
+.submit-stream-form h3 {
+    font-size: var(--text-base);
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+}
+
+.submit-stream-note {
+    font-size: var(--text-xs);
+    color: var(--text-quaternary);
+    margin-bottom: var(--space-3);
+}
+
+.submit-fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+}
+
+.submit-fields label {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+}
+
+.submit-fields input {
+    padding: var(--space-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+}
+
+.submit-fields input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+.submit-actions {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.submit-message {
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-2);
+}
+
+.submit-message.success {
+    color: var(--color-success);
+}
+
+.submit-message.error {
+    color: var(--color-danger);
+}
+
+@media (max-width: 768px) {
+    .submit-fields {
+        flex-direction: column;
     }
 }

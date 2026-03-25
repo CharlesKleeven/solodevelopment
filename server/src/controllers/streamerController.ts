@@ -3,10 +3,13 @@ import Streamer, { IStreamer } from '../models/Streamer';
 import User from '../models/User';
 import { twitchService } from '../services/twitchService';
 
-// Get all active streamers (public)
+// Get all active and approved streamers (public)
 export const getStreamers = async (req: Request, res: Response) => {
     try {
-        const streamers = await Streamer.find({ isActive: true })
+        const streamers = await Streamer.find({
+                isActive: true,
+                $or: [{ status: 'approved' }, { status: { $exists: false } }]
+            })
             .sort({ order: 1, createdAt: 1 })
             .select('channel title order');
 
@@ -14,6 +17,108 @@ export const getStreamers = async (req: Request, res: Response) => {
     } catch (error) {
         console.error('Error fetching streamers:', error);
         res.status(500).json({ error: 'Failed to fetch streamers' });
+    }
+};
+
+// Submit a stream for approval (authenticated users)
+export const submitStreamer = async (req: Request, res: Response) => {
+    try {
+        const userId = (req.user as any)?.userId;
+        const { channel, title } = req.body;
+
+        if (!userId) {
+            return res.status(401).json({ error: 'Please log in to submit your stream' });
+        }
+
+        if (!channel || !title) {
+            return res.status(400).json({ error: 'Channel and title are required' });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Check if channel already exists
+        const existing = await Streamer.findOne({ channel: channel.toLowerCase() });
+        if (existing) {
+            if (existing.status === 'pending') {
+                return res.status(409).json({ error: 'This channel is already pending approval' });
+            }
+            if (existing.status === 'approved') {
+                return res.status(409).json({ error: 'This channel is already listed' });
+            }
+            // If rejected, allow resubmission
+            existing.status = 'pending';
+            existing.submittedBy = userId;
+            existing.title = title;
+            await existing.save();
+            return res.json({ success: true, message: 'Stream resubmitted for approval' });
+        }
+
+        // Check if user already has a pending submission
+        const userPending = await Streamer.findOne({ submittedBy: userId, status: 'pending' });
+        if (userPending) {
+            return res.status(400).json({ error: 'You already have a stream pending approval' });
+        }
+
+        const streamer = new Streamer({
+            channel: channel.toLowerCase(),
+            title,
+            isActive: false,
+            status: 'pending',
+            submittedBy: userId,
+            order: 999
+        });
+
+        await streamer.save();
+
+        res.status(201).json({ success: true, message: 'Stream submitted for approval' });
+    } catch (error) {
+        console.error('Error submitting streamer:', error);
+        res.status(500).json({ error: 'Failed to submit stream' });
+    }
+};
+
+// Approve or reject a streamer (admin only)
+export const reviewStreamer = async (req: Request, res: Response) => {
+    try {
+        const userId = (req.user as any)?.userId;
+        const { id } = req.params;
+        const { action } = req.body; // 'approve' or 'reject'
+
+        if (!userId) {
+            return res.status(401).json({ error: 'Authentication required' });
+        }
+
+        const user = await User.findById(userId);
+        if (!user || !user.isAdmin) {
+            return res.status(403).json({ error: 'Admin access required' });
+        }
+
+        if (!['approve', 'reject'].includes(action)) {
+            return res.status(400).json({ error: 'Action must be approve or reject' });
+        }
+
+        const streamer = await Streamer.findById(id);
+        if (!streamer) {
+            return res.status(404).json({ error: 'Streamer not found' });
+        }
+
+        if (action === 'approve') {
+            streamer.status = 'approved';
+            streamer.isActive = true;
+        } else {
+            streamer.status = 'rejected';
+            streamer.isActive = false;
+        }
+
+        await streamer.save();
+
+        res.json({ success: true, message: `Stream ${action}d`, streamer });
+    } catch (error) {
+        console.error('Error reviewing streamer:', error);
+        res.status(500).json({ error: 'Failed to review streamer' });
     }
 };
 
