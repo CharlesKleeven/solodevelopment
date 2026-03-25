@@ -206,8 +206,8 @@ const AdminJams: React.FC = () => {
             const response = await api.post('/api/date-votes/create', {
                 jamId: currentJam.id,
                 dates: validDates.map(d => ({
-                    startDate: new Date(d.startDate).toISOString(),
-                    endDate: new Date(d.endDate).toISOString()
+                    startDate: d.startDate + 'T12:00:00Z',
+                    endDate: d.endDate + 'T12:00:00Z'
                 }))
             });
             setMessage(response.data.message);
@@ -847,6 +847,7 @@ const AdminJams: React.FC = () => {
                                             <th>End</th>
                                             <th>Votes</th>
                                             <th>Type</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -858,6 +859,22 @@ const AdminJams: React.FC = () => {
                                                 <td>{new Date(opt.endDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</td>
                                                 <td><strong>{opt.voteCount}</strong></td>
                                                 <td>{opt.suggestedBy ? 'User suggested' : 'Admin'}</td>
+                                                <td>
+                                                    <button
+                                                        className="btn btn-sm btn-danger"
+                                                        onClick={async () => {
+                                                            try {
+                                                                await api.delete(`/api/date-votes/${opt.id}`);
+                                                                fetchDateOptions();
+                                                                setMessage('Date option deleted');
+                                                            } catch (err: any) {
+                                                                setMessage(`Error: ${err.response?.data?.error || 'Failed to delete'}`);
+                                                            }
+                                                        }}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </td>
                                             </tr>
                                         ))}
                                     </tbody>

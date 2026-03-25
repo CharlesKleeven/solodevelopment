@@ -19,7 +19,7 @@ interface DateVotingProps {
 
 const formatDate = (dateStr: string) => {
     const d = new Date(dateStr);
-    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
 };
 
 const DateVoting: React.FC<DateVotingProps> = ({ jamId, isDateVotingOpen }) => {
@@ -82,16 +82,14 @@ const DateVoting: React.FC<DateVotingProps> = ({ jamId, isDateVotingOpen }) => {
             return;
         }
 
-        const start = new Date(suggestStart);
-        const end = new Date(suggestEnd);
-        if (end <= start) {
+        if (suggestEnd <= suggestStart) {
             setSuggestError('End date must be after start date');
             return;
         }
 
         setSubmittingSuggestion(true);
         try {
-            await dateVoteAPI.suggestDate(jamId, start.toISOString(), end.toISOString());
+            await dateVoteAPI.suggestDate(jamId, suggestStart + 'T12:00:00Z', suggestEnd + 'T12:00:00Z');
             setShowSuggestForm(false);
             setSuggestStart('');
             setSuggestEnd('');

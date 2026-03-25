@@ -265,6 +265,36 @@ export const suggestDate = async (req: Request, res: Response) => {
     }
 };
 
+// Delete a single date option (admin only)
+export const deleteSingleDateOption = async (req: Request, res: Response) => {
+    try {
+        const { dateOptionId } = req.params;
+        const userId = (req.user as any)?.userId;
+
+        if (!userId) {
+            return res.status(401).json({ error: 'Authentication required' });
+        }
+
+        const user = await User.findById(userId);
+        if (!user || !user.isAdmin) {
+            return res.status(403).json({ error: 'Admin access required' });
+        }
+
+        const option = await DateOption.findById(dateOptionId);
+        if (!option) {
+            return res.status(404).json({ error: 'Date option not found' });
+        }
+
+        await DateVote.deleteMany({ dateOptionId });
+        await DateOption.findByIdAndDelete(dateOptionId);
+
+        res.json({ success: true, message: 'Date option deleted' });
+    } catch (error) {
+        console.error('Error deleting date option:', error);
+        res.status(500).json({ error: 'Failed to delete date option' });
+    }
+};
+
 // Delete all date options for a jam (admin only)
 export const deleteDateOptions = async (req: Request, res: Response) => {
     try {

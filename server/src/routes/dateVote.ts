@@ -5,6 +5,7 @@ import {
     voteOnDate,
     createDateOptions,
     suggestDate,
+    deleteSingleDateOption,
     deleteDateOptions
 } from '../controllers/dateVoteController';
 import { authenticateToken } from '../middleware/auth';
@@ -24,6 +25,7 @@ router.get('/jam/:jamId', getDateOptions);
 router.post('/:dateOptionId/vote', votingRateLimiter, voteOnDate);
 router.post('/create', authenticateToken, adminOperationLimiter, createDateOptions);
 router.post('/suggest', authenticateToken, votingRateLimiter, suggestDate);
+router.delete('/:dateOptionId', authenticateToken, adminOperationLimiter, deleteSingleDateOption);
 router.delete('/jam/:jamId', authenticateToken, adminOperationLimiter, deleteDateOptions);
 
 export default router;
