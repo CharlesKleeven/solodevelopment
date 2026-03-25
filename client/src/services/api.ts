@@ -375,6 +375,22 @@ export const jamAPI = {
     },
 };
 
+// Date voting API
+export const dateVoteAPI = {
+    getDateOptions: async (jamId: string) => {
+        const response = await api.get(`/api/date-votes/jam/${jamId}`);
+        return response.data;
+    },
+    voteOnDate: async (dateOptionId: string, vote: boolean) => {
+        const response = await api.post(`/api/date-votes/${dateOptionId}/vote`, { vote });
+        return response.data;
+    },
+    suggestDate: async (jamId: string, startDate: string, endDate: string) => {
+        const response = await api.post('/api/date-votes/suggest', { jamId, startDate, endDate });
+        return response.data;
+    },
+};
+
 // Redirect management API
 export const redirectAPI = {
     // Get all redirects (admin only)

@@ -12,6 +12,7 @@ export interface IJam extends Document {
     submissions: number;
     isCurrent: boolean;
     isVotingOpen: boolean;
+    isDateVotingOpen: boolean;
     votingRoundName?: string;
     createdAt: Date;
     updatedAt: Date;
@@ -62,6 +63,10 @@ const jamSchema = new Schema<IJam>({
     isVotingOpen: {
         type: Boolean,
         default: true
+    },
+    isDateVotingOpen: {
+        type: Boolean,
+        default: false
     },
     votingRoundName: {
         type: String,

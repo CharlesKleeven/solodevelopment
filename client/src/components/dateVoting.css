@@ -1,0 +1,212 @@
+.date-voting-section {
+    padding: var(--space-4) 0 var(--space-8);
+}
+
+.date-voting {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-6);
+}
+
+.date-voting-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-4);
+}
+
+.date-voting-header h3 {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.date-voting-closed {
+    font-size: var(--text-xs);
+    color: var(--text-quaternary);
+    background: var(--bg-tertiary);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+.date-voting-note {
+    font-size: var(--text-xs);
+    color: var(--text-quaternary);
+    margin: 0 0 var(--space-4);
+}
+
+.date-voting-prompt {
+    font-size: var(--text-sm);
+    color: var(--text-tertiary);
+    margin-bottom: var(--space-4);
+}
+
+.date-voting-prompt a {
+    color: var(--color-accent);
+    text-decoration: none;
+}
+
+.date-voting-prompt a:hover {
+    text-decoration: underline;
+}
+
+/* Options list */
+.date-options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.date-option-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    border-radius: var(--border-radius);
+    transition: background 0.1s;
+}
+
+.date-option-row:nth-child(even) {
+    background: var(--bg-tertiary);
+}
+
+.date-option-row.past {
+    opacity: 0.4;
+}
+
+.date-option-row.past .date-range {
+    text-decoration: line-through;
+}
+
+.date-vote-btn {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-primary);
+    color: transparent;
+    font-size: 0.7rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.date-vote-btn:hover {
+    border-color: var(--text-tertiary);
+}
+
+.date-vote-btn.active {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: white;
+}
+
+.date-vote-placeholder {
+    width: 28px;
+    flex-shrink: 0;
+}
+
+.date-range {
+    flex: 1;
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+}
+
+.date-vote-count {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
+    min-width: 2rem;
+    text-align: right;
+}
+
+.date-suggested-badge {
+    font-size: var(--text-xs);
+    color: var(--text-quaternary);
+    margin-left: var(--space-2);
+    font-style: italic;
+}
+
+/* Suggest form */
+.date-suggest-section {
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.date-suggest-toggle {
+    background: none;
+    border: none;
+    color: var(--text-tertiary);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.15s;
+}
+
+.date-suggest-toggle:hover {
+    color: var(--color-accent);
+}
+
+.date-suggest-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.date-suggest-inputs {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.date-suggest-inputs label {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: var(--text-xs);
+    color: var(--text-tertiary);
+}
+
+.date-suggest-inputs input {
+    padding: var(--space-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+}
+
+.date-suggest-inputs input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+.date-suggest-error {
+    font-size: var(--text-xs);
+    color: var(--color-danger);
+    margin: 0;
+}
+
+.date-suggest-actions {
+    display: flex;
+    gap: var(--space-2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .date-suggest-inputs {
+        flex-direction: column;
+    }
+
+    .date-range {
+        font-size: var(--text-xs);
+    }
+}
