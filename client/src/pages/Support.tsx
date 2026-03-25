@@ -45,6 +45,12 @@ const Support: React.FC = () => {
       <Helmet>
         <title>Contact — Solo Development</title>
         <meta name="description" content="Get help, report issues, or submit a ban appeal for the Solo Development community." />
+        <link rel="canonical" href="https://solodevelopment.org/support" />
+        <meta property="og:title" content="Contact — Solo Development" />
+        <meta property="og:description" content="Get help, report issues, or submit a ban appeal for the Solo Development community." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://solodevelopment.org/support" />
+        <meta property="og:site_name" content="Solo Development" />
       </Helmet>
       <h1>Get support</h1>
       <p>If you're having trouble with the site or need help, you're in the right place.</p>

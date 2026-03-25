@@ -2,8 +2,6 @@ import { Request, Response } from 'express';
 import Jam from '../models/Jam';
 import Theme from '../models/Theme';
 import User from '../models/User';
-import axios from 'axios';
-import * as cheerio from 'cheerio';
 
 // Get all jams
 export const getAllJams = async (req: Request, res: Response) => {
@@ -38,36 +36,7 @@ export const getCurrentJamFromDB = async (req: Request, res: Response) => {
         const timeLeft = calculateTimeLeft(currentTime, jam.startDate, jam.endDate);
         const autoStatus = getJamStatus(currentTime, jam.startDate, jam.endDate);
         
-        // Try to scrape participant count from itch.io
-        let participants = jam.participants;
-        try {
-            const response = await axios.get(jam.url, {
-                headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SoloDev-Bot/1.0)' },
-                timeout: 5000
-            });
-            
-            const $ = cheerio.load(response.data as string);
-            const statElements = $('.stat_value');
-            
-            statElements.each((_, el) => {
-                const nextElement = $(el).next();
-                const value = $(el).text().trim();
-                const label = nextElement.text().trim().toLowerCase();
-                
-                if (label.includes('joined')) {
-                    const num = parseInt(value);
-                    if (!isNaN(num)) {
-                        participants = num;
-                        // Update the database with scraped value
-                        jam.participants = num;
-                        jam.save().catch(console.error);
-                        return false;
-                    }
-                }
-            });
-        } catch (error) {
-            console.error('Failed to scrape participants:', error);
-        }
+        const participants = jam.participants;
 
         const jamData = {
             id: jam.id,
@@ -82,6 +51,7 @@ export const getCurrentJamFromDB = async (req: Request, res: Response) => {
             timeLeft,
             status: autoStatus,
             isVotingOpen: jam.isVotingOpen,
+            isDateVotingOpen: jam.isDateVotingOpen,
             votingRoundName: jam.votingRoundName
         };
 
@@ -265,13 +235,46 @@ export const toggleVoting = async (req: Request, res: Response) => {
         currentJam.isVotingOpen = !currentJam.isVotingOpen;
         await currentJam.save();
 
-        res.json({ 
-            success: true, 
+        res.json({
+            success: true,
             isVotingOpen: currentJam.isVotingOpen,
             message: `Voting is now ${currentJam.isVotingOpen ? 'open' : 'closed'}`
         });
     } catch (error) {
         console.error('Error toggling voting:', error);
         res.status(500).json({ error: 'Failed to toggle voting status' });
+    }
+};
+
+// Toggle date voting for current jam (admin only)
+export const toggleDateVoting = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).user?.userId;
+
+        if (!userId) {
+            return res.status(401).json({ error: 'Authentication required' });
+        }
+
+        const user = await User.findById(userId);
+        if (!user || !user.isAdmin) {
+            return res.status(403).json({ error: 'Admin access required' });
+        }
+
+        const currentJam = await Jam.findOne({ isCurrent: true });
+        if (!currentJam) {
+            return res.status(404).json({ error: 'No current jam found' });
+        }
+
+        currentJam.isDateVotingOpen = !currentJam.isDateVotingOpen;
+        await currentJam.save();
+
+        res.json({
+            success: true,
+            isDateVotingOpen: currentJam.isDateVotingOpen,
+            message: `Date voting is now ${currentJam.isDateVotingOpen ? 'open' : 'closed'}`
+        });
+    } catch (error) {
+        console.error('Error toggling date voting:', error);
+        res.status(500).json({ error: 'Failed to toggle date voting status' });
     }
 };

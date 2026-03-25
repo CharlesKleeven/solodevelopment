@@ -5,7 +5,8 @@ import {
     updateJam,
     setCurrentJam,
     deleteJam,
-    toggleVoting
+    toggleVoting,
+    toggleDateVoting
 } from '../controllers/jamManagementController';
 import { authenticateToken } from '../middleware/auth';
 
@@ -28,5 +29,6 @@ router.delete('/:jamId', authenticateToken, deleteJam);
 
 // Toggle voting for current jam (admin only)
 router.post('/toggle-voting', authenticateToken, toggleVoting);
+router.post('/toggle-date-voting', authenticateToken, toggleDateVoting);
 
 export default router;
