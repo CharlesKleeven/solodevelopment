@@ -869,30 +869,38 @@ const AdminJams: React.FC = () => {
                         )}
 
                         <div className="date-add-section">
-                            <h3>Add Date Options</h3>
+                            <h3>Add Date Option</h3>
                             {newDates.map((d, i) => (
                                 <div key={i} className="date-input-row">
+                                    <label>Start
                                     <input
-                                        type="datetime-local"
+                                        type="date"
                                         value={d.startDate}
                                         onChange={e => {
                                             const updated = [...newDates];
                                             updated[i].startDate = e.target.value;
+                                            // Auto-fill end date 3 days after start
+                                            if (e.target.value && !updated[i].endDate) {
+                                                const start = new Date(e.target.value);
+                                                start.setDate(start.getDate() + 3);
+                                                updated[i].endDate = start.toISOString().split('T')[0];
+                                            }
                                             setNewDates(updated);
                                         }}
-                                        placeholder="Start"
                                     />
+                                    </label>
                                     <span>to</span>
+                                    <label>End
                                     <input
-                                        type="datetime-local"
+                                        type="date"
                                         value={d.endDate}
                                         onChange={e => {
                                             const updated = [...newDates];
                                             updated[i].endDate = e.target.value;
                                             setNewDates(updated);
                                         }}
-                                        placeholder="End"
                                     />
+                                    </label>
                                     {newDates.length > 1 && (
                                         <button
                                             type="button"
@@ -910,7 +918,7 @@ const AdminJams: React.FC = () => {
                                     className="btn btn-sm btn-secondary"
                                     onClick={() => setNewDates([...newDates, { startDate: '', endDate: '' }])}
                                 >
-                                    + Add Another Date
+                                    + Add Another
                                 </button>
                                 <button
                                     type="button"
