@@ -9,8 +9,9 @@ import './admin.css';
 
 const Admin: React.FC = () => {
     const { user } = useAuth();
+
     if (!user || !user?.isAdmin) {
-        return <div className="admin-page">Please log in as an admin.</div>;
+        return <div className="admin-page"><div className="container">Please log in as an admin.</div></div>;
     }
 
     return (
@@ -21,14 +22,14 @@ const Admin: React.FC = () => {
             </Helmet>
             <div className="container">
                 <div className="admin-header">
-                    <h1>Admin Dashboard</h1>
+                    <h1>Admin</h1>
                 </div>
 
-                <div className="admin-content">
-                    <AdminReportedGames />
+                <div className="admin-panel">
                     <AdminJams />
-                    <AdminRedirects />
                     <AdminStreamers />
+                    <AdminReportedGames />
+                    <AdminRedirects />
                 </div>
             </div>
         </div>

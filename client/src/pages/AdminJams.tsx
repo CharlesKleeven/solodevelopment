@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { jamAPI, themeAPI, backupAPI } from '../services/api';
+import { jamAPI, themeAPI, backupAPI, dateVoteAPI } from '../services/api';
 import api from '../services/api';
 import './admin.css';
 
@@ -18,6 +18,7 @@ interface Jam {
     submissions: number;
     isCurrent: boolean;
     isVotingOpen?: boolean;
+    isDateVotingOpen?: boolean;
     votingRoundName?: string;
 }
 
@@ -63,6 +64,12 @@ const AdminJams: React.FC = () => {
     const [votingRoundName, setVotingRoundName] = useState('');
     const [isEditingRoundName, setIsEditingRoundName] = useState(false);
 
+    // Date voting state
+    const [showDateVoting, setShowDateVoting] = useState(false);
+    const [isDateVotingOpen, setIsDateVotingOpen] = useState(false);
+    const [dateOptions, setDateOptions] = useState<Array<{ id: string; startDate: string; endDate: string; voteCount: number; suggestedBy: string | null }>>([]);
+    const [newDates, setNewDates] = useState<Array<{ startDate: string; endDate: string }>>([{ startDate: '', endDate: '' }]);
+
     // Form state
     const [formData, setFormData] = useState<Partial<Jam>>({
         id: '',
@@ -87,6 +94,7 @@ const AdminJams: React.FC = () => {
             if (current) {
                 setCurrentJam(current);
                 setIsVotingOpen(current.isVotingOpen ?? false);
+                setIsDateVotingOpen(current.isDateVotingOpen ?? false);
                 setVotingRoundName(current.votingRoundName || '');
             }
         } catch (error) {
@@ -159,6 +167,64 @@ const AdminJams: React.FC = () => {
             setMessage('Voting round name updated successfully');
             setIsEditingRoundName(false);
             fetchCurrentJam(); // Refresh the jam data
+        } catch (error: any) {
+            setMessage(`Error: ${error.response?.data?.error || error.message}`);
+        }
+    };
+
+    // Date voting handlers
+    const handleToggleDateVoting = async () => {
+        const action = isDateVotingOpen ? 'close' : 'open';
+        if (!window.confirm(`Are you sure you want to ${action} date voting?`)) return;
+        try {
+            const response = await api.post('/api/jam-management/toggle-date-voting');
+            setIsDateVotingOpen(response.data.isDateVotingOpen);
+            setMessage(response.data.message);
+        } catch (error: any) {
+            setMessage(`Error: ${error.response?.data?.error || error.message}`);
+        }
+    };
+
+    const fetchDateOptions = async () => {
+        if (!currentJam) return;
+        try {
+            const data = await dateVoteAPI.getDateOptions(currentJam.id);
+            setDateOptions(data.dateOptions);
+        } catch (error) {
+            setMessage('Error: Failed to fetch date options');
+        }
+    };
+
+    const handleSaveDates = async () => {
+        if (!currentJam) return;
+        const validDates = newDates.filter(d => d.startDate && d.endDate);
+        if (validDates.length === 0) {
+            setMessage('Please add at least one date range');
+            return;
+        }
+        try {
+            const response = await api.post('/api/date-votes/create', {
+                jamId: currentJam.id,
+                dates: validDates.map(d => ({
+                    startDate: new Date(d.startDate).toISOString(),
+                    endDate: new Date(d.endDate).toISOString()
+                }))
+            });
+            setMessage(response.data.message);
+            setNewDates([{ startDate: '', endDate: '' }]);
+            fetchDateOptions();
+        } catch (error: any) {
+            setMessage(`Error: ${error.response?.data?.error || error.message}`);
+        }
+    };
+
+    const handleClearDateVotes = async () => {
+        if (!currentJam) return;
+        if (!window.confirm('Delete all date options and votes? This cannot be undone.')) return;
+        try {
+            const response = await api.delete(`/api/date-votes/jam/${currentJam.id}`);
+            setMessage(response.data.message);
+            setDateOptions([]);
         } catch (error: any) {
             setMessage(`Error: ${error.response?.data?.error || error.message}`);
         }
@@ -396,6 +462,23 @@ const AdminJams: React.FC = () => {
                                     className={`btn btn-sm ${showBackups ? 'btn-primary' : 'btn-secondary'}`}
                                 >
                                     Manage Backups
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setShowForm(false);
+                                        setShowThemeForm(false);
+                                        setShowVotingResults(false);
+                                        setShowBackups(false);
+                                        if (!showDateVoting) {
+                                            fetchDateOptions();
+                                            setShowDateVoting(true);
+                                        } else {
+                                            setShowDateVoting(false);
+                                        }
+                                    }}
+                                    className={`btn btn-sm ${showDateVoting ? 'btn-primary' : 'btn-secondary'}`}
+                                >
+                                    Manage Dates
                                 </button>
                                 <button
                                     onClick={async () => {
@@ -737,6 +820,110 @@ const AdminJams: React.FC = () => {
 
                         <div className="form-actions">
                             <button type="button" onClick={() => setShowBackups(false)} className="btn btn-secondary">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {showDateVoting && currentJam && (
+                    <div className="date-voting-admin">
+                        <h2>Date Voting for {currentJam.title}</h2>
+
+                        <div className="admin-controls-row">
+                            <button onClick={handleToggleDateVoting} className={`btn btn-sm ${isDateVotingOpen ? 'btn-danger' : 'btn-primary'}`}>
+                                {isDateVotingOpen ? 'Close Date Voting' : 'Open Date Voting'}
+                            </button>
+                            <span>Status: {isDateVotingOpen ? 'Open' : 'Closed'}</span>
+                        </div>
+
+                        {dateOptions.length > 0 && (
+                            <div className="date-results-table">
+                                <h3>Current Date Options</h3>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Start</th>
+                                            <th>End</th>
+                                            <th>Votes</th>
+                                            <th>Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {dateOptions
+                                            .sort((a, b) => b.voteCount - a.voteCount)
+                                            .map(opt => (
+                                            <tr key={opt.id}>
+                                                <td>{new Date(opt.startDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</td>
+                                                <td>{new Date(opt.endDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</td>
+                                                <td><strong>{opt.voteCount}</strong></td>
+                                                <td>{opt.suggestedBy ? 'User suggested' : 'Admin'}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                                <button onClick={handleClearDateVotes} className="btn btn-sm btn-danger" style={{marginTop: '0.5rem'}}>
+                                    Clear All Date Options
+                                </button>
+                            </div>
+                        )}
+
+                        <div className="date-add-section">
+                            <h3>Add Date Options</h3>
+                            {newDates.map((d, i) => (
+                                <div key={i} className="date-input-row">
+                                    <input
+                                        type="datetime-local"
+                                        value={d.startDate}
+                                        onChange={e => {
+                                            const updated = [...newDates];
+                                            updated[i].startDate = e.target.value;
+                                            setNewDates(updated);
+                                        }}
+                                        placeholder="Start"
+                                    />
+                                    <span>to</span>
+                                    <input
+                                        type="datetime-local"
+                                        value={d.endDate}
+                                        onChange={e => {
+                                            const updated = [...newDates];
+                                            updated[i].endDate = e.target.value;
+                                            setNewDates(updated);
+                                        }}
+                                        placeholder="End"
+                                    />
+                                    {newDates.length > 1 && (
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm btn-danger"
+                                            onClick={() => setNewDates(newDates.filter((_, j) => j !== i))}
+                                        >
+                                            Remove
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                            <div className="date-add-actions">
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-secondary"
+                                    onClick={() => setNewDates([...newDates, { startDate: '', endDate: '' }])}
+                                >
+                                    + Add Another Date
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-primary"
+                                    onClick={handleSaveDates}
+                                >
+                                    Save Date Options
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="form-actions">
+                            <button type="button" onClick={() => setShowDateVoting(false)} className="btn btn-secondary">
                                 Close
                             </button>
                         </div>

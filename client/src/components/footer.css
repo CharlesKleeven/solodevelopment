@@ -15,12 +15,8 @@
 
 .footer-top-columns {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 16rem));
-    /* each column max ~256px */
-    justify-content: space-between;
-    /* evenly space them horizontally */
-    gap: var(--space-12);
-    /* adjust spacing between columns */
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: var(--space-8);
     padding-top: var(--space-6);
     margin-bottom: var(--space-6);
     align-items: flex-start;
