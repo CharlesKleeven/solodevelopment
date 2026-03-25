@@ -1,36 +1,33 @@
-# Robots.txt for SoloDevelopment
-# Last updated: 2025-07-30
-
+# Robots.txt for Solo Development
 User-agent: *
 Allow: /
 
-# Disallow user profiles and community pages to prevent indexing of user-generated content
-Disallow: /profile/
-Disallow: /community
-Disallow: /user/
-Disallow: /users/
-Disallow: /api/
-
-# Disallow authentication pages
-Disallow: /login
-Disallow: /register
-Disallow: /forgot-password
-Disallow: /reset-password
-Disallow: /verify-email
-Disallow: /select-username
-Disallow: /oauth-callback
-
-# Disallow admin pages
-Disallow: /admin
-
-# Allow search engines to crawl public content
-Allow: /
+# Public pages
 Allow: /jams
 Allow: /showcase
+Allow: /streams
 Allow: /resources
 Allow: /about
 Allow: /support
 Allow: /privacy
 
-# Sitemap location
+# Disallow private/user pages
+Disallow: /profile
+Disallow: /users/
+Disallow: /dashboard/
+Disallow: /games/
+Disallow: /api/
+
+# Disallow auth pages
+Disallow: /login
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
+Disallow: /select-username
+Disallow: /oauth-callback
+Disallow: /itchio-callback
+
+# Disallow admin
+Disallow: /admin
+
 Sitemap: https://solodevelopment.org/sitemap.xml
