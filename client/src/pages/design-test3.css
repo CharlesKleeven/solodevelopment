@@ -1,8 +1,8 @@
 /* ===== DESIGN TEST 3 — OG LAYOUT + BLUE BG + COMPACT TILES ===== */
 
 .dt3-page {
-    background: #0f1923;
-    color: #b0c0d0;
+    background: var(--bg-primary);
+    color: var(--text-secondary);
     font-family: "Plus Jakarta Sans", "Inter", "Segoe UI", sans-serif;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
@@ -26,10 +26,10 @@
     justify-content: center;
     align-items: center;
     padding: 0.5rem 1.5rem;
-    background: #141f2e;
-    border-bottom: 1px solid #1c2a3a;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-subtle);
     font-size: 0.8rem;
-    color: #7a90a5;
+    color: var(--text-tertiary);
 }
 
 .dt3-banner-content {
@@ -38,11 +38,11 @@
 }
 
 .dt3-banner-content strong {
-    color: #e0eaf4;
+    color: var(--text-primary);
 }
 
 .dt3-top-banner a {
-    color: #ff6b35;
+    color: var(--color-accent);
     font-weight: 600;
     text-decoration: none;
 }
@@ -54,7 +54,7 @@
 .dt3-banner-close {
     background: none;
     border: none;
-    color: #5a7088;
+    color: var(--text-quaternary);
     font-size: 1.1rem;
     cursor: pointer;
     padding: 0 0.5rem;
@@ -63,13 +63,13 @@
 }
 
 .dt3-banner-close:hover {
-    color: #e0eaf4;
+    color: var(--text-primary);
 }
 
 /* ===== NAV ===== */
 .dt3-nav {
-    background: #0f1923;
-    border-bottom: 1px solid #1c2a3a;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-subtle);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -94,7 +94,7 @@
 .dt3-brand {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #e0eaf4 !important;
+    color: var(--text-primary) !important;
     text-decoration: none;
 }
 
@@ -106,17 +106,17 @@
 
 .dt3-nav-link {
     font-size: 0.875rem;
-    color: #5a7088;
+    color: var(--text-quaternary);
     text-decoration: none;
     transition: color 0.2s;
 }
 
 .dt3-nav-link:hover {
-    color: #ff6b35;
+    color: var(--color-accent);
 }
 
 .dt3-nav-sep {
-    color: #2a3a4a;
+    color: var(--text-quaternary);
     font-size: 0.875rem;
     user-select: none;
 }
@@ -144,12 +144,12 @@
     display: block;
     width: 20px;
     height: 2px;
-    background: #7a90a5;
+    background: var(--text-tertiary);
     transition: background 0.15s;
 }
 
 .dt3-burger:hover span {
-    background: #e0eaf4;
+    background: var(--text-primary);
 }
 
 .dt3-nav-user {
@@ -176,20 +176,20 @@
 .dt3-hero-title {
     font-size: 2.25rem;
     font-weight: 600;
-    color: #e0eaf4;
+    color: var(--text-primary);
     margin-bottom: 1rem;
     line-height: 1.3;
 }
 
 .dt3-accent {
     font-weight: 600;
-    color: #e0eaf4;
+    color: var(--text-primary);
 }
 
 .dt3-hero-subtitle {
     font-size: 1.125rem;
     font-weight: 400;
-    color: #7a90a5;
+    color: var(--text-tertiary);
     max-width: 38rem;
     margin: 0 auto;
     line-height: 1.6;
@@ -213,32 +213,82 @@
     text-align: center;
     border-radius: 6px;
     text-decoration: none;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+.dt3-btn-discord {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+}
+
+.dt3-btn-discord:hover {
+    border-color: #5865F2;
+    color: #5865F2;
+    transform: translateY(-1px);
+}
+
+.dt3-btn-reddit {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+}
+
+.dt3-btn-reddit:hover {
+    border-color: #FF4500;
+    color: #FF4500;
+    transform: translateY(-1px);
+}
+
+.dt3-btn-itch {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+}
+
+.dt3-btn-itch:hover {
+    border-color: #fa5c5c;
+    color: #fa5c5c;
+    transform: translateY(-1px);
+}
+
+.dt3-btn-bluesky {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+}
+
+.dt3-btn-bluesky:hover {
+    border-color: #0085ff;
+    color: #0085ff;
+    transform: translateY(-1px);
 }
 
 .dt3-btn-primary {
-    background: #ff6b35;
-    color: #0f1923;
+    background: transparent;
+    color: var(--color-accent);
     border: 1px solid #ff6b35;
 }
 
 .dt3-btn-primary:hover {
-    background: #fb7185;
-    border-color: #fb7185;
+    background: #ff6b35;
+    color: var(--bg-primary);
     transform: translateY(-1px);
-    color: #0f1923;
 }
 
 .dt3-btn-secondary {
-    background: #141f2e;
-    color: #7a90a5;
-    border: 1px solid #1c2a3a;
+    background: var(--bg-secondary);
+    color: var(--text-tertiary);
+    border: 1px solid var(--border-subtle);
 }
 
 .dt3-btn-secondary:hover {
-    color: #e0eaf4;
-    border-color: #7a90a5;
-    background: #172536;
+    color: var(--text-primary);
+    border-color: var(--text-tertiary);
+    background: var(--bg-tertiary);
     transform: translateY(-1px);
 }
 
@@ -248,8 +298,8 @@
 }
 
 .dt3-jam-banner {
-    background: #141f2e;
-    border: 1px solid #1c2a3a;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
     border-radius: 10px;
     padding: 2rem;
     display: flex;
@@ -266,13 +316,13 @@
 }
 
 .dt3-jam-badge {
-    color: #0f1923;
+    color: var(--bg-primary);
     padding: 0.25rem 0.5rem;
     border-radius: 6px;
     font-size: 0.75rem;
     font-weight: 600;
     display: inline-block;
-    background: #5a7088;
+    background: var(--text-quaternary);
 }
 
 .dt3-jam-badge.upcoming {
@@ -282,11 +332,11 @@
 
 .dt3-jam-badge.active {
     background: #2dd4bf;
-    color: #0f1923;
+    color: var(--bg-primary);
 }
 
 .dt3-voting {
-    color: #ff6b35;
+    color: var(--color-accent);
     font-size: 0.875rem;
     font-weight: 500;
 }
@@ -294,13 +344,13 @@
 .dt3-jam-title {
     font-size: 1.125rem;
     font-weight: 600;
-    color: #e0eaf4;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
 }
 
 .dt3-jam-desc {
     font-size: 0.875rem;
-    color: #7a90a5;
+    color: var(--text-tertiary);
     line-height: 1.5;
     margin: 0;
 }
@@ -314,7 +364,7 @@
 
 .dt3-jam-stats {
     font-size: 0.875rem;
-    color: #5a7088;
+    color: var(--text-quaternary);
 }
 
 /* ===== FEATURES — BLOCKY GRID ===== */
@@ -326,13 +376,13 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1px;
-    background: #1c2a3a;
+    background: var(--bg-tertiary);
     max-width: 68rem;
     margin: 0 auto;
 }
 
 .dt3-feature {
-    background: #0f1923;
+    background: var(--bg-primary);
     padding: 2rem;
 }
 
@@ -346,14 +396,14 @@
 .dt3-feature h3 {
     font-size: 0.95rem;
     font-weight: 600;
-    color: #e0eaf4;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
 }
 
 .dt3-feature p {
     font-size: 0.85rem;
     line-height: 1.5;
-    color: #5a7088;
+    color: var(--text-quaternary);
     margin: 0;
 }
 
@@ -372,14 +422,14 @@
 .dt3-section-label {
     font-size: 1.125rem;
     font-weight: 400;
-    color: #5a7088;
+    color: var(--text-quaternary);
     letter-spacing: 0.02em;
 }
 
 .dt3-btn-ghost {
     background: none;
     border: none;
-    color: #5a7088;
+    color: var(--text-quaternary);
     font-size: 0.875rem;
     cursor: pointer;
     transition: color 0.2s;
@@ -388,7 +438,7 @@
 }
 
 .dt3-btn-ghost:hover {
-    color: #ff6b35;
+    color: var(--color-accent);
 }
 
 .dt3-see-more {
@@ -411,7 +461,7 @@
 .dt3-jam-header h3 {
     font-size: 1rem;
     font-weight: 600;
-    color: #e0eaf4;
+    color: var(--text-primary);
     margin: 0;
 }
 
@@ -421,12 +471,12 @@
 }
 
 .dt3-jam-header h3 a:hover {
-    color: #ff6b35;
+    color: var(--color-accent);
 }
 
 .dt3-jam-theme {
     font-size: 0.8rem;
-    color: #5a7088;
+    color: var(--text-quaternary);
     font-style: italic;
 }
 
@@ -459,7 +509,7 @@
 .dt3-tile-place {
     font-size: 0.6rem;
     font-weight: 600;
-    color: #ff6b35;
+    color: var(--color-accent);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-bottom: 0.1rem;
@@ -473,7 +523,7 @@
 .dt3-tile-img {
     width: 100%;
     height: 100%;
-    background: #172536;
+    background: var(--bg-tertiary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -488,7 +538,7 @@
 .dt3-tile-img span {
     font-size: 1.25rem;
     font-weight: 700;
-    color: #1c2a3a;
+    color: var(--border-subtle);
 }
 
 .dt3-tile-overlay {
@@ -530,24 +580,24 @@
 
 .dt3-explore-links a {
     font-size: 1rem;
-    color: #7a90a5;
+    color: var(--text-tertiary);
     text-decoration: none;
     transition: color 0.2s;
 }
 
 .dt3-explore-links a:hover {
-    color: #ff6b35;
+    color: var(--color-accent);
 }
 
 .dt3-explore-sep {
-    color: #2a3a4a;
+    color: var(--text-quaternary);
     user-select: none;
 }
 
 /* ===== FOOTER ===== */
 .dt3-footer {
-    background: #0b1219;
-    border-top: 1px solid #1c2a3a;
+    background: var(--bg-fade);
+    border-top: 1px solid var(--border-subtle);
     padding: 2.5rem 0 1.5rem;
     margin-top: 2rem;
 }
@@ -562,14 +612,14 @@
 .dt3-footer-col h4 {
     font-size: 1rem;
     font-weight: 600;
-    color: #e0eaf4;
+    color: var(--text-primary);
     margin-bottom: 0.75rem;
 }
 
 .dt3-footer-col p {
     font-size: 0.875rem;
     line-height: 1.5;
-    color: #5a7088;
+    color: var(--text-quaternary);
     margin: 0;
 }
 
@@ -584,24 +634,24 @@
 
 .dt3-footer-col a {
     font-size: 0.875rem;
-    color: #5a7088;
+    color: var(--text-quaternary);
     text-decoration: none;
     transition: color 0.2s;
 }
 
 .dt3-footer-col a:hover {
-    color: #ff6b35;
+    color: var(--color-accent);
 }
 
 .dt3-footer-bottom {
     padding-top: 1.5rem;
-    border-top: 1px solid #1c2a3a;
+    border-top: 1px solid var(--border-subtle);
     text-align: center;
 }
 
 .dt3-footer-bottom p {
     font-size: 0.8rem;
-    color: #3a5068;
+    color: var(--text-quaternary);
     margin: 0;
 }
 
@@ -636,8 +686,8 @@
         top: 56px;
         right: 0;
         left: 0;
-        background: #0f1923;
-        border-bottom: 1px solid #1c2a3a;
+        background: var(--bg-primary);
+        border-bottom: 1px solid var(--border-subtle);
         padding: 1rem 1.5rem;
         gap: 0.75rem;
     }

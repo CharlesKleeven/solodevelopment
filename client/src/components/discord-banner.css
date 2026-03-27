@@ -19,9 +19,19 @@
 }
 
 .discord-banner a {
-    color: var(--color-accent);
+    color: #5865F2;
     font-weight: 600;
     text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.discord-banner a svg {
+    vertical-align: middle;
+    flex-shrink: 0;
+    position: relative;
+    top: -1px;
 }
 
 .discord-banner a:hover {

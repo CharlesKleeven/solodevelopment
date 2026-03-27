@@ -43,8 +43,9 @@
 }
 
 .footer-link {
-    display: inline;
-    /* ensures only text is clickable */
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
     padding: 0;
     margin: 0;
     color: var(--text-secondary);
@@ -55,6 +56,22 @@
 
 .footer-link:hover {
     color: var(--color-accent);
+}
+
+.footer-discord:hover {
+    color: #5865F2 !important;
+}
+
+.footer-reddit:hover {
+    color: #FF4500 !important;
+}
+
+.footer-itch:hover {
+    color: #fa5c5c !important;
+}
+
+.footer-bluesky:hover {
+    color: #0085ff !important;
 }
 
 .footer-column ul {

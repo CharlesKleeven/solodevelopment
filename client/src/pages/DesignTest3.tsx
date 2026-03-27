@@ -5,6 +5,7 @@ import { gameData } from '../data/gameData';
 import { useJam } from '../hooks/useJam';
 import useFadeInOnScroll from '../hooks/useFadeInOnScroll';
 import DateVoting from '../components/DateVoting';
+import { DiscordIcon, RedditIcon, ItchIcon, BlueskyIcon } from '../components/Icons';
 import './design-test3.css';
 
 const DesignTest3: React.FC = () => {
@@ -53,8 +54,10 @@ const DesignTest3: React.FC = () => {
                                 }
                             </p>
                             <div className="dt3-hero-buttons">
-                                <a href="https://discord.gg/uXeapAkAra" className="dt3-btn dt3-btn-primary" target="_blank" rel="noopener noreferrer nofollow">Join Discord</a>
-                                <a href="https://reddit.com/r/solodevelopment" className="dt3-btn dt3-btn-secondary" target="_blank" rel="noopener noreferrer nofollow">Browse Reddit</a>
+                                <a href="https://discord.gg/uXeapAkAra" className="dt3-btn dt3-btn-discord" target="_blank" rel="noopener noreferrer nofollow"><DiscordIcon size={16} /> Join Discord</a>
+                                <a href="https://reddit.com/r/solodevelopment" className="dt3-btn dt3-btn-reddit" target="_blank" rel="noopener noreferrer nofollow"><RedditIcon size={16} /> Our Sub</a>
+                                <a href="https://solodevelopment.itch.io/" className="dt3-btn dt3-btn-itch" target="_blank" rel="noopener noreferrer nofollow"><ItchIcon size={16} /> Itch.io</a>
+                                <a href="https://bsky.app/profile/solodevelopment.bsky.social" className="dt3-btn dt3-btn-bluesky" target="_blank" rel="noopener noreferrer nofollow"><BlueskyIcon size={16} /> Bluesky</a>
                             </div>
                         </div>
                     </div>

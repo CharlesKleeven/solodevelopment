@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { DiscordIcon } from './Icons';
 import './discord-banner.css';
 
 const DiscordBanner: React.FC = () => {

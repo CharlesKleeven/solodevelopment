@@ -1,4 +1,5 @@
 import React from 'react';
+import { DiscordIcon, RedditIcon, ItchIcon, BlueskyIcon } from './Icons';
 import './footer.css';
 
 const Footer: React.FC = () => {
@@ -30,18 +31,23 @@ const Footer: React.FC = () => {
             <h4>Community</h4>
             <ul>
               <li>
-                <a className="footer-link" href="https://discord.gg/uXeapAkAra" target="_blank" rel="noopener noreferrer nofollow">
-                  Discord
+                <a className="footer-link footer-discord" href="https://discord.gg/uXeapAkAra" target="_blank" rel="noopener noreferrer nofollow">
+                  <DiscordIcon size={13} /> Discord
                 </a>
               </li>
               <li>
-                <a className="footer-link" href="https://reddit.com/r/solodevelopment" target="_blank" rel="noopener noreferrer nofollow">
-                  Reddit
+                <a className="footer-link footer-reddit" href="https://reddit.com/r/solodevelopment" target="_blank" rel="noopener noreferrer nofollow">
+                  <RedditIcon size={13} /> Reddit
                 </a>
               </li>
               <li>
-                <a className="footer-link" href="https://solodevelopment.itch.io/" target="_blank" rel="noopener noreferrer nofollow">
-                  Itch.io
+                <a className="footer-link footer-itch" href="https://solodevelopment.itch.io/" target="_blank" rel="noopener noreferrer nofollow">
+                  <ItchIcon size={13} /> Itch.io
+                </a>
+              </li>
+              <li>
+                <a className="footer-link footer-bluesky" href="https://bsky.app/profile/solodevelopment.bsky.social" target="_blank" rel="noopener noreferrer nofollow">
+                  <BlueskyIcon size={13} /> Bluesky
                 </a>
               </li>
             </ul>

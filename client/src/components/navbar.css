@@ -16,7 +16,7 @@
 }
     
 [data-theme="light"] .navbar-title {
-        color: var(--color-accent);
+        color: var(--text-primary);
         font-weight: 700;
         letter-spacing: -0.02em;
 }
@@ -81,7 +81,7 @@
     font-size: var(--text-lg);
     font-weight: 600;
     margin: 0;
-    color: var(--color-accent);
+    color: var(--text-primary);
 }
 
 /* ===== CLEAN NAVIGATION ===== */
