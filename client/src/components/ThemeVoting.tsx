@@ -264,7 +264,8 @@ const ThemeVoting: React.FC<ThemeVotingProps> = ({ jamId, votingDeadline, isVoti
 
             {isVotingOpen && (
                 <div className="voting-help">
-                    <span>upvote themes you like • downvote to push them down • help shape what the community wants</span>
+                    <span>Don't see a theme you like?</span>
+                    <a href="https://forms.gle/gpvm9AZaft4uK7oYA" target="_blank" rel="noopener noreferrer nofollow" className="suggest-theme-link">Suggest a theme</a>
                 </div>
             )}
                 </div>
