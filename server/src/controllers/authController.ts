@@ -7,6 +7,7 @@ import User from '../models/User';
 import { sendPasswordResetEmail } from '../services/emailService';
 import { validateLink } from '../utils/linkValidator';
 import { normalizeGmailAddress } from '../utils/emailUtils';
+import { getClientIP, hashIP } from '../utils/ip';
 // Use Express Request type with user property added via type declaration
 
 export const loginValidation = [
@@ -117,6 +118,12 @@ export const login = async (req: Request, res: Response) => {
     if (!isValidPassword) {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
+
+    // Update IP hash on login
+    const ipHash = hashIP(getClientIP(req));
+    user.lastIpHash = ipHash;
+    user.lastIpHashUpdatedAt = new Date();
+    await user.save();
 
     // Generate JWT
     const token = jwt.sign(

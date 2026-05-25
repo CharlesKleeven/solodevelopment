@@ -90,7 +90,6 @@ const sections = [
       { name: 'r/gamedev', desc: 'General game development', url: 'https://reddit.com/r/gamedev', tags: ['free'] },
       { name: 'r/IndieDev', desc: 'Indie game development', url: 'https://reddit.com/r/indiedev', tags: ['free'] },
       { name: 'Itch.io', desc: 'Our game jams and community page', url: 'https://solodevelopment.itch.io/', tags: ['free'] },
-      { name: 'Music for Programming', desc: 'Background music for focus', url: 'https://musicforprogramming.net/', tags: ['free', 'audio'] },
     ]
   },
 ];

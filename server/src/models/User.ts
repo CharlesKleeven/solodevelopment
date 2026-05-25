@@ -29,6 +29,11 @@ interface IUser {
   pendingEmailToken?: string;
   pendingEmailExpires?: Date;
 
+  // IP tracking
+  registrationIpHash?: string;
+  lastIpHash?: string;
+  lastIpHashUpdatedAt?: Date;
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -131,6 +136,18 @@ const userSchema = new mongoose.Schema<IUser>(
       type: String,
     },
     pendingEmailExpires: {
+      type: Date,
+    },
+
+    // IP tracking
+    registrationIpHash: {
+      type: String,
+    },
+    lastIpHash: {
+      type: String,
+      index: true,
+    },
+    lastIpHashUpdatedAt: {
       type: Date,
     },
   },

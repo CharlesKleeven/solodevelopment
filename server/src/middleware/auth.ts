@@ -1,5 +1,28 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from 'jsonwebtoken';
+import User from '../models/User';
+import { getClientIP, hashIP } from '../utils/ip';
+
+const ONE_DAY = 24 * 60 * 60 * 1000;
+
+function updateIpHashInBackground(userId: string, ipHash: string) {
+  User.updateOne(
+    {
+      _id: userId,
+      $or: [
+        { lastIpHashUpdatedAt: { $exists: false } },
+        { lastIpHashUpdatedAt: { $lt: new Date(Date.now() - ONE_DAY) } },
+        { lastIpHash: { $ne: ipHash } },
+      ],
+    },
+    {
+      $set: {
+        lastIpHash: ipHash,
+        lastIpHashUpdatedAt: new Date(),
+      },
+    }
+  ).exec().catch(() => {});
+}
 
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   // Check for token in cookies
@@ -20,6 +43,9 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
       username: decoded.username,
       email: decoded.email
     };
+
+    updateIpHashInBackground(decoded.userId, hashIP(getClientIP(req)));
+
     next();
   } catch (error) {
     res.status(403).json({

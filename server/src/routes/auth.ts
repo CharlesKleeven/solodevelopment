@@ -10,6 +10,7 @@ import User from '../models/User';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { sendEmailVerificationEmail } from '../services/emailService';
+import { getClientIP, hashIP } from '../utils/ip';
 
 // Auth-specific rate limiter - 20 attempts per 15 minutes
 const authLimiter = rateLimit({
@@ -72,6 +73,7 @@ router.post('/register', authLimiter, [
         const verificationToken = crypto.randomBytes(32).toString('hex');
         
         // Create user in database
+        const ipHash = hashIP(getClientIP(req));
         const user = new User({
             username,
             email,
@@ -79,7 +81,10 @@ router.post('/register', authLimiter, [
             displayName: username,
             emailVerified: false,
             emailVerificationToken: verificationToken,
-            emailVerificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+            emailVerificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+            registrationIpHash: ipHash,
+            lastIpHash: ipHash,
+            lastIpHashUpdatedAt: new Date(),
         });
 
         await user.save();
@@ -676,6 +681,13 @@ const handleOAuthCallback = async (req: express.Request, res: express.Response) 
             return res.redirect(`${process.env.FRONTEND_URL}/select-username`);
         }
 
+        // Update IP hash on OAuth login
+        const ipHash = hashIP(getClientIP(req));
+        await User.updateOne(
+            { _id: user._id },
+            { $set: { lastIpHash: ipHash, lastIpHashUpdatedAt: new Date() } }
+        );
+
         // Existing user - generate JWT token
         const token = jwt.sign(
             { userId: user._id },
@@ -886,6 +898,7 @@ router.post('/oauth/complete',
                 : tempUser.displayName;
 
             // Create the new user
+            const ipHash = hashIP(getClientIP(req));
             const newUser = new User({
                 username,
                 email: tempUser.email,
@@ -895,7 +908,10 @@ router.post('/oauth/complete',
                 emailVerified: tempUser.provider === 'discord' ? (tempUser.emailVerified || false) : true,
                 ...(tempUser.googleId && { googleId: tempUser.googleId }),
                 ...(tempUser.discordId && { discordId: tempUser.discordId }),
-                ...(tempUser.itchioId && { itchioId: tempUser.itchioId })
+                ...(tempUser.itchioId && { itchioId: tempUser.itchioId }),
+                registrationIpHash: ipHash,
+                lastIpHash: ipHash,
+                lastIpHashUpdatedAt: new Date(),
             });
 
             await newUser.save();

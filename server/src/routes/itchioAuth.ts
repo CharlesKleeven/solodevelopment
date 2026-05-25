@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
 import User from '../models/User';
 import { authenticateToken } from '../middleware/auth';
+import { getClientIP, hashIP } from '../utils/ip';
 
 const router = express.Router();
 
@@ -155,13 +156,17 @@ router.post('/callback', oauthLimiter, async (req, res) => {
         // Use a placeholder that won't conflict with real emails
         const email = itchioUser.email || `pending_${itchioUser.id}@oauth.local`;
 
+        const ipHash = hashIP(getClientIP(req));
         user = new User({
           username,
           email,
           displayName: itchioUser.display_name || itchioUser.username || username,
           provider: 'itchio',
           itchioId: itchioUser.id,
-          emailVerified: !!itchioUser.email // Only verified if itch.io provided email
+          emailVerified: !!itchioUser.email, // Only verified if itch.io provided email
+          registrationIpHash: ipHash,
+          lastIpHash: ipHash,
+          lastIpHashUpdatedAt: new Date(),
         });
 
         await user.save();
@@ -172,6 +177,13 @@ router.post('/callback', oauthLimiter, async (req, res) => {
         }
       }
     }
+
+    // Update IP hash on login
+    const loginIpHash = hashIP(getClientIP(req));
+    await User.updateOne(
+      { _id: user._id },
+      { $set: { lastIpHash: loginIpHash, lastIpHashUpdatedAt: new Date() } }
+    );
 
     // Generate JWT token
     const token = jwt.sign(
