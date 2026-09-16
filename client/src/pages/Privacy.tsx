@@ -33,6 +33,11 @@ const Privacy: React.FC = () => {
                     <h2>How we use your data</h2>
                     <p>Your data is used only to operate the site and the Solo Development ecosystem. We do not sell, share, or provide your data to third parties for marketing or advertising.</p>
 
+                    <h2>Discord bot (SoloBot)</h2>
+                    <p>We operate a bot, SoloBot, in our Discord server. To provide community features &mdash; activity statistics and leaderboards, automatic role assignment, welcomes, and moderation &mdash; it collects your Discord user ID along with aggregate activity data (message and character counts, voice-channel time, and reactions) and records of role changes and server joins and leaves.</p>
+                    <p>For moderation and anti-spam, the bot processes message content in real time and keeps short-term server-side logs of channel messages; content from messages reported or flagged as spam is retained for moderator review. This data is kept in a private database on our own server and backed up to a private location. We do not share it with third parties, and message content is never used to train machine-learning or AI models.</p>
+                    <p>You can opt out of activity tracking at any time in the server using <code>!toggletext</code> (messages) and <code>!togglevoice</code> (voice). To remove data the bot has stored about you, use the deletion options below.</p>
+
                     <h2>Data retention and deletion</h2>
                     <p>Your data is retained as long as your account exists. You can request access, correction, or deletion of your data at any time through the <a href="/support">support page</a> or by contacting a moderator on <a href="https://discord.gg/uXeapAkAra" target="_blank" rel="noopener noreferrer nofollow">Discord</a>.</p>
 
@@ -42,7 +47,7 @@ const Privacy: React.FC = () => {
                     <h2>Changes</h2>
                     <p>We may update this policy from time to time. Significant changes will be noted on this page.</p>
 
-                    <p className="privacy-meta">Last updated: March 2026</p>
+                    <p className="privacy-meta">Last updated: September 2026</p>
                 </div>
             </section>
         </div>
